@@ -5,6 +5,18 @@
   "version": "0.0.1",
   "passTrough": false,
   "mapping": {
-    "b": "a"
+    "identificatie": "SOAP-ENV:Body.ns2:zakLk01.ns2:object.ns2:identificatie",
+    "omschrijving": "SOAP-ENV:Body.ns2:zakLk01.ns2:object.ns2:omschrijving",
+    "toelichting": "SOAP-ENV:Body.ns2:zakLk01.ns2:object.ns2:toelichting",
+    "startdatum": "SOAP-ENV:Body.ns2:zakLk01.ns2:object.ns2:startdatum",
+    "registratiedatum": "SOAP-ENV:Body.ns2:zakLk01.ns2:object.ns2:registratiedatum",
+    "publicatiedatum": "SOAP-ENV:Body.ns2:zakLk01.ns2:object.ns2:publicatiedatum",
+    "einddatumGepland": "SOAP-ENV:Body.ns2:zakLk01.ns2:object.ns2:einddatumGepland",
+    "uiterlijkeEinddatumAfdoening": "SOAP-ENV:Body.ns2:zakLk01.ns2:object.ns2:uiterlijkeEinddatum",
+    "betalingsindicatie": "SOAP-ENV:Body.ns2:zakLk01.ns2:object.ns2:betalingsindicatie",
+    "laatsteBetaaldatum": "SOAP-ENV:Body.ns2:zakLk01.ns2:object.ns2:laatstebetaaldatum",
+    "zaakniveau": "SOAP-ENV:Body.ns2:zakLk01.ns2:object.ns2:zaakniveau",
+    "deelzakenIndicatie": "SOAP-ENV:Body.ns2:zakLk01.ns2:object.ns2:deelzakenIndicatie",
+
   }
 }
