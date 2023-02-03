@@ -1,0 +1,10 @@
+{
+  "title": "ZDSToZGWZaak",
+  "$id": "https://componentencatalogus.commonground.nl/api/components",
+  "$schema": "https://json-schema.org/draft/2020-12/mapping",
+  "version": "0.0.1",
+  "passTrough": false,
+  "mapping": {
+    "b": "a"
+  }
+}
