@@ -169,17 +169,15 @@ class InstallationService implements InstallerInterface
         $endpointRepository = $this->entityManager->getRepository('App:Endpoint');
         $createdEndpoints = [];
         foreach ($endpoints as $endpoint) {
-            if (!$endpointRepository->findOneBy(['name' => $endpoint['name']])) {
+            $explodedPath = explode('/', $endpoint['path']);
+            if ($explodedPath[0] == '') {
+                array_shift($explodedPath);
+            }
+            $pathRegEx = '^' . $endpoint['path'] . '$';
+            if (!$endpointRepository->findOneBy(['pathRegex' => $pathRegEx])) {
                 $createdEndpoint = new Endpoint();
                 $createdEndpoint->setName($endpoint[['name']]);
-                $explodedPath = explode('/', $endpoint['path']);
-                if ($explodedPath[0] == '') {
-                    array_shift($explodedPath);
-                }
-
-                $explodedPath[] = 'id';
                 $this->setPath($explodedPath);
-                $pathRegEx = '^' . $endpoint['path'] . '$';
                 $this->setPathRegex($pathRegEx);
 
                 $createdEndpoint->setListens($endpoint['listens']);

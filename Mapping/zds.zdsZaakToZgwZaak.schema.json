@@ -1,6 +1,6 @@
 {
   "title": "ZDSToZGWZaak",
-  "$id": "https://componentencatalogus.commonground.nl/api/components",
+  "$id": "https://opencatalogi.nl/schemas/zds.zdsZaakToZgwZaak.schema.json",
   "$schema": "https://json-schema.org/draft/2020-12/mapping",
   "version": "0.0.1",
   "passTrough": false,
@@ -17,6 +17,6 @@
     "laatsteBetaaldatum": "SOAP-ENV:Body.ns2:zakLk01.ns2:object.ns2:laatstebetaaldatum",
     "zaakniveau": "SOAP-ENV:Body.ns2:zakLk01.ns2:object.ns2:zaakniveau",
     "deelzakenIndicatie": "SOAP-ENV:Body.ns2:zakLk01.ns2:object.ns2:deelzakenIndicatie",
-
+    "eigenschappen": "{{ mappingService(https://opencatalogi.nl/schemas/zds.extraElementToZaakEigenschap.schema.json, SOAP-ENV:Body.ns2:zakLk01.ns2:object.ns2:extraElementen) }}"
   }
 }

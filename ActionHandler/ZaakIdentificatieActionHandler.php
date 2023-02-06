@@ -8,7 +8,7 @@ use CommonGateway\GeboorteVrijBRPBundle\Service\CatalogiService;
 /**
  * Haalt applications op van de componenten catalogus.
  */
-class ExampleActionHandler implements ActionHandlerInterface
+class ZaakIdentificatieActionHandler implements ActionHandlerInterface
 {
     private CatalogiService $catalogiService;
 
@@ -25,7 +25,7 @@ class ExampleActionHandler implements ActionHandlerInterface
     public function getConfiguration(): array
     {
         return [
-            '$id'        => 'https://opencatalogi.nl/oc.application.schema.json',
+            '$id'        => 'https://opencatalogi.nl/vrijbrp.createZaakIdentificatie.schema.json',
             '$schema'    => 'https://json-schema.org/draft/2020-12/schema',
             'title'      => 'ExampleActionHandler',
             'description'=> 'This is a action to create objects from the fetched applications from the componenten catalogus.',
