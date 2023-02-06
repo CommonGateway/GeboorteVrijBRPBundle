@@ -2,7 +2,7 @@
 
 // src/Service/LarpingService.php
 
-namespace CommonGateway\PetStoreBundle\Service;
+namespace CommonGateway\GeboorteVrijBRPBundle\Service;
 
 use App\Entity\Action;
 use App\Entity\CollectionEntity;
