@@ -31,9 +31,9 @@ class ZgwToVrijbrpService
     
     private array $configuration;
     private array $data;
-    private Source $source;
-    private Mapping $mapping;
-    private Entity $conditionEntity;
+    private ?Source $source;
+    private ?Mapping $mapping;
+    private ?Entity $conditionEntity;
 
     public function __construct(
         EntityManagerInterface $entityManager,
