@@ -43,7 +43,7 @@ class ZgwToVrijbrpCommand extends Command
         // Handle the command options
         $zaakId = $input->getOption('zaak', false);
         if (!$zaakId) {
-            $io->error("Please use -z {uuid of a zaak}");
+            $io->error("Please use vrijbrp:ZgwToVrijbrp -z {uuid of a zaak}");
             return Command::FAILURE;
         }
         $data = ['id' => $zaakId];

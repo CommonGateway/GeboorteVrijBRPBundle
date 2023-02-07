@@ -5,6 +5,7 @@ namespace CommonGateway\GeboorteVrijBRPBundle\Service;
 use Adbar\Dot;
 use App\Entity\Entity;
 use App\Entity\Gateway as Source;
+use App\Entity\Log;
 use App\Entity\Mapping;
 use App\Entity\ObjectEntity;
 use App\Entity\Synchronization;
@@ -169,6 +170,18 @@ class ZgwToVrijbrpService
     private function synchronizeTemp(Synchronization $synchronization, array $objectArray)
     {
         $objectString = $this->synchronizationService->getObjectString($objectArray);
+
+        // todo: remove this code, here for testing purposes
+        var_dump($objectString);
+        $log = new Log();
+        $log->setRequestContent($objectString);
+        $log->setType('out');$log->setCallId(Uuid::uuid4());$log->setRequestMethod('POST');$log->setRequestHeaders([]);
+        $log->setRequestQuery([]);$log->setRequestPathInfo('');$log->setRequestLanguages([]);$log->setSession('');
+        $log->setResponseTime(0);
+        $this->entityManager->persist($log);
+        $this->entityManager->flush();
+        // todo: END "remove, here for testing purposes"
+
         try {
             $result = $this->callService->call(
                 $this->source,
