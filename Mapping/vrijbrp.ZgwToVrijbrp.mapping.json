@@ -5,6 +5,10 @@
   "version": "0.0.1",
   "passTrough": false,
   "mapping": {
-    "identificatie": "SOAP-ENV:Body.ns2:zakLk01.ns2:object.ns2:identificatie"
+    "dossier.dossierId": "identificatie",
+    "dossier.type.code": "zaaktype.identificatie",
+    "dossier.startDate": "{{ startdatum|date('Y-m-d') }}",
+    "dossier.entryDateTime": "{{ registratiedatum|date('Y-m-d\\TH:i:s') }}",
+    "dossier.status.entryDateTime": "{{ registratiedatum|date('Y-m-d\\TH:i:s') }}"
   }
 }
