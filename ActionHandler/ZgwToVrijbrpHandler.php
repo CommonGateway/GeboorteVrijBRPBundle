@@ -51,7 +51,7 @@ class ZgwToVrijbrpHandler implements ActionHandlerInterface
                 'mapping' => [
                     'type'        => 'string',
                     'description' => 'The reference of the mapping we will use before sending the data to the source',
-                    'example'     => 'https://vrijbrp.nl/mappings/vrijbrp.ZgwToVrijbrp.mapping.json',
+                    'example'     => 'https://vrijbrp.nl/mapping/vrijbrp.ZgwToVrijbrp.mapping.json',
                     'required'    => true,
                     '$ref'        => 'https://commongroundgateway.nl/commongroundgateway.mapping.entity.json',
                 ],
