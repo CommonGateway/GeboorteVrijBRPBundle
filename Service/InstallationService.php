@@ -23,7 +23,6 @@ class InstallationService implements InstallerInterface
     private EntityManagerInterface $entityManager;
     private ContainerInterface $container;
     private SymfonyStyle $io;
-    private CatalogiService $catalogiService;
 
     public const OBJECTS_THAT_SHOULD_HAVE_CARDS = [
     ];
@@ -35,11 +34,10 @@ class InstallationService implements InstallerInterface
     public const ACTION_HANDLERS = [
     ];
 
-    public function __construct(EntityManagerInterface $entityManager, ContainerInterface $container, CatalogiService $catalogiService)
+    public function __construct(EntityManagerInterface $entityManager, ContainerInterface $container)
     {
         $this->entityManager = $entityManager;
         $this->container = $container;
-        $this->catalogiService = $catalogiService;
     }
 
     /**
@@ -143,12 +141,12 @@ class InstallationService implements InstallerInterface
             } elseif ($schema['$id'] == 'https://opencatalogi.nl/vrijbrp.zds.creerzaak.schema.json') {
                 $action->setListens(['vrijbrp.zds.inbound']);
                 $action->setConditions([
-                        ['var' => 'SOAP-ENV:Envelope.SOAP-ENV:Body.ns2:zakLk01'],
+                    ['var' => 'SOAP-ENV:Envelope.SOAP-ENV:Body.ns2:zakLk01'],
                 ]);
             } elseif ($schema['$id'] == 'https://opencatalogi.nl/vrijbrp.zds.creerdocument.schema.json') {
                 $action->setListens(['vrijbrp.zds.inbound']);
                 $action->setConditions([
-                        ['var' => 'SOAP-ENV:Envelope.SOAP-ENV:Body.ns2:edcLK01'],
+                    ['var' => 'SOAP-ENV:Envelope.SOAP-ENV:Body.ns2:edcLK01'],
                 ]);
             } else {
                 $action->setListens(['vrijbrp.default.listens']);
@@ -176,11 +174,11 @@ class InstallationService implements InstallerInterface
             $pathRegEx = '^' . $endpoint['path'] . '$';
             if (!$endpointRepository->findOneBy(['pathRegex' => $pathRegEx])) {
                 $createdEndpoint = new Endpoint();
-                $createdEndpoint->setName($endpoint[['name']]);
-                $this->setPath($explodedPath);
-                $this->setPathRegex($pathRegEx);
+                $createdEndpoint->setName($endpoint['name']);
+                $createdEndpoint->setPath($explodedPath);
+                $createdEndpoint->setPathRegex($pathRegEx);
 
-                $createdEndpoint->setListens($endpoint['listens']);
+                $createdEndpoint->setThrows($endpoint['throws']);
                 $createdEndpoints[] = $createdEndpoint;
             }
         }

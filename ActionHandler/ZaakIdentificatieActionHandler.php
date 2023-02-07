@@ -10,11 +10,9 @@ use CommonGateway\GeboorteVrijBRPBundle\Service\CatalogiService;
  */
 class ZaakIdentificatieActionHandler implements ActionHandlerInterface
 {
-    private CatalogiService $catalogiService;
 
-    public function __construct(CatalogiService $catalogiService)
+    public function __construct()
     {
-        $this->catalogiService = $catalogiService;
     }
 
     /**
@@ -58,6 +56,5 @@ class ZaakIdentificatieActionHandler implements ActionHandlerInterface
      */
     public function run(array $data, array $configuration): array
     {
-        return $this->catalogiService->syncedApplicationToGatewayHandler($data, $configuration);
     }
 }
