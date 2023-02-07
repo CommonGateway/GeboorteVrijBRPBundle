@@ -3,6 +3,7 @@
 namespace CommonGateway\GeboorteVrijBRPBundle\Command;
 
 use CommonGateway\GeboorteVrijBRPBundle\Service\ExampleService;
+use CommonGateway\GeboorteVrijBRPBundle\Service\ZdsToZgwService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -15,9 +16,9 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class ExampleCommand extends Command
 {
     protected static $defaultName = 'vrijbrp:geboorte:convert';
-    private ExampleService  $componentenCatalogusService;
+    private ZdsToZgwService  $componentenCatalogusService;
 
-    public function __construct(ExampleService $componentenCatalogusService)
+    public function __construct(ZdsToZgwService $componentenCatalogusService)
     {
         $this->componentenCatalogusService = $componentenCatalogusService;
         parent::__construct();

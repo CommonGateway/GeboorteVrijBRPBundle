@@ -32,6 +32,8 @@ class InstallationService implements InstallerInterface
     ];
 
     public const ACTION_HANDLERS = [
+        'CommonGateway\GeboorteVrijBRPBundle\ActionHandler\ZaakIdentificatieActionHandler',
+        'CommonGateway\GeboorteVrijBRPBundle\ActionHandler\ZdsZaakActionHandler',
     ];
 
     public function __construct(EntityManagerInterface $entityManager, ContainerInterface $container)

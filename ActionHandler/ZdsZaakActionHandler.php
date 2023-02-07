@@ -9,7 +9,7 @@ use CommonGateway\GeboorteVrijBRPBundle\Service\ZdsToZgwService;
 /**
  * Haalt applications op van de componenten catalogus.
  */
-class ZaakIdentificatieActionHandler implements ActionHandlerInterface
+class ZdsZaakActionHandler implements ActionHandlerInterface
 {
 
     private ZdsToZgwService $zdsToZgwService;
@@ -27,7 +27,7 @@ class ZaakIdentificatieActionHandler implements ActionHandlerInterface
     public function getConfiguration(): array
     {
         return [
-            '$id'        => 'https://vrijbrp.nl/vrijbrp.zds.creerzaakid.schema.json',
+            '$id'        => 'https://opencatalogi.nl/vrijbrp.zds.creerzaak.schema.json',
             '$schema'    => 'https://json-schema.org/draft/2020-12/schema',
             'title'      => 'ExampleActionHandler',
             'description'=> 'This is a action to create objects from the fetched applications from the componenten catalogus.',
@@ -44,6 +44,6 @@ class ZaakIdentificatieActionHandler implements ActionHandlerInterface
      */
     public function run(array $data, array $configuration): array
     {
-        return $this->zdsToZgwService->zaakIdentificatieActionHandler($data, $configuration);
+        return $this->zdsToZgwService->zaakActionHandler($data, $configuration);
     }
 }
