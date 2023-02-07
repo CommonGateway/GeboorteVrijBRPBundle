@@ -30,8 +30,14 @@ class InstallationService implements InstallerInterface
     public const ENDPOINTS = [
         ['path' => 'stuf/zds', 'throws' => ['vrijbrp.zds.inbound'], 'name' => 'zds-endpoint']
     ];
+    
+    public const SOURCES = [
+        ['name' => 'vrijbrp-dossiers', 'location' => 'https://vrijbrp.nl/dossiers', 'auth' => 'vrijbrp-jwt',
+            'username' => 'sim-!ChangeMe!', 'password' => '!secret-ChangeMe!', 'configuration' => ['verify' => false]],
+    ];
 
     public const ACTION_HANDLERS = [
+    
     ];
 
     public function __construct(EntityManagerInterface $entityManager, ContainerInterface $container)
@@ -229,20 +235,32 @@ class InstallationService implements InstallerInterface
             (isset($this->io) ? $this->io->writeln(['', 'There is alreade a cronjob for '.$cronjob->getName()]) : '');
         }
     }
-
-    public function createSources()
+    
+    /**
+     * Creates the Sources we need
+     *
+     * @param $sourcesThatShouldExist
+     * @return array
+     */
+    private function createSources($sourcesThatShouldExist): array
     {
         $sourceRepository = $this->entityManager->getRepository('App:Gateway');
-
-        // vrijbrp dossiers api
-        $vrijbrpDossiers = $sourceRepository->findOneBy(['name' => 'vrijbrp-dossiers']) ?? new Source();
-        $vrijbrpDossiers->setName('vrijbrp-dossiers');
-        $vrijbrpDossiers->setAuth('vrijbrp-jwt');
-        $vrijbrpDossiers->setLocation('https://vrijbrp.nl/dossiers');
-        $vrijbrpDossiers->setIsEnabled(true);
-        $this->entityManager->persist($vrijbrpDossiers);
-        isset($this->io) && $this->io->writeln('Gateway: '.$vrijbrpDossiers->getName().' created');
-
+        $sources = [];
+        
+        foreach($sourcesThatShouldExist as $sourceThatShouldExist) {
+            if (!$sourceRepository->findOneBy(['name' => $sourceThatShouldExist['name']])) {
+                $source = new Source($sourceThatShouldExist);
+                $source->setPassword(array_key_exists('password', $sourceThatShouldExist) ? $sourceThatShouldExist['password'] : '');
+                
+                $this->entityManager->persist($source);
+                $this->entityManager->flush();
+                $sources[] = $source;
+            }
+        }
+        
+        (isset($this->io) ? $this->io->writeln(count($sources).' Sources Created'): '');
+        
+        return $sources;
     }
 
     public function checkDataConsistency()
@@ -257,7 +275,7 @@ class InstallationService implements InstallerInterface
         $this->createCronjobs();
 
         // create sources
-        $this->createSources();
+        $this->createSources($this::SOURCES);
 
         // create actions from the given actionHandlers
         $this->addActions();
