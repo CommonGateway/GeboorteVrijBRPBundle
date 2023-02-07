@@ -1,0 +1,10 @@
+{
+  "title": "ZgwToVrijbrp",
+  "$id": "https://vrijbrp.nl/mapping/vrijbrp.ZgwToVrijbrp.mapping.json",
+  "$schema": "https://json-schema.org/draft/2020-12/mapping",
+  "version": "0.0.1",
+  "passTrough": false,
+  "mapping": {
+    "identificatie": "SOAP-ENV:Body.ns2:zakLk01.ns2:object.ns2:identificatie"
+  }
+}

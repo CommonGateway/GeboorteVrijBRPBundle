@@ -1,6 +1,6 @@
 {
   "title": "ZDSToZGWZaak",
-  "$id": "https://zds.nl/mappings/zds.zdsZaakToZgwZaak.mapping.json",
+  "$id": "https://zds.nl/mapping/zds.zdsZaakToZgwZaak.mapping.json",
   "$schema": "https://json-schema.org/draft/2020-12/mapping",
   "version": "0.0.1",
   "passTrough": false,

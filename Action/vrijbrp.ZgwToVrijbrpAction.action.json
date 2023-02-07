@@ -1,6 +1,6 @@
 {
   "title": "ZgwToVrijbrpAction",
-  "$id": "https://vrijbrp.nl/actions/vrijbrp.ZgwToVrijbrpAction.action.json",
+  "$id": "https://vrijbrp.nl/action/vrijbrp.ZgwToVrijbrpAction.action.json",
   "$schema": "https://json-schema.org/draft/2020-12/action",
   "version": "0.0.1",
   "listens": [
@@ -15,12 +15,12 @@
       "https://vng.opencatalogi.nl/schemas/zrc.zaak.schema.json"
     ]
   },
+  "class": "CommonGateway\\GeboorteVrijBRPBundle\\ActionHandler\\ZgwToVrijbrpHandler",
   "configuration": {
-    "location": "/api/births",
-    "entity": "https://vng.opencatalogi.nl/schemas/zrc.zaak.schema.json", //     todo: birth object, or just mapping?
     "source": "vrijbrp-dossiers",
+    "location": "/api/births",
     "mapping": "TODO-reference-to-mapping"
   },
-  "isLockable": true,
+  "isLockable": false,
   "isEnabled": true
 }
