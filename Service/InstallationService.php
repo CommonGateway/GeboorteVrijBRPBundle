@@ -32,9 +32,9 @@ class InstallationService implements InstallerInterface
     ];
     
     public const SOURCES = [
-        // todo: we might need: "accept: application/json" here?
         ['name' => 'vrijbrp-dossiers', 'location' => 'https://vrijbrp.nl/dossiers', 'auth' => 'vrijbrp-jwt',
-            'username' => 'sim-!ChangeMe!', 'password' => '!secret-ChangeMe!', 'configuration' => ['verify' => false]],
+            'username' => 'sim-!ChangeMe!', 'password' => '!secret-ChangeMe!', 'accept' => 'application/json',
+            'configuration' => ['verify' => false]],
     ];
 
     public const ACTION_HANDLERS = [

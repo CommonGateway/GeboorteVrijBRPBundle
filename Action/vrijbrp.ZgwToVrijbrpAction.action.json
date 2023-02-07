@@ -17,9 +17,10 @@
   },
   "class": "CommonGateway\\GeboorteVrijBRPBundle\\ActionHandler\\ZgwToVrijbrpHandler",
   "configuration": {
-    "source": "vrijbrp-dossiers",
+    "source": "https://vrijbrp.nl/dossiers",
     "location": "/api/births",
-    "mapping": "TODO-reference-to-mapping"
+    "mapping": "https://vrijbrp.nl/mapping/vrijbrp.ZgwToVrijbrp.mapping.json",
+    "conditionEntity": "https://vng.opencatalogi.nl/schemas/zrc.zaak.schema.json"
   },
   "isLockable": false,
   "isEnabled": true
