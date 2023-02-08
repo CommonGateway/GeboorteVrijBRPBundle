@@ -2,7 +2,7 @@
   "title": "ZDSToZGWZaak",
   "$id": "https://opencatalogi.nl/schemas/zds.zdsZaakToZgwZaak.schema.json",
   "$schema": "https://json-schema.org/draft/2020-12/mapping",
-  "version": "0.0.14",
+  "version": "0.0.16",
   "passTrough": false,
   "mapping": {
     "identificatie": "SOAP-ENV:Body.ns2:zakLk01.ns2:object.ns2:identificatie",
@@ -18,10 +18,12 @@
     "zaakniveau": "SOAP-ENV:Body.ns2:zakLk01.ns2:object.ns2:zaakniveau",
     "deelzakenIndicatie": "SOAP-ENV:Body.ns2:zakLk01.ns2:object.ns2:deelzakenIndicatie",
     "eigenschappen": "{%if 0 in attribute(attribute(attribute(attribute(attribute(_context, 'SOAP-ENV:Body'), 'ns2:zakLk01'), 'ns2:object'), 'ns1:extraElementen'), 'ns1:extraElement')|keys %}[{% for extraElement in attribute(attribute(attribute(attribute(attribute(_context, 'SOAP-ENV:Body'), 'ns2:zakLk01'), 'ns2:object'), 'ns1:extraElementen'), 'ns1:extraElement') %}{% if not loop.first %},{% endif %}{{ map('https://opencatalogi.nl/schemas/zds.extraElementToZaakEigenschap.schema.json',extraElement)|json_encode }}{% endfor %}]{% else %}{% set extraElement = attribute(attribute(attribute(attribute(attribute(_context, 'SOAP-ENV:Body'), 'ns2:zakLk01'), 'ns2:object'), 'ns1:extraElementen'), 'ns1:extraElement') %}[{{ map('https://opencatalogi.nl/schemas/zds.extraElementToZaakEigenschap.schema.json',extraElement)|json_encode }}]{% endif %}",
-    "zaaktype": "{{ map('https://opencatalogi.nl/schemas/zds.isVanToZgwZaaktype.schema.json', attribute(attribute(attribute(attribute(_context, 'SOAP-ENV:Body'), 'ns2:zakLk01'), 'ns2:object'), 'ns2:isVan')) | json_encode }}"
+    "zaaktype": "{{ map('https://opencatalogi.nl/schemas/zds.isVanToZgwZaaktype.schema.json', attribute(attribute(attribute(attribute(_context, 'SOAP-ENV:Body'), 'ns2:zakLk01'), 'ns2:object'), 'ns2:isVan')) | json_encode }}",
+    "rollen": "[{{ map('https://opencatalogi.nl/schemas/zds.zdsHeeftAlsInitiatorToRol.schema.json', attribute(attribute(attribute(attribute(_context, 'SOAP-ENV:Body'), 'ns2:zakLk01'), 'ns2:object'), 'ns2:heeftAlsInitiator')) | json_encode }}]"
   },
   "cast": {
     "eigenschappen": "jsonToArray",
-    "zaaktype": "jsonToArray"
+    "zaaktype": "jsonToArray",
+    "rollen": "jsonToArray"
   }
 }

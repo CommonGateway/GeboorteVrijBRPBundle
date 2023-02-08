@@ -25,6 +25,9 @@ class ZdsToZgwService
     private ?Entity $zaakEntity;
     private ?Entity $zaakTypeEntity;
     private ?Entity $eigenschapEntity;
+    private ?Entity $rolTypeEntity;
+    private ?Entity $documentEntity;
+    private ?Entity $zaakInformatieObjectEntity;
     private ?Mapping $applicationMapping;
     private ?Entity $componentEntity;
     private ?Mapping $componentMapping;
@@ -116,6 +119,36 @@ class ZdsToZgwService
         }
 
         return $this->eigenschapEntity;
+    }    /**
+     * Get the eigenschap entity.
+     *
+     * @return ?Entity
+     */
+    public function getRolTypeEntity(): ?Entity
+    {
+        if (!$this->rolTypeEntity = $this->entityManager->getRepository('App:Entity')->findOneBy(['reference'=>'https://vng.opencatalogi.nl/schemas/ztc.rolType.schema.json'])) {
+            isset($this->io) && $this->io->error('No entity found for https://vng.opencatalogi.nl/schemas/ztc.rolType.schema.json');
+        }
+
+        return $this->rolTypeEntity;
+    }
+
+    public function getDocumentEntity(): ?Entity
+    {
+        if (!$this->documentEntity = $this->entityManager->getRepository('App:Entity')->findOneBy(['reference'=>'https://vng.opencatalogi.nl/schemas/drc.enkelvoudigInformatieObject.schema.json'])) {
+            isset($this->io) && $this->io->error('No entity found for https://vng.opencatalogi.nl/schemas/drc.enkelvoudigInformatieObject.schema.json');
+        }
+
+        return $this->documentEntity;
+    }
+
+    public function getZaakInformatieObjectEntity(): ?Entity
+    {
+        if (!$this->zaakInformatieObjectEntity = $this->entityManager->getRepository('App:Entity')->findOneBy(['reference'=>'https://vng.opencatalogi.nl/schemas/zrc.zaakInformatieObject.schema.json'])) {
+            isset($this->io) && $this->io->error('No entity found for https://vng.opencatalogi.nl/schemas/zrc.zaakInformatieObject.schema.json');
+        }
+
+        return $this->zaakInformatieObjectEntity;
     }
 
     public function getMapping(string $reference): Mapping
@@ -144,6 +177,27 @@ class ZdsToZgwService
         return $zaak->toArray();
     }
 
+    public function documentIdentificatieActionHandler (array $data, array $config): array
+    {
+        $this->getDocumentEntity();
+
+        $mapping = $this->getMapping('https://opencatalogi.nl/schemas/zds.zdsDocumentIdToZgwDocument.schema.json');
+
+        $documentArray = $this->mappingService->mapping($mapping, $data);
+        $documents = $this->cacheService->searchObjects(null, ['identificatie' => $documentArray['identificatie']], [$this->documentEntity->getId()->toString()])['results'];
+        if (!$documents) {
+            $document = new ObjectEntity($this->documentEntity);
+            $document->hydrate($documentArray);
+        } else {
+            $document = $documents[0];
+        }
+
+        $this->entityManager->persist($document);
+        $this->entityManager->flush();
+
+        return $document->toArray();
+    }
+
     public function connectEigenschappen(array $zaakArray, ObjectEntity $zaakType): array
     {
         $this->getEigenschapEntity();
@@ -151,7 +205,7 @@ class ZdsToZgwService
         foreach($zaakArray['eigenschappen'] as $key => $eigenschap) {
             if($eigenschappen = $this->cacheService->searchObjects(null, ['naam' => $eigenschap['eigenschap']['naam'], 'zaaktype' => $zaakType->getSelf()], [$this->eigenschapEntity->getId()->toString()])['results']) {
                 $zaakArray['eigenschappen'][$key]['eigenschap'] = $eigenschappen[0]['_self']['id'];
-                $eigenschap = $this->entityManager->find('App:ObjectEntity', $eigenschappen[0]['_self']['id']);
+                $eigenschapObject = $this->entityManager->find('App:ObjectEntity', $eigenschappen[0]['_self']['id']);
             } else {
                 $eigenschapObject = new ObjectEntity($this->eigenschapEntity);
                 $eigenschap['eigenschap']['zaaktype'] = $zaakType->getSelf();
@@ -159,18 +213,39 @@ class ZdsToZgwService
 
                 $this->entityManager->persist($eigenschapObject);
                 $this->entityManager->flush();
-                var_dump($eigenschapObject->getId()->toString());
                 $eigenschappenAsObjects[] = $zaakArray['eigenschappen'][$key]['eigenschap'] = $eigenschapObject->getId()->toString();
             }
         }
-        var_dump($eigenschappenAsObjects);
-        $zaakType->setValue('eigenschappen', $eigenschappenAsObjects);
+        $zaakType->hydrate(['eigenschappen' => $eigenschappenAsObjects]);
 
-        var_dump($zaakType->getValue('eigenschappen'));
 
 
         $this->entityManager->persist($zaakType);
         $this->entityManager->flush();
+        return $zaakArray;
+    }
+
+    public function connectRolTypes(array $zaakArray, ObjectEntity $zaakType): array
+    {
+        $this->getRolTypeEntity();
+        $rolTypeObjects = $zaakType->getValue('roltypen');
+        foreach($zaakArray['rollen'] as $key => $role) {
+            if($rollen = $this->cacheService->searchObjects(null, ['omschrijvingGeneriek' => $role['roltype']['omschrijvingGeneriek'], 'zaaktype' => $zaakType->getSelf()], [$this->rolTypeEntity->getId()->toString()])['results']) {
+                $zaakArray['rollen'][$key]['roltype'] = $rollen[0]['_self']['id'];
+                $rolType = $this->entityManager->find('App:ObjectEntity', $rollen[0]['_self']['id']);
+            } else {
+                $rolType = new ObjectEntity($this->rolTypeEntity);
+                $role['roltype']['zaaktype'] = $zaakType->getSelf();
+                $rolType->hydrate($role['roltype']);
+
+                $this->entityManager->persist($rolType);
+                $this->entityManager->flush();
+
+                $rolTypeObjects[] = $zaakArray['rollen'][$key]['roltype'] = $rolType->getId()->toString();
+            }
+
+        }
+        $zaakType->hydrate(['roltypen' => $rolTypeObjects]);
         return $zaakArray;
     }
 
@@ -193,6 +268,7 @@ class ZdsToZgwService
         }
 
         $zaakArray = $this->connectEigenschappen($zaakArray, $zaaktype);
+        $zaakArray = $this->connectRolTypes($zaakArray, $zaaktype);
 
         return $zaakArray;
     }
@@ -206,7 +282,6 @@ class ZdsToZgwService
 
         $zaakArray = $this->convertZaakType($zaakArray);
 
-        var_dump($zaakArray);
         $zaken = $this->cacheService->searchObjects(null, ['identificatie' => $zaakArray['identificatie']], [$this->zaakEntity->getId()->toString()])['results'];
         if (count($zaken) == 1) {
             $zaak = $this->entityManager->find('App:ObjectEntity', $zaken[0]['_self']['id']);
@@ -218,6 +293,39 @@ class ZdsToZgwService
             var_dump('more than one case with identifier '.$zaakArray['identificatie']);
         } else {
             var_dump('no case found with identifier '.$zaakArray['identificatie']);
+        }
+
+        return $data;
+    }
+
+    public function documentActionHandler(array $data, array $config): array
+    {
+        $this->getZaakInformatieObjectEntity();
+        $this->getDocumentEntity();
+        $this->getZaakEntity();
+        $mapping = $this->getMapping('https://opencatalogi.nl/schemas/zds.zdsDocumentToZgwDocument.schema.json');
+
+        $zaakInformatieObjectArray = $this->mappingService->mapping($mapping, $data);
+
+        $documenten = $this->cacheService->searchObjects(null, ['identificatie' => $zaakInformatieObjectArray['informatieobject']['identificatie']], [$this->documentEntity->getId()->toString()])['results'];
+        $zaken = $this->cacheService->searchObjects(null, ['identificatie' => $zaakInformatieObjectArray['zaak']], [$this->zaakEntity->getId()->toString()])['results'];
+        if (count($documenten) == 1 && count($zaken) == 1) {
+            $informatieobject = $this->entityManager->find('App:ObjectEntity', $documenten[0]['_self']['id']);
+            $informatieobject->hydrate($zaakInformatieObjectArray['informatieobject']);
+            $this->entityManager->persist($informatieobject);
+            $this->entityManager->flush();
+
+            $zaakInformatieObject = new ObjectEntity($this->zaakInformatieObjectEntity);
+            $zaakInformatieObject->hydrate(['zaak' => $zaken[0]['_self']['id'], 'informatieobject' => $informatieobject->getId()->toString()]);
+
+            $this->entityManager->persist($zaakInformatieObject);
+            $this->entityManager->flush();
+
+            return $zaakInformatieObject->toArray();
+        } elseif (count($documenten) > 1) {
+            var_dump('more than one case with identifier '.$zaakInformatieObjectArray['informatieobject']['identificatie']);
+        } else {
+            var_dump('no case found with identifier '.$zaakInformatieObjectArray['informatieobject']['identificatie']);
         }
 
         return $data;

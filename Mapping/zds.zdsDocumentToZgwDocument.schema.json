@@ -1,0 +1,20 @@
+{
+  "title": "ZDSToZGWDocument",
+  "$id": "https://opencatalogi.nl/schemas/zds.zdsDocumentToZgwDocument.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/mapping",
+  "version": "0.0.1",
+  "passTrough": false,
+  "mapping": {
+    "informatieobject.identificatie": "SOAP-ENV:Body.ns2:edcLk01.ns2:object.ns2:identificatie",
+    "informatieobject.informatieobjecttype.omschrijving": "SOAP-ENV:Body.ns2:edcLk01.ns2:object.ns2:dct&#46;omschrijving",
+    "informatieobject.creatiedatum": "SOAP-ENV:Body.ns2:edcLk01.ns2:object.ns2:creatiedatum",
+    "informatieobject.titel": "SOAP-ENV:Body.ns2:edcLk01.ns2:object.ns2:titel",
+    "informatieobject.auteur": "SOAP-ENV:Body.ns2:edcLk01.ns2:object.ns2:auteur",
+    "informatieobject.status": "SOAP-ENV:Body.ns2:edcLk01.ns2:object.ns2:status",
+    "informatieobject.formaat": "SOAP-ENV:Body.ns2:edcLk01.ns2:object.ns2:formaat",
+    "informatieobject.taal": "SOAP-ENV:Body.ns2:edcLk01.ns2:object.ns2:taal",
+    "informatieobject.bestandsnaam": "SOAP-ENV:Body.ns2:edcLk01.ns2:object.ns2:inhoud.@ns1:bestandsnaam",
+    "informatieobject.inhoud": "SOAP-ENV:Body.ns2:edcLk01.ns2:object.ns2:inhoud.#",
+    "zaak": "SOAP-ENV:Body.ns2:edcLk01.ns2:object.ns2:isRelevantVoor.ns2:gerelateerde.ns2:identificatie"
+  }
+}
