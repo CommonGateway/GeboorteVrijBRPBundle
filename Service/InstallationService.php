@@ -28,7 +28,7 @@ class InstallationService implements InstallerInterface
     ];
 
     public const ENDPOINTS = [
-        ['path' => 'stuf/zds', 'throws' => ['vrijbrp.zds.inbound'], 'name' => 'zds-endpoint']
+        ['path' => 'stuf/zds', 'throws' => ['vrijbrp.zds.inbound'], 'name' => 'zds-endpoint', 'methods' => []]
     ];
 
     public const ACTION_HANDLERS = [
@@ -135,22 +135,22 @@ class InstallationService implements InstallerInterface
             if ($schema['$id'] == 'https://vrijbrp.nl/vrijbrp.zds.creerzaakid.schema.json') {
                 $action->setListens(['vrijbrp.zds.inbound']);
                 $action->setConditions([
-                    ['var' => 'SOAP-ENV:Envelope.SOAP-ENV:Body.ns2:genereerZaakIdentificatie_Di02'],
+                    'var' => 'body.SOAP-ENV:Body.ns2:genereerZaakIdentificatie_Di02',
                 ]);
             } elseif ($schema['$id'] == 'https://vrijbrp.nl/vrijbrp.zds.creerdocumentid.schema.json') {
                 $action->setListens(['vrijbrp.zds.inbound']);
                 $action->setConditions([
-                    ['var' => 'SOAP-ENV:Envelope.SOAP-ENV:Body.ns2:genereerDocumentIdentificatie_Di02'],
+                    'var' => 'body.SOAP-ENV:Body.ns2:genereerDocumentIdentificatie_Di02',
                 ]);
             } elseif ($schema['$id'] == 'https://opencatalogi.nl/vrijbrp.zds.creerzaak.schema.json') {
                 $action->setListens(['vrijbrp.zds.inbound']);
                 $action->setConditions([
-                    ['var' => 'SOAP-ENV:Envelope.SOAP-ENV:Body.ns2:zakLk01'],
+                    'var' => 'body.SOAP-ENV:Body.ns2:zakLk01',
                 ]);
             } elseif ($schema['$id'] == 'https://opencatalogi.nl/vrijbrp.zds.creerdocument.schema.json') {
                 $action->setListens(['vrijbrp.zds.inbound']);
                 $action->setConditions([
-                    ['var' => 'SOAP-ENV:Envelope.SOAP-ENV:Body.ns2:edcLK01'],
+                    'var' => 'body.SOAP-ENV:Body.ns2:edcLk01',
                 ]);
             } else {
                 $action->setListens(['vrijbrp.default.listens']);
@@ -181,9 +181,13 @@ class InstallationService implements InstallerInterface
                 $createdEndpoint->setName($endpoint['name']);
                 $createdEndpoint->setPath($explodedPath);
                 $createdEndpoint->setPathRegex($pathRegEx);
-
+                $createdEndpoint->setMethods(['GET', 'POST', 'PUT', 'PATCH', 'DELETE']);
                 $createdEndpoint->setThrows($endpoint['throws']);
+                $createdEndpoint->getDefaultContentType('text/xml');
                 $createdEndpoints[] = $createdEndpoint;
+
+                $this->entityManager->persist($createdEndpoint);
+                $this->entityManager->flush();
             }
         }
         (isset($this->io) ? $this->io->writeln(count($createdEndpoints).' Endpoints Created') : '');
