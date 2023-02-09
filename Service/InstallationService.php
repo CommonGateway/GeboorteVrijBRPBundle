@@ -164,7 +164,7 @@ class InstallationService implements InstallerInterface
         foreach ($actionHandlers as $handler) {
             $actionHandler = $this->container->get($handler);
 
-            if ($this->entityManager->getRepository('App:Action')->findOneBy(['class' => get_class($actionHandler)]) === true) {
+            if ($this->entityManager->getRepository('App:Action')->findOneBy(['class' => get_class($actionHandler)]) instanceof Action === true) {
                 if (isset($this->symfonyStyle) === true) {
                     $this->symfonyStyle->writeln(['Action found for '.$handler]);
                 }
