@@ -38,7 +38,7 @@ class ZgwToVrijbrpService
      * @var SynchronizationService
      */
     private SynchronizationService $syncService;
-    
+
     /**
      * @var MappingService
      */
@@ -77,16 +77,16 @@ class ZgwToVrijbrpService
     /**
      * Construct a ZgwToVrijbrpService.
      *
-     * @param EntityManagerInterface $entityManager EntityManagerInterface.
-     * @param CallService $callService CallService.
-     * @param SynchronizationService $syncService SynchronizationService.
-     * @param MappingService $mappingService MappingService.
+     * @param EntityManagerInterface $entityManager  EntityManagerInterface.
+     * @param CallService            $callService    CallService.
+     * @param SynchronizationService $syncService    SynchronizationService.
+     * @param MappingService         $mappingService MappingService.
      */
     public function __construct(
         EntityManagerInterface $entityManager,
-        CallService            $callService,
+        CallService $callService,
         SynchronizationService $syncService,
-        MappingService         $mappingService
+        MappingService $mappingService
     ) {
         $this->entityManager = $entityManager;
         $this->callService = $callService;
@@ -210,7 +210,7 @@ class ZgwToVrijbrpService
 
         // Todo: change synchronize function so it can also push to a source and not only pull from a source:
         // $this->syncService->synchronize($synchronization, $objectArray);
-    
+
         // Todo: temp way of doing this without updated synchronize() function...
         if ($this->synchronizeTemp($synchronization, $objectArray) === []) {
             return [];
@@ -261,9 +261,10 @@ class ZgwToVrijbrpService
                     //'headers' => [],
                 ]
             );
-        } catch (Exception | GuzzleException $exception) {
+        } catch (Exception|GuzzleException $exception) {
             $this->syncService->ioCatchException(
-                $exception, [
+                $exception,
+                [
                     'line',
                     'file',
                     'message' => [
@@ -274,7 +275,7 @@ class ZgwToVrijbrpService
 
             return [];
         }//end try
-    
+
         $body = $this->callService->decodeResponse($this->source, $result);
 
         $bodyDot = new Dot($body);

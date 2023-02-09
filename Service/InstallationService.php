@@ -324,14 +324,14 @@ class InstallationService implements InstallerInterface
     {
         $sourceRepository = $this->entityManager->getRepository('App:Gateway');
         $sources = [];
-        
-        foreach($createSources as $createSource) {
+
+        foreach ($createSources as $createSource) {
             if ($sourceRepository->findOneBy(['name' => $createSource['name']]) === false) {
                 $source = new Source($createSource);
                 if (array_key_exists('password', $createSource) === true) {
                     $source->setPassword($createSource['password']);
                 }
-                
+
                 $this->entityManager->persist($source);
                 $this->entityManager->flush();
                 $sources[] = $source;
