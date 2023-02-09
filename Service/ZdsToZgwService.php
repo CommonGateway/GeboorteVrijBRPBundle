@@ -130,7 +130,7 @@ class ZdsToZgwService
         $this->configuration = $config;
 
         $zaakEntity = $this->getEntity('https://vng.opencatalogi.nl/schemas/zrc.zaak.schema.json');
-        $mapping = $this->getMapping('https://opencatalogi.nl/schemas/zds.zdsZaakIdToZgwZaak.schema.json');
+        $mapping = $this->getMapping('https://zds.nl/schemas/zds.zdsZaakIdToZgwZaak.schema.json');
 
         $zaakArray = $this->mappingService->mapping($mapping, $data['body']);
         $zaken = $this->cacheService->searchObjects(null, ['identificatie' => $zaakArray['identificatie']], [$zaakEntity->getId()->toString()])['results'];
@@ -141,7 +141,7 @@ class ZdsToZgwService
             $this->entityManager->persist($zaak);
             $this->entityManager->flush();
 
-            $mappingOut = $this->getMapping('https://opencatalogi.nl/schemas/zds.zgwZaakToDu02.schema.json');
+            $mappingOut = $this->getMapping('https://zds.nl/schemas/zds.zgwZaakToDu02.schema.json');
             $data['response'] = $this->createResponse($this->mappingService->mapping($mappingOut, $zaak->toArray()), 200);
         } else {
             $data['response'] = $this->createResponse(['Error' => 'The case with id '.$zaakArray['identificatie'].' already exists'], 400);
@@ -164,7 +164,7 @@ class ZdsToZgwService
 
         $documentEntity = $this->getEntity('https://vng.opencatalogi.nl/schemas/drc.enkelvoudigInformatieObject.schema.json');
 
-        $mapping = $this->getMapping('https://opencatalogi.nl/schemas/zds.zdsDocumentIdToZgwDocument.schema.json');
+        $mapping = $this->getMapping('https://zds.nl/schemas/zds.zdsDocumentIdToZgwDocument.schema.json');
 
         $documentArray = $this->mappingService->mapping($mapping, $data['body']);
         $documents = $this->cacheService->searchObjects(null, ['identificatie' => $documentArray['identificatie']], [$documentEntity->getId()->toString()])['results'];
@@ -175,7 +175,7 @@ class ZdsToZgwService
             $this->entityManager->persist($document);
             $this->entityManager->flush();
 
-            $mappingOut = $this->getMapping('https://opencatalogi.nl/schemas/zds.zgwDocumentToDu02.schema.json');
+            $mappingOut = $this->getMapping('https://zds.nl/schemas/zds.zgwDocumentToDu02.schema.json');
             $data['response'] = $this->createResponse($this->mappingService->mapping($mappingOut, $document->toArray()), 200);
         } else {
             $data['response'] = $this->createResponse(['Error' => 'The document with id '.$documentArray['identificatie'].' already exists'], 400);
@@ -298,7 +298,7 @@ class ZdsToZgwService
 
         $zaakEntity = $this->getEntity('https://vng.opencatalogi.nl/schemas/zrc.zaak.schema.json');
 
-        $mapping = $this->getMapping('https://opencatalogi.nl/schemas/zds.zdsZaakToZgwZaak.schema.json');
+        $mapping = $this->getMapping('https://zds.nl/schemas/zds.zdsZaakToZgwZaak.schema.json');
 
         $zaakArray = $this->mappingService->mapping($mapping, $data['body']);
 
@@ -312,7 +312,7 @@ class ZdsToZgwService
             $this->entityManager->persist($zaak);
             $this->entityManager->flush();
 
-            if ($mappingOut = $this->getMapping('https://opencatalogi.nl/schemas/zds.zgwZaakToBv03.schema.json')) {
+            if ($mappingOut = $this->getMapping('https://zds.nl/schemas/zds.zgwZaakToBv03.schema.json')) {
                 $data['response'] = $this->createResponse($this->mappingService->mapping($mappingOut, $zaak->toArray()), 200);
             }
         } elseif (count($zaken) > 1) {
@@ -340,7 +340,7 @@ class ZdsToZgwService
         $zaakDocumentEntity = $this->getEntity('https://vng.opencatalogi.nl/schemas/zrc.zaakInformatieObject.schema.json');
         $documentEntity = $this->getEntity('https://vng.opencatalogi.nl/schemas/drc.enkelvoudigInformatieObject.schema.json');
 
-        $mapping = $this->getMapping('https://opencatalogi.nl/schemas/zds.zdsDocumentToZgwDocument.schema.json');
+        $mapping = $this->getMapping('https://zds.nl/schemas/zds.zdsDocumentToZgwDocument.schema.json');
 
         $zaakDocumentArray = $this->mappingService->mapping($mapping, $data['body']);
 
@@ -358,7 +358,7 @@ class ZdsToZgwService
             $this->entityManager->persist($zaakInformatieObject);
             $this->entityManager->flush();
 
-            $mappingOut = $this->getMapping('https://opencatalogi.nl/schemas/zds.zgwDocumentToBv03.schema.json');
+            $mappingOut = $this->getMapping('https://zds.nl/schemas/zds.zgwDocumentToBv03.schema.json');
             $data['response'] = $this->createResponse($this->mappingService->mapping($mappingOut, $zaakInformatieObject->toArray()), 200);
         } elseif (count($documenten) > 1) {
             $data['response'] = $this->createResponse(['Error' => 'More than one document exists with id '.$zaakDocumentArray['informatieobject']['identificatie']]);

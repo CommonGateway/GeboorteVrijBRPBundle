@@ -37,7 +37,7 @@ class InstallationService implements InstallerInterface
     public const OBJECTS_WITH_CARDS = [];
 
     public const ENDPOINTS = [
-        ['path' => 'stuf/zds', 'throws' => ['vrijbrp.zds.inbound'], 'name' => 'zds-endpoint', 'methods' => []],
+        ['path' => 'stuf/zds', 'throws' => ['zds.inbound'], 'name' => 'zds-endpoint', 'methods' => []],
     ];
 
     public const SOURCES = [
@@ -179,23 +179,23 @@ class InstallationService implements InstallerInterface
             $defaultConfig = $this->addActionConfiguration($actionHandler);
             $action = new Action($actionHandler);
 
-            if ($schema['$id'] === 'https://vrijbrp.nl/vrijbrp.zds.creerzaakid.schema.json') {
-                $action->setListens(['vrijbrp.zds.inbound']);
+            if ($schema['$id'] === 'https://zds.nl/zds.creerzaakid.schema.json') {
+                $action->setListens(['zds.inbound']);
                 $action->setConditions([
                     'var' => 'body.SOAP-ENV:Body.ns2:genereerZaakIdentificatie_Di02',
                 ]);
-            } elseif ($schema['$id'] == 'https://vrijbrp.nl/vrijbrp.zds.creerdocumentid.schema.json') {
-                $action->setListens(['vrijbrp.zds.inbound']);
+            } elseif ($schema['$id'] == 'https://zds.nl/zds.creerdocumentid.schema.json') {
+                $action->setListens(['zds.inbound']);
                 $action->setConditions([
                     'var' => 'body.SOAP-ENV:Body.ns2:genereerDocumentIdentificatie_Di02',
                 ]);
-            } elseif ($schema['$id'] === 'https://opencatalogi.nl/vrijbrp.zds.creerzaak.schema.json') {
-                $action->setListens(['vrijbrp.zds.inbound']);
+            } elseif ($schema['$id'] === 'https://zds.nl/zds.creerzaak.schema.json') {
+                $action->setListens(['zds.inbound']);
                 $action->setConditions([
                     'var' => 'body.SOAP-ENV:Body.ns2:zakLk01',
                 ]);
-            } elseif ($schema['$id'] === 'https://opencatalogi.nl/vrijbrp.zds.creerdocument.schema.json') {
-                $action->setListens(['vrijbrp.zds.inbound']);
+            } elseif ($schema['$id'] === 'https://zds.nl/zds.creerdocument.schema.json') {
+                $action->setListens(['zds.inbound']);
                 $action->setConditions([
                     'var' => 'body.SOAP-ENV:Body.ns2:edcLk01',
                 ]);

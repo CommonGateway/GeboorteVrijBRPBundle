@@ -1,6 +1,6 @@
 {
   "title": "ZDSToZGWZaakType",
-  "$id": "https://opencatalogi.nl/schemas/zds.isVanToZgwZaaktype.schema.json",
+  "$id": "https://zds.nl/schemas/zds.isVanToZgwZaaktype.schema.json",
   "$schema": "https://json-schema.org/draft/2020-12/mapping",
   "version": "0.0.8",
   "passTrough": false,

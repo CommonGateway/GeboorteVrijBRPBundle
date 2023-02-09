@@ -1,6 +1,6 @@
 {
   "title": "ZDSToZGWZaak",
-  "$id": "https://opencatalogi.nl/schemas/zds.extraElementToEigenschap.schema.json",
+  "$id": "https://zds.nl/schemas/zds.extraElementToEigenschap.schema.json",
   "$schema": "https://json-schema.org/draft/2020-12/mapping",
   "version": "0.0.2",
   "passTrough": false,

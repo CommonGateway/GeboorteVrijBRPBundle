@@ -7,7 +7,7 @@
   "mapping": {
     "waarde": "#",
     "naam": "@naam",
-    "eigenschap": "{% set data = _context %}{{ map('https://opencatalogi.nl/schemas/zds.extraElementToEigenschap.schema.json', data)|json_encode }}"
+    "eigenschap": "{% set data = _context %}{{ map('https://zds.nl/schemas/zds.extraElementToEigenschap.schema.json', data)|json_encode }}"
   },
   "cast": {
     "eigenschap": "jsonToArray"

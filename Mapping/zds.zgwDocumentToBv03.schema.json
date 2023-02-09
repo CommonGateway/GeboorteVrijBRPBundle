@@ -1,6 +1,6 @@
 {
   "title": "ZGWZaakToDu02",
-  "$id": "https://opencatalogi.nl/schemas/zds.zgwDocumentToBv03.schema.json",
+  "$id": "https://zds.nl/schemas/zds.zgwDocumentToBv03.schema.json",
   "$schema": "https://json-schema.org/draft/2020-12/mapping",
   "version": "0.0.2",
   "passTrough": false,
