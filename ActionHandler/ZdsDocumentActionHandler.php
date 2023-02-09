@@ -33,7 +33,7 @@ class ZdsDocumentActionHandler implements ActionHandlerInterface
         return [
             '$id'         => 'https://zds.nl/zds.creerdocument.handler.json',
             '$schema'     => 'https://json-schema.org/draft/2020-12/schema',
-            'title'       => 'ExampleActionHandler',
+            'title'       => 'ZdsDocumentActionHandler',
             'description' => 'This is a action to create objects from the fetched applications from the componenten catalogus.',
         ];
     }//end getConfiguration()
