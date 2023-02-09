@@ -37,8 +37,8 @@ class ZgwToVrijbrpService
     /**
      * @var SynchronizationService
      */
-    private SynchronizationService $synchronizationService;
-
+    private SynchronizationService $syncService;
+    
     /**
      * @var MappingService
      */
@@ -77,20 +77,20 @@ class ZgwToVrijbrpService
     /**
      * Construct a ZgwToVrijbrpService.
      *
-     * @param EntityManagerInterface $entityManager          EntityManagerInterface.
-     * @param CallService            $callService            CallService.
-     * @param SynchronizationService $synchronizationService SynchronizationService.
-     * @param MappingService         $mappingService         MappingService.
+     * @param EntityManagerInterface $entityManager EntityManagerInterface.
+     * @param CallService $callService CallService.
+     * @param SynchronizationService $syncService SynchronizationService.
+     * @param MappingService $mappingService MappingService.
      */
     public function __construct(
         EntityManagerInterface $entityManager,
-        CallService $callService,
-        SynchronizationService $synchronizationService,
-        MappingService $mappingService
+        CallService            $callService,
+        SynchronizationService $syncService,
+        MappingService         $mappingService
     ) {
         $this->entityManager = $entityManager;
         $this->callService = $callService;
-        $this->synchronizationService = $synchronizationService;
+        $this->syncService = $syncService;
         $this->mappingService = $mappingService;
     }//end __construct()
 
@@ -105,7 +105,7 @@ class ZgwToVrijbrpService
     public function setStyle(SymfonyStyle $symfonyStyle): self
     {
         $this->symfonyStyle = $symfonyStyle;
-        $this->synchronizationService->setStyle($symfonyStyle);
+        $this->syncService->setStyle($symfonyStyle);
         $this->mappingService->setStyle($symfonyStyle);
 
         return $this;
@@ -120,7 +120,7 @@ class ZgwToVrijbrpService
     {
         // Todo: Add FromSchema function to Gateway Gateway.php, so that we can use .json files for sources as well.
         // Todo: ...For this to work, we also need to change CoreBundle installationService.
-        // Todo: ...If we do this we can also add and use reference for Gateways / Sources
+        // Todo: ...If we do this we can also add and use reference for Gateways / Sources.
         $this->source = $this->entityManager->getRepository('App:Gateway')->findOneBy(['location' => $this->configuration['source']]);
         if ($this->source instanceof Source === false) {
             if (isset($this->symfonyStyle) === true) {
@@ -200,7 +200,7 @@ class ZgwToVrijbrpService
         $objectArray = $this->mappingService->mapping($this->mapping, $object->toArray());
 
         // Create synchronization.
-        $synchronization = $this->synchronizationService->findSyncByObject($object, $this->source, $this->conditionEntity);
+        $synchronization = $this->syncService->findSyncByObject($object, $this->source, $this->conditionEntity);
         $synchronization->setMapping($this->mapping);
 
         // Send request to source.
@@ -209,8 +209,8 @@ class ZgwToVrijbrpService
         }
 
         // Todo: change synchronize function so it can also push to a source and not only pull from a source:
-        // $this->synchronizationService->synchronize($synchronization, $objectArray);
-
+        // $this->syncService->synchronize($synchronization, $objectArray);
+    
         // Todo: temp way of doing this without updated synchronize() function...
         if ($this->synchronizeTemp($synchronization, $objectArray) === []) {
             return [];
@@ -220,7 +220,7 @@ class ZgwToVrijbrpService
     }//end zgwToVrijbrpHandler()
 
     /**
-     * Temporary function as replacement of the $this->synchronizationService->synchronize() function.
+     * Temporary function as replacement of the $this->syncService->synchronize() function.
      * Because currently synchronize function can only pull from a source and not push to a source.
      * // Todo: temp way of doing this without updated synchronize() function...
      *
@@ -231,9 +231,9 @@ class ZgwToVrijbrpService
      */
     private function synchronizeTemp(Synchronization $synchronization, array $objectArray): array
     {
-        $objectString = $this->synchronizationService->getObjectString($objectArray);
+        $objectString = $this->syncService->getObjectString($objectArray);
 
-        // Todo: remove this code, here for testing purposes
+        // Todo: remove this code, here for testing purposes.
         var_dump($objectString);
         $log = new Log();
         $log->setRequestContent($objectString);
@@ -248,7 +248,7 @@ class ZgwToVrijbrpService
         $log->setResponseTime(0);
         $this->entityManager->persist($log);
         $this->entityManager->flush();
-        // Todo: END "remove, here for testing purposes"
+        // Todo: END "remove, here for testing purposes".
 
         try {
             $result = $this->callService->call(
@@ -261,10 +261,9 @@ class ZgwToVrijbrpService
                     //'headers' => [],
                 ]
             );
-        } catch (Exception|GuzzleException $exception) {
-            $this->synchronizationService->ioCatchException(
-                $exception,
-                [
+        } catch (Exception | GuzzleException $exception) {
+            $this->syncService->ioCatchException(
+                $exception, [
                     'line',
                     'file',
                     'message' => [
@@ -274,8 +273,8 @@ class ZgwToVrijbrpService
             );
 
             return [];
-        }
-
+        }//end try
+    
         $body = $this->callService->decodeResponse($this->source, $result);
 
         $bodyDot = new Dot($body);

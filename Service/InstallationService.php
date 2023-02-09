@@ -246,7 +246,7 @@ class InstallationService implements InstallerInterface
         }
 
         return $createdEndpoints;
-    }// createEndpoints()
+    }//end createEndpoints()
 
     /**
      * Creates dashboard cards for the given objects.
@@ -324,12 +324,14 @@ class InstallationService implements InstallerInterface
     {
         $sourceRepository = $this->entityManager->getRepository('App:Gateway');
         $sources = [];
-
-        foreach ($createSources as $sourceThatShouldExist) {
-            if ($sourceRepository->findOneBy(['name' => $sourceThatShouldExist['name']]) === false) {
-                $source = new Source($sourceThatShouldExist);
-                $source->setPassword(array_key_exists('password', $sourceThatShouldExist) === true ? $sourceThatShouldExist['password'] : '');
-
+        
+        foreach($createSources as $createSource) {
+            if ($sourceRepository->findOneBy(['name' => $createSource['name']]) === false) {
+                $source = new Source($createSource);
+                if (array_key_exists('password', $createSource) === true) {
+                    $source->setPassword($createSource['password']);
+                }
+                
                 $this->entityManager->persist($source);
                 $this->entityManager->flush();
                 $sources[] = $source;
@@ -366,7 +368,7 @@ class InstallationService implements InstallerInterface
         $this->addActions();
 
         /*@todo register this catalogi to the federation*/
-        // This requers a post to a pre set webhook.
+        // Todo: This requires a post to a preset webhook.
 
         $this->entityManager->flush();
     }//end checkDataConsistency()
