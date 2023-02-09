@@ -172,41 +172,42 @@ class ZgwToVrijbrpService
     }//end setConditionEntity()
 
     /**
-     * Maps zgw eigenschappen to vrijbrp mapping
+     * Maps zgw eigenschappen to vrijbrp mapping.
      *
      * @param array $zgw    The ZGW case
      * @param array $output The output data
      *
-     * @return array
      * @throws \Exception
+     *
+     * @return array
      */
     private function getSpecificProperties(array $zgw, array $output): array
     {
         $properties = $this->getEigenschapValues($zgw['eigenschappen']);
         $output['qualificationForDeclaringType'] = $properties['relatie'] ?? null;
 
-        if(isset($properties['sub.telefoonnummer'])) {
+        if (isset($properties['sub.telefoonnummer'])) {
             $output['declarant']['contactInformation']['telephoneNumber'] = $properties['sub.telefoonnummer'];
         }
-        if(isset($properties['sub.emailadres'])) {
+        if (isset($properties['sub.emailadres'])) {
             $output['declarant']['contactInformation']['email'] = $properties['sub.emailadres'];
         }
 
-        if(isset($properties['inp.bsn'])) {
+        if (isset($properties['inp.bsn'])) {
             $output['mother']['bsn'] = $properties['inp.bsn'];
             $output['fatherDuoMother']['bsn'] = $output['declarant']['bsn'];
         } else {
             $output['mother']['bsn'] = $output['declarant']['bsn'];
-            !isset($output['declarant']['contactInformation']) ?: $output['mother']['contactInformation']  = $output['declarant']['contactInformation'];
+            !isset($output['declarant']['contactInformation']) ?: $output['mother']['contactInformation'] = $output['declarant']['contactInformation'];
         }
 
-        foreach($properties['children'] as $key => $child) {
+        foreach ($properties['children'] as $key => $child) {
             $output['children'][$key]['firstname'] = $child['voornamen'];
             $output['children'][$key]['gender'] = $child['geslachtsaanduiding'];
             $birthDate = new \DateTime($child['geboortedatum']);
             $birthTime = new \DateTime($child['geboortetijd']);
 
-            $output['children'][$key]['birthDateTime'] = $birthDate->format('Y-m-d') .'T'. $birthTime->format('H:i:s');
+            $output['children'][$key]['birthDateTime'] = $birthDate->format('Y-m-d').'T'.$birthTime->format('H:i:s');
         }
 
         $output['children'] = array_values($output['children']);
@@ -218,19 +219,20 @@ class ZgwToVrijbrpService
     }//end getSpecificProperties()
 
     /**
-     * Converts ZGW eigenschappen to key, value pairs
-     * 
+     * Converts ZGW eigenschappen to key, value pairs.
+     *
      * @param array $eigenschappen The properties of the case
+     *
      * @return array
      */
     private function getEigenschapValues(array $eigenschappen): array
     {
         $flatProperties = [];
-        foreach($eigenschappen as $eigenschap) {
-            if(intval(substr($eigenschap['naam'], -1)) === 0) {
+        foreach ($eigenschappen as $eigenschap) {
+            if (intval(substr($eigenschap['naam'], -1)) === 0) {
                 $flatProperties[$eigenschap['naam']] = $eigenschap['waarde'];
             } else {
-                $flatProperties['children'][intval(substr($eigenschap['naam'], -1))-1][substr_replace($eigenschap['naam'], '', -1)] = $eigenschap['waarde'];
+                $flatProperties['children'][intval(substr($eigenschap['naam'], -1)) - 1][substr_replace($eigenschap['naam'], '', -1)] = $eigenschap['waarde'];
             }
         }
 
