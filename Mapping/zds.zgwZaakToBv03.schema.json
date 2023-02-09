@@ -1,6 +1,6 @@
 {
   "title": "ZGWZaakToDu02",
-  "$id": "https://zds.nl/schemas/zds.zgwZaakToBv03.schema.json",
+  "$id": "https://zds.nl/mapping/zds.zgwZaakToBv03.mapping.json",
   "$schema": "https://json-schema.org/draft/2020-12/mapping",
   "version": "0.0.1",
   "passTrough": false,

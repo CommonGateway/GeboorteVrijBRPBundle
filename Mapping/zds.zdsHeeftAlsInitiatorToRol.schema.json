@@ -1,12 +1,12 @@
 {
   "title": "ZDSToZGWZaak",
-  "$id": "https://zds.nl/schemas/zds.zdsHeeftAlsInitiatorToRol.schema.json",
+  "$id": "https://zds.nl/mapping/zds.zdsHeeftAlsInitiatorToRol.mapping.json",
   "$schema": "https://json-schema.org/draft/2020-12/mapping",
   "version": "0.0.5",
   "passTrough": false,
   "mapping": {
     "betrokkeneType": "natuurlijk_persoon",
-    "roltype": "{{ map('https://zds.nl/schemas/zds.zdsHeeftAlsInitiatorToRolType.schema.json', _context) | json_encode }}",
+    "roltype": "{{ map('https://zds.nl/mapping/zds.zdsHeeftAlsInitiatorToRolType.mapping.json', _context) | json_encode }}",
     "roltoelichting": "initiator",
     "betrokkeneIdentificatie.inpBsn": "ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:inp&#46;bsn",
     "betrokkeneIdentificatie.geslachtsnaam": "ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:geslachtsnaam",
