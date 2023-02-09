@@ -5,16 +5,12 @@
 namespace CommonGateway\GeboorteVrijBRPBundle\Service;
 
 use App\Entity\Action;
-use App\Entity\CollectionEntity;
 use App\Entity\Cronjob;
 use App\Entity\DashboardCard;
 use App\Entity\Endpoint;
-use App\Entity\Entity;
 use App\Entity\Gateway as Source;
 use CommonGateway\CoreBundle\Installer\InstallerInterface;
 use Doctrine\ORM\EntityManagerInterface;
-use Exception;
-use OpenCatalogi\OpenCatalogiBundle\Service\CatalogiService;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -28,10 +24,14 @@ class InstallationService implements InstallerInterface
     ];
 
     public const ENDPOINTS = [
-        ['path' => 'stuf/zds', 'throws' => ['vrijbrp.zds.inbound'], 'name' => 'zds-endpoint']
+        ['path' => 'stuf/zds', 'throws' => ['vrijbrp.zds.inbound'], 'name' => 'zds-endpoint', 'methods' => []],
     ];
 
     public const ACTION_HANDLERS = [
+        'CommonGateway\GeboorteVrijBRPBundle\ActionHandler\ZaakIdentificatieActionHandler',
+        'CommonGateway\GeboorteVrijBRPBundle\ActionHandler\DocumentIdentificatieActionHandler',
+        'CommonGateway\GeboorteVrijBRPBundle\ActionHandler\ZdsZaakActionHandler',
+        'CommonGateway\GeboorteVrijBRPBundle\ActionHandler\ZdsDocumentActionHandler',
     ];
 
     public function __construct(EntityManagerInterface $entityManager, ContainerInterface $container)
@@ -131,22 +131,22 @@ class InstallationService implements InstallerInterface
             if ($schema['$id'] == 'https://vrijbrp.nl/vrijbrp.zds.creerzaakid.schema.json') {
                 $action->setListens(['vrijbrp.zds.inbound']);
                 $action->setConditions([
-                    ['var' => 'SOAP-ENV:Envelope.SOAP-ENV:Body.ns2:genereerZaakIdentificatie_Di02'],
+                    'var' => 'body.SOAP-ENV:Body.ns2:genereerZaakIdentificatie_Di02',
                 ]);
             } elseif ($schema['$id'] == 'https://vrijbrp.nl/vrijbrp.zds.creerdocumentid.schema.json') {
                 $action->setListens(['vrijbrp.zds.inbound']);
                 $action->setConditions([
-                    ['var' => 'SOAP-ENV:Envelope.SOAP-ENV:Body.ns2:genereerDocumentIdentificatie_Di02'],
+                    'var' => 'body.SOAP-ENV:Body.ns2:genereerDocumentIdentificatie_Di02',
                 ]);
             } elseif ($schema['$id'] == 'https://opencatalogi.nl/vrijbrp.zds.creerzaak.schema.json') {
                 $action->setListens(['vrijbrp.zds.inbound']);
                 $action->setConditions([
-                    ['var' => 'SOAP-ENV:Envelope.SOAP-ENV:Body.ns2:zakLk01'],
+                    'var' => 'body.SOAP-ENV:Body.ns2:zakLk01',
                 ]);
             } elseif ($schema['$id'] == 'https://opencatalogi.nl/vrijbrp.zds.creerdocument.schema.json') {
                 $action->setListens(['vrijbrp.zds.inbound']);
                 $action->setConditions([
-                    ['var' => 'SOAP-ENV:Envelope.SOAP-ENV:Body.ns2:edcLK01'],
+                    'var' => 'body.SOAP-ENV:Body.ns2:edcLk01',
                 ]);
             } else {
                 $action->setListens(['vrijbrp.default.listens']);
@@ -171,15 +171,19 @@ class InstallationService implements InstallerInterface
             if ($explodedPath[0] == '') {
                 array_shift($explodedPath);
             }
-            $pathRegEx = '^' . $endpoint['path'] . '$';
+            $pathRegEx = '^'.$endpoint['path'].'$';
             if (!$endpointRepository->findOneBy(['pathRegex' => $pathRegEx])) {
                 $createdEndpoint = new Endpoint();
                 $createdEndpoint->setName($endpoint['name']);
                 $createdEndpoint->setPath($explodedPath);
                 $createdEndpoint->setPathRegex($pathRegEx);
-
+                $createdEndpoint->setMethods(['GET', 'POST', 'PUT', 'PATCH', 'DELETE']);
                 $createdEndpoint->setThrows($endpoint['throws']);
+                $createdEndpoint->getDefaultContentType('text/xml');
                 $createdEndpoints[] = $createdEndpoint;
+
+                $this->entityManager->persist($createdEndpoint);
+                $this->entityManager->flush();
             }
         }
         (isset($this->io) ? $this->io->writeln(count($createdEndpoints).' Endpoints Created') : '');
@@ -242,7 +246,6 @@ class InstallationService implements InstallerInterface
         $vrijbrpDossiers->setIsEnabled(true);
         $this->entityManager->persist($vrijbrpDossiers);
         isset($this->io) && $this->io->writeln('Gateway: '.$vrijbrpDossiers->getName().' created');
-
     }
 
     public function checkDataConsistency()

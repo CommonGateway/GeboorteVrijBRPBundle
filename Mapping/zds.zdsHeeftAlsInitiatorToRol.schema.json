@@ -1,0 +1,28 @@
+{
+  "title": "ZDSToZGWZaak",
+  "$id": "https://opencatalogi.nl/schemas/zds.zdsHeeftAlsInitiatorToRol.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/mapping",
+  "version": "0.0.5",
+  "passTrough": false,
+  "mapping": {
+    "betrokkeneType": "natuurlijk_persoon",
+    "roltype": "{{ map('https://opencatalogi.nl/schemas/zds.zdsHeeftAlsInitiatorToRolType.schema.json', _context) | json_encode }}",
+    "roltoelichting": "initiator",
+    "betrokkeneIdentificatie.inpBsn": "ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:inp&#46;bsn",
+    "betrokkeneIdentificatie.geslachtsnaam": "ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:geslachtsnaam",
+    "betrokkeneIdentificatie.voorvoegselGeslachtsnaam": "ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:voorvoegselgeslachtsnaam",
+    "betrokkeneIdentificatie.voorletters": "ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:voorletters",
+    "betrokkeneIdentificatie.voornamen": "ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:voornamen",
+    "betrokkeneIdentificatie.geslachtaanduiding": "ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:geslachtsaanduiding",
+    "betrokkeneIdentificatie.geboortedatum": "ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:geboortedatum",
+    "betrokkeneIdentificatie.verblijfsadres.wplWoonplaatsNaam": "ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:verblijfsadres.ns3:wpl&#46;woonplaatsnaam",
+    "betrokkeneIdentificatie.verblijfsadres.gorOpenbareRuimteNaam": "ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:verblijfsadres.ns3:gor&#46;openbareruimtenaam",
+    "betrokkeneIdentificatie.verblijfsadres.aoaPostcode": "ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:verblijfsadres.ns3:aoa&#46;postcode",
+    "betrokkeneIdentificatie.verblijfsadres.aoaHuisnummer": "ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:verblijfsadres.ns3:aoa&#46;huisnummer",
+    "betrokkeneIdentificatie.verblijfsadres.aoaHuisletter": "ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:verblijfsadres.ns3:aoa&#46;huisletter",
+    "betrokkeneIdentificatie.verblijfsadres.aoaHuisnummertoevoeging": "ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:verblijfsadres.ns3:aoa&#46;huisnummertoevoeging"
+  },
+  "cast": {
+    "roltype": "jsonToArray"
+  }
+}

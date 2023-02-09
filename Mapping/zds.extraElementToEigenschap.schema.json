@@ -1,12 +1,11 @@
 {
   "title": "ZDSToZGWZaak",
-  "$id": "https://opencatalogi.nl/schemas/zds.extraElementToZaakEigenschap.schema.json",
+  "$id": "https://opencatalogi.nl/schemas/zds.extraElementToEigenschap.schema.json",
   "$schema": "https://json-schema.org/draft/2020-12/mapping",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "passTrough": false,
   "mapping": {
-    "eigenschap": "{{ mappingService(https://opencatalogi.nl/schemas/zds.extraElementToEigenschap.schema.json, extraElement) }}",
-    "naam": "#",
-    "definitie": "#"
+    "naam": "@naam",
+    "definitie": "@naam"
   }
 }
