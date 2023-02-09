@@ -13,6 +13,7 @@ use App\Service\SynchronizationService;
 use CommonGateway\CoreBundle\Service\CallService;
 use CommonGateway\CoreBundle\Service\MappingService;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
@@ -177,7 +178,7 @@ class ZgwToVrijbrpService
      * @param array $zgw    The ZGW case
      * @param array $output The output data
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return array
      */
@@ -238,14 +239,15 @@ class ZgwToVrijbrpService
 
         return $flatProperties;
     }//end getEigenschapValues()
-
+    
     /**
      * Handles a ZgwToVrijBrp action.
      *
-     * @param array $data          The data from the call.
+     * @param array $data The data from the call.
      * @param array $configuration The configuration from the ActionHandler.
      *
      * @return array|null Data.
+     * @throws Exception
      */
     public function zgwToVrijbrpHandler(array $data, array $configuration): ?array
     {
@@ -254,8 +256,8 @@ class ZgwToVrijbrpService
         if ($this->setSource() === null || $this->setMapping() === null || $this->setConditionEntity() === null) {
             return [];
         }
-
-        $dataId = $data['id'];
+    
+        $dataId = $data['response']['id'];
 
         // Get (zaak) object that was created.
         if (isset($this->symfonyStyle) === true) {

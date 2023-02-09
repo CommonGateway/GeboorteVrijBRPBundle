@@ -75,7 +75,7 @@ class ZgwToVrijbrpCommand extends Command
             return Command::FAILURE;
         }
 
-        $data = ['id' => $zaakId];
+        $data = ['response' => ['id' => $zaakId]];
 
         $configuration = [
             'source'          => ($input->getOption('source', false) ?? 'https://vrijbrp.nl/dossiers'),
