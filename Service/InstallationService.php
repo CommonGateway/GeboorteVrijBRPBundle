@@ -326,7 +326,7 @@ class InstallationService implements InstallerInterface
         $sources = [];
 
         foreach ($createSources as $createSource) {
-            if ($sourceRepository->findOneBy(['name' => $createSource['name']]) === false) {
+            if ($sourceRepository->findOneBy(['name' => $createSource['name']]) === null) {
                 $source = new Source($createSource);
                 if (array_key_exists('password', $createSource) === true) {
                     $source->setPassword($createSource['password']);

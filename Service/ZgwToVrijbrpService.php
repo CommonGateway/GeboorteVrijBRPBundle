@@ -141,7 +141,7 @@ class ZgwToVrijbrpService
     private function setMapping(): ?Mapping
     {
         $this->mapping = $this->entityManager->getRepository('App:Mapping')->findOneBy(['reference' => $this->configuration['mapping']]);
-        if ($this->source instanceof Mapping === false) {
+        if ($this->mapping instanceof Mapping === false) {
             if (isset($this->symfonyStyle) === true) {
                 $this->symfonyStyle->error("No mapping found with reference: {$this->configuration['mapping']}");
             }
@@ -171,6 +171,59 @@ class ZgwToVrijbrpService
         return $this->conditionEntity;
     }//end setConditionEntity()
 
+    private function getSpecificProperties(array $zgw, array $output): array
+    {
+        $properties = $this->getEigenschapValues($zgw['eigenschappen']);
+        $output['qualificationForDeclaringType'] = $properties['relatie'] ?? null;
+
+        if(isset($properties['sub.telefoonnummer'])) {
+            $output['declarant']['contactInformation']['telephoneNumber'] = $properties['sub.telefoonnummer'];
+        }
+        if(isset($properties['sub.emailadres'])) {
+            $output['declarant']['contactInformation']['email'] = $properties['sub.emailadres'];
+        }
+
+        if(isset($properties['inp.bsn'])) {
+            $output['mother']['bsn'] = $properties['inp.bsn'];
+            $output['fatherDuoMother']['bsn'] = $output['declarant']['bsn'];
+        } else {
+            $output['mother']['bsn'] = $output['declarant']['bsn'];
+            !isset($output['declarant']['contactInformation']) ?: $output['mother']['contactInformation']  = $output['declarant']['contactInformation'];
+        }
+
+        foreach($properties['children'] as $key => $child) {
+            $output['children'][$key]['firstname'] = $child['voornamen'];
+            $output['children'][$key]['gender'] = $child['geslachtsaanduiding'];
+            $birthDate = new \DateTime($child['geboortedatum']);
+            $birthTime = new \DateTime($child['geboortetijd']);
+
+            $output['children'][$key]['birthDateTime'] = $birthDate->format('Y-m-d') .'T'. $birthTime->format('H:i:s');
+        }
+
+        $output['children'] = array_values($output['children']);
+
+        $output['nameSelection']['lastname'] = $properties['geslachtsnaam'];
+        !isset($properties['voorvoegselGeslachtsnaam']) ?: $output['nameSelection']['prefix'] = $properties['voorvoegselGeslachtsnaam'];
+
+        return $output;
+    }
+
+
+
+    private function getEigenschapValues(array $eigenschappen): array
+    {
+        $flatProperties = [];
+        foreach($eigenschappen as $eigenschap) {
+            if(intval(substr($eigenschap['naam'], -1)) === 0) {
+                $flatProperties[$eigenschap['naam']] = $eigenschap['waarde'];
+            } else {
+                $flatProperties['children'][intval(substr($eigenschap['naam'], -1))-1][substr_replace($eigenschap['naam'], '', -1)] = $eigenschap['waarde'];
+            }
+        }
+
+        return $flatProperties;
+    }
+
     /**
      * Handles a ZgwToVrijBrp action.
      *
@@ -198,6 +251,8 @@ class ZgwToVrijbrpService
 
         // Do mapping with Zaak ObjectEntity as array.
         $objectArray = $this->mappingService->mapping($this->mapping, $object->toArray());
+
+        $objectArray = $this->getSpecificProperties($object->toArray(), $objectArray);
 
         // Create synchronization.
         $synchronization = $this->syncService->findSyncByObject($object, $this->source, $this->conditionEntity);
