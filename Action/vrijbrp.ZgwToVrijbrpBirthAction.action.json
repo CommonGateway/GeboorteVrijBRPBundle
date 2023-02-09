@@ -4,7 +4,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/action",
   "version": "0.0.1",
   "listens": [
-    "commongateway.object.create"
+    "commongateway.object.update"
   ],
   "throws": [],
   "conditions": {
