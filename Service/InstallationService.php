@@ -295,11 +295,11 @@ class InstallationService implements InstallerInterface
             $this->symfonyStyle->writeln(['', '<info>Looking for cronjobs</info>']);
         }
         // We only need 1 cronjob so lets set that.
-        $cronjob = $this->entityManager->getRepository('App:Cronjob')->findOneBy(['name' => 'Open Catalogi']);
+        $cronjob = $this->entityManager->getRepository('App:Cronjob')->findOneBy(['name' => 'VrijBRP']);
         if ($cronjob instanceof Cronjob === false) {
             $cronjob = new Cronjob();
-            $cronjob->setName('Open Catalogi');
-            $cronjob->setDescription('This cronjob fires all the open catalogi actions ever 5 minutes');
+            $cronjob->setName('VrijBRP');
+            $cronjob->setDescription('This cronjob fires all the VrijBRP actions ever 5 minutes');
             $cronjob->setThrows(['vrijbrp.default.listens']);
             $cronjob->setIsEnabled(true);
 
