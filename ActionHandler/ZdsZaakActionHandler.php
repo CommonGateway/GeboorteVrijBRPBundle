@@ -21,7 +21,6 @@ class ZdsZaakActionHandler implements ActionHandlerInterface
     public function __construct(ZdsToZgwService $zdsToZgwService)
     {
         $this->zdsToZgwService = $zdsToZgwService;
-
     }//end __construct()
 
     /**
@@ -32,12 +31,11 @@ class ZdsZaakActionHandler implements ActionHandlerInterface
     public function getConfiguration(): array
     {
         return [
-                '$id'         => 'https://opencatalogi.nl/vrijbrp.zds.creerzaak.schema.json',
-                '$schema'     => 'https://json-schema.org/draft/2020-12/schema',
-                'title'       => 'ExampleActionHandler',
-                'description' => 'This is a action to create objects from the fetched applications from the componenten catalogus.',
-                ];
-
+            '$id'         => 'https://opencatalogi.nl/vrijbrp.zds.creerzaak.schema.json',
+            '$schema'     => 'https://json-schema.org/draft/2020-12/schema',
+            'title'       => 'ExampleActionHandler',
+            'description' => 'This is a action to create objects from the fetched applications from the componenten catalogus.',
+        ];
     }//end getConfiguration()
 
     /**
@@ -52,6 +50,4 @@ class ZdsZaakActionHandler implements ActionHandlerInterface
     {
         return $this->zdsToZgwService->zaakActionHandler($data, $configuration);
     }//end run()
-
-
 }
