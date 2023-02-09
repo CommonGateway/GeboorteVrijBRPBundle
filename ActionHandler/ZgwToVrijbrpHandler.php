@@ -1,6 +1,6 @@
 <?php
 
-namespace CommonGateway\OpenCatalogiBundle\ActionHandler;
+namespace CommonGateway\GeboorteVrijBRPBundle\ActionHandler;
 
 use CommonGateway\GeboorteVrijBRPBundle\Service\ZgwToVrijbrpService;
 

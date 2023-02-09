@@ -231,7 +231,7 @@ class InstallationService implements InstallerInterface
             }
 
             $pathRegEx = '^'.$endpoint['path'].'$';
-            if ($endpointRepository->findOneBy(['pathRegex' => $pathRegEx]) === false) {
+            if ($endpointRepository->findOneBy(['pathRegex' => $pathRegEx]) instanceof Endpoint === false) {
                 $createdEndpoint = new Endpoint();
                 $createdEndpoint->setName($endpoint['name']);
                 $createdEndpoint->setPath($explodedPath);
@@ -326,7 +326,7 @@ class InstallationService implements InstallerInterface
         $sources = [];
 
         foreach ($createSources as $createSource) {
-            if ($sourceRepository->findOneBy(['name' => $createSource['name']]) === null) {
+            if ($sourceRepository->findOneBy(['name' => $createSource['name']]) instanceof Source === false) {
                 $source = new Source($createSource);
                 if (array_key_exists('password', $createSource) === true) {
                     $source->setPassword($createSource['password']);
