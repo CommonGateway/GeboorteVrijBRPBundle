@@ -22,7 +22,7 @@ class InstallationService implements InstallerInterface
 {
     private EntityManagerInterface $entityManager;
     private ContainerInterface $container;
-    private SymfonyStyle $io;
+    private SymfonyStyle $symfonyStyle;
 
     public const OBJECTS_THAT_SHOULD_HAVE_CARDS = [
     ];
@@ -50,13 +50,13 @@ class InstallationService implements InstallerInterface
     /**
      * Set symfony style in order to output to the console.
      *
-     * @param SymfonyStyle $io
+     * @param SymfonyStyle $symfonyStyle
      *
      * @return self
      */
-    public function setStyle(SymfonyStyle $io): self
+    public function setStyle(SymfonyStyle $symfonyStyle): self
     {
-        $this->io = $io;
+        $this->symfonyStyle = $symfonyStyle;
 
         return $this;
     }
@@ -118,13 +118,13 @@ class InstallationService implements InstallerInterface
         $sourceRepository = $this->entityManager->getRepository('App:Gateway');
 
         $actionHandlers = $this::ACTION_HANDLERS;
-        (isset($this->io) ? $this->io->writeln(['', '<info>Looking for actions</info>']) : '');
+        (isset($this->symfonyStyle) ? $this->symfonyStyle->writeln(['', '<info>Looking for actions</info>']) : '');
 
         foreach ($actionHandlers as $handler) {
             $actionHandler = $this->container->get($handler);
 
             if ($this->entityManager->getRepository('App:Action')->findOneBy(['class' => get_class($actionHandler)])) {
-                (isset($this->io) ? $this->io->writeln(['Action found for '.$handler]) : '');
+                (isset($this->symfonyStyle) ? $this->symfonyStyle->writeln(['Action found for '.$handler]) : '');
                 continue;
             }
 
@@ -165,7 +165,7 @@ class InstallationService implements InstallerInterface
 
             $this->entityManager->persist($action);
 
-            (isset($this->io) ? $this->io->writeln(['Action created for '.$handler]) : '');
+            (isset($this->symfonyStyle) ? $this->symfonyStyle->writeln(['Action created for '.$handler]) : '');
         }
     }
 
@@ -189,7 +189,7 @@ class InstallationService implements InstallerInterface
                 $createdEndpoints[] = $createdEndpoint;
             }
         }
-        (isset($this->io) ? $this->io->writeln(count($createdEndpoints).' Endpoints Created') : '');
+        (isset($this->symfonyStyle) ? $this->symfonyStyle->writeln(count($createdEndpoints).' Endpoints Created') : '');
 
         return $createdEndpoints;
     }
@@ -197,7 +197,7 @@ class InstallationService implements InstallerInterface
     public function createDashboardCards($objectsThatShouldHaveCards)
     {
         foreach ($objectsThatShouldHaveCards as $object) {
-            (isset($this->io) ? $this->io->writeln('Looking for a dashboard card for: '.$object) : '');
+            (isset($this->symfonyStyle) ? $this->symfonyStyle->writeln('Looking for a dashboard card for: '.$object) : '');
             $entity = $this->entityManager->getRepository('App:Entity')->findOneBy(['reference' => $object]);
             if (
                 !$dashboardCard = $this->entityManager->getRepository('App:DashboardCard')->findOneBy(['entityId' => $entity->getId()])
@@ -211,16 +211,16 @@ class InstallationService implements InstallerInterface
                 $dashboardCard->setEntityId($entity->getId());
                 $dashboardCard->setOrdering(1);
                 $this->entityManager->persist($dashboardCard);
-                (isset($this->io) ? $this->io->writeln('Dashboard card created') : '');
+                (isset($this->symfonyStyle) ? $this->symfonyStyle->writeln('Dashboard card created') : '');
                 continue;
             }
-            (isset($this->io) ? $this->io->writeln('Dashboard card found') : '');
+            (isset($this->symfonyStyle) ? $this->symfonyStyle->writeln('Dashboard card found') : '');
         }
     }
 
     public function createCronjobs()
     {
-        (isset($this->io) ? $this->io->writeln(['', '<info>Looking for cronjobs</info>']) : '');
+        (isset($this->symfonyStyle) ? $this->symfonyStyle->writeln(['', '<info>Looking for cronjobs</info>']) : '');
         // We only need 1 cronjob so lets set that
         if (!$cronjob = $this->entityManager->getRepository('App:Cronjob')->findOneBy(['name' => 'Open Catalogi'])) {
             $cronjob = new Cronjob();
@@ -231,9 +231,9 @@ class InstallationService implements InstallerInterface
 
             $this->entityManager->persist($cronjob);
 
-            (isset($this->io) ? $this->io->writeln(['', 'Created a cronjob for '.$cronjob->getName()]) : '');
+            (isset($this->symfonyStyle) ? $this->symfonyStyle->writeln(['', 'Created a cronjob for '.$cronjob->getName()]) : '');
         } else {
-            (isset($this->io) ? $this->io->writeln(['', 'There is alreade a cronjob for '.$cronjob->getName()]) : '');
+            (isset($this->symfonyStyle) ? $this->symfonyStyle->writeln(['', 'There is alreade a cronjob for '.$cronjob->getName()]) : '');
         }
     }
     
@@ -259,7 +259,7 @@ class InstallationService implements InstallerInterface
             }
         }
         
-        (isset($this->io) ? $this->io->writeln(count($sources).' Sources Created'): '');
+        (isset($this->symfonyStyle) ? $this->symfonyStyle->writeln(count($sources).' Sources Created'): '');
         
         return $sources;
     }

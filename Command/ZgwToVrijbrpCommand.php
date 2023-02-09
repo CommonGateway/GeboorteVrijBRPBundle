@@ -37,13 +37,13 @@ class ZgwToVrijbrpCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new SymfonyStyle($input, $output);
-        $this->zgwToVrijbrpService->setStyle($io);
+        $symfonyStyle = new SymfonyStyle($input, $output);
+        $this->zgwToVrijbrpService->setStyle($symfonyStyle);
 
         // Handle the command options
         $zaakId = $input->getOption('zaak', false);
         if (!$zaakId) {
-            $io->error("Please use vrijbrp:ZgwToVrijbrp -z {uuid of a zaak}");
+            $symfonyStyle->error("Please use vrijbrp:ZgwToVrijbrp -z {uuid of a zaak}");
             return Command::FAILURE;
         }
         $data = ['id' => $zaakId];

@@ -24,18 +24,56 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  */
 class ZgwToVrijbrpService
 {
+    /**
+     * @var EntityManagerInterface
+     */
     private EntityManagerInterface $entityManager;
+    /**
+     * @var CallService
+     */
     private CallService $callService;
+    /**
+     * @var SynchronizationService
+     */
     private SynchronizationService $synchronizationService;
+    /**
+     * @var MappingService
+     */
     private MappingService $mappingService;
-    private SymfonyStyle $io;
+    /**
+     * @var SymfonyStyle
+     */
+    private SymfonyStyle $symfonyStyle;
     
+    /**
+     * @var array ActionHandler configuration.
+     */
     private array $configuration;
+    /**
+     * @var array Data of the api call.
+     */
     private array $data;
+    /**
+     * @var Source|null The Source we are using for the outgoing call.
+     */
     private ?Source $source;
+    /**
+     * @var Mapping|null The mapping we are using for the outgoing call.
+     */
     private ?Mapping $mapping;
+    /**
+     * @var Entity|null The entity used for creating a Synchronization object. (and also the entity that triggers the ActionHandler).
+     */
     private ?Entity $conditionEntity;
-
+    
+    /**
+     * Construct a ZgwToVrijbrpService.
+     *
+     * @param EntityManagerInterface $entityManager
+     * @param CallService $callService
+     * @param SynchronizationService $synchronizationService
+     * @param MappingService $mappingService
+     */
     public function __construct(
         EntityManagerInterface $entityManager,
         CallService $callService,
@@ -52,75 +90,78 @@ class ZgwToVrijbrpService
      * Set symfony style in order to output to the console when running the handler function through a command.
      * todo: use monolog
      *
-     * @param SymfonyStyle $io
+     * @param SymfonyStyle $symfonyStyle SymfonyStyle for writing user feedback to console.
      *
-     * @return self
+     * @return self This.
      */
-    public function setStyle(SymfonyStyle $io): self
+    public function setStyle(SymfonyStyle $symfonyStyle): self
     {
-        $this->io = $io;
-        $this->synchronizationService->setStyle($io);
-        $this->mappingService->setStyle($io);
+        $this->symfonyStyle = $symfonyStyle;
+        $this->synchronizationService->setStyle($symfonyStyle);
+        $this->mappingService->setStyle($symfonyStyle);
 
         return $this;
-    }
+    }//end setStyle()
     
     /**
      * Gets and sets Source object using the required configuration['source'] to find the correct Source.
      *
-     * @return Source|null
+     * @return Source|null The Source object we found or null if we don't find one.
      */
     private function setSource(): ?Source
     {
         // todo: Add FromSchema function to Gateway Gateway.php, so that we can use .json files for sources as well.
         // todo: ...For this to work, we also need to change CoreBundle installationService.
         // todo: ...If we do this we can also add and use reference for Gateways / Sources
-        if (!$this->source = $this->entityManager->getRepository('App:Gateway')->findOneBy(['location'=>$this->configuration['source']])) {
-            isset($this->io) && $this->io->error("No source found with location: {$this->configuration['source']}");
+        $this->source = $this->entityManager->getRepository('App:Gateway')->findOneBy(['location'=>$this->configuration['source']]);
+        if (!$this->source instanceof Source) {
+            isset($this->symfonyStyle) && $this->symfonyStyle->error("No source found with location: {$this->configuration['source']}");
         
             return null;
         }
     
         return $this->source;
-    }
+    }//end setSource()
     
     /**
      * Gets and sets a Mapping object using the required configuration['mapping'] to find the correct Mapping.
      *
-     * @return Mapping|null
+     * @return Mapping|null The Mapping object we found or null if we don't find one.
      */
     private function setMapping(): ?Mapping
     {
-        if (!$this->mapping = $this->entityManager->getRepository('App:Mapping')->findOneBy(['reference'=>$this->configuration['mapping']])) {
-            isset($this->io) && $this->io->error("No mapping found with reference: {$this->configuration['mapping']}");
+        $this->mapping = $this->entityManager->getRepository('App:Mapping')->findOneBy(['reference'=>$this->configuration['mapping']]);
+        if (!$this->source instanceof Mapping) {
+            isset($this->symfonyStyle) && $this->symfonyStyle->error("No mapping found with reference: {$this->configuration['mapping']}");
         
             return null;
         }
     
         return $this->mapping;
-    }
+    }//end setMapping()
     
     /**
      * Gets and sets a conditionEntity object using the required configuration['conditionEntity'] to find the correct Entity.
      *
-     * @return Entity|null
+     * @return Entity|null The conditionEntity object we found or null if we don't find one.
      */
     private function setConditionEntity(): ?Entity
     {
-        if (!$this->conditionEntity = $this->entityManager->getRepository('App:Entity')->findOneBy(['reference'=>$this->configuration['conditionEntity']])) {
-            isset($this->io) && $this->io->error("No entity found with reference: {$this->configuration['conditionEntity']}");
+        $this->conditionEntity = $this->entityManager->getRepository('App:Entity')->findOneBy(['reference'=>$this->configuration['conditionEntity']]);
+        if (!$this->conditionEntity instanceof Entity) {
+            isset($this->symfonyStyle) && $this->symfonyStyle->error("No entity found with reference: {$this->configuration['conditionEntity']}");
         
             return null;
         }
     
         return $this->conditionEntity;
-    }
+    }//end setConditionEntity()
     
     /**
      * Handles a ZgwToVrijBrp action.
      *
-     * @param array $data           The data from the call
-     * @param array $configuration  The configuration from the call
+     * @param array $data           The data from the call.
+     * @param array $configuration  The configuration from the ActionHandler.
      *
      * @return array|null
      */
@@ -134,7 +175,7 @@ class ZgwToVrijbrpService
         $id = $data['id'];
     
         // Get (zaak) object that was created
-        isset($this->io) && $this->io->comment("(Zaak) Object with id $id was created");
+        isset($this->symfonyStyle) && $this->symfonyStyle->comment("(Zaak) Object with id $id was created");
         $object = $this->entityManager->getRepository('App:ObjectEntity')->find($id);
         
         // Do mapping with Zaak ObjectEntity as array
@@ -145,7 +186,7 @@ class ZgwToVrijbrpService
         $synchronization->setMapping($this->mapping);
     
         // Send request to source
-        isset($this->io) && $this->io->comment("Synchronize (Zaak) Object to: {$this->source->getLocation()}{$this->configuration['location']}");
+        isset($this->symfonyStyle) && $this->symfonyStyle->comment("Synchronize (Zaak) Object to: {$this->source->getLocation()}{$this->configuration['location']}");
         // todo: change synchronize function so it can also push to a source and not only pull from a source:
 //        $this->synchronizationService->synchronize($synchronization, $objectArray);
     
@@ -155,19 +196,19 @@ class ZgwToVrijbrpService
         }
 
         return $data;
-    }
+    }//end zgwToVrijbrpHandler()
     
     /**
      * Temporary function as replacement of the $this->synchronizationService->synchronize() function.
-     * Because currently synchronize function can only pull from a source and not push to a source
+     * Because currently synchronize function can only pull from a source and not push to a source.
      * // todo: temp way of doing this without updated synchronize() function...
      *
-     * @param Synchronization $synchronization
-     * @param array $objectArray
+     * @param Synchronization $synchronization The synchronization we are going to synchronize.
+     * @param array $objectArray The object data we are going to synchronize.
      *
-     * @return array|void
+     * @return array The response body of the outgoing call, or an empty array on error.
      */
-    private function synchronizeTemp(Synchronization $synchronization, array $objectArray)
+    private function synchronizeTemp(Synchronization $synchronization, array $objectArray): array
     {
         $objectString = $this->synchronizationService->getObjectString($objectArray);
 
@@ -211,5 +252,5 @@ class ZgwToVrijbrpService
         $synchronization->setHash(hash('sha384', serialize($bodyDot->jsonSerialize())));
         
         return $body;
-    }
+    }//end synchronizeTemp()
 }
