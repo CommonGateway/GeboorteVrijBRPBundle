@@ -257,7 +257,7 @@ class ZgwToVrijbrpService
             return [];
         }
 
-        $dataId = $data['response']['id'];
+        $dataId = $data['object']['_self']['id'];
 
         // Get (zaak) object that was created.
         if (isset($this->symfonyStyle) === true) {

@@ -312,13 +312,14 @@ class ZdsToZgwService
             $this->entityManager->persist($zaak);
             $this->entityManager->flush();
 
+            $data['object'] = $zaak->toArray();
             if ($mappingOut = $this->getMapping('https://zds.nl/mapping/zds.zgwZaakToBv03.mapping.json')) {
                 $data['response'] = $this->createResponse($this->mappingService->mapping($mappingOut, $zaak->toArray()), 200);
             }
         } elseif (count($zaken) > 1) {
-            $data['response'] = $this->createResponse(['Error' => 'More than one case exists with id '.$zaakArray['identificatie']]);
+            $data['response'] = $this->createResponse(['Error' => 'More than one case exists with id '.$zaakArray['identificatie']], 400);
         } else {
-            $data['response'] = $this->createResponse(['Error' => 'The case with id '.$zaakArray['identificatie'].' does not exist']);
+            $data['response'] = $this->createResponse(['Error' => 'The case with id '.$zaakArray['identificatie'].' does not exist'], 400);
         }//end if
 
         return $data;
@@ -358,12 +359,13 @@ class ZdsToZgwService
             $this->entityManager->persist($zaakInformatieObject);
             $this->entityManager->flush();
 
+            $data['object'] = $zaakInformatieObject->toArray();
             $mappingOut = $this->getMapping('https://zds.nl/mapping/zds.zgwDocumentToBv03.mapping.json');
             $data['response'] = $this->createResponse($this->mappingService->mapping($mappingOut, $zaakInformatieObject->toArray()), 200);
         } elseif (count($documenten) > 1) {
-            $data['response'] = $this->createResponse(['Error' => 'More than one document exists with id '.$zaakDocumentArray['informatieobject']['identificatie']]);
+            $data['response'] = $this->createResponse(['Error' => 'More than one document exists with id '.$zaakDocumentArray['informatieobject']['identificatie']], 400);
         } else {
-            $data['response'] = $this->createResponse(['Error' => 'The case with id '.$zaakDocumentArray['informatieobject']['identificatie'].' does not exist']);
+            $data['response'] = $this->createResponse(['Error' => 'The case with id '.$zaakDocumentArray['informatieobject']['identificatie'].' does not exist'], 400);
         }//end if
 
         return $data;
