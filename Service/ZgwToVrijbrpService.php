@@ -171,6 +171,15 @@ class ZgwToVrijbrpService
         return $this->conditionEntity;
     }//end setConditionEntity()
 
+    /**
+     * Maps zgw eigenschappen to vrijbrp mapping
+     *
+     * @param array $zgw    The ZGW case
+     * @param array $output The output data
+     *
+     * @return array
+     * @throws \Exception
+     */
     private function getSpecificProperties(array $zgw, array $output): array
     {
         $properties = $this->getEigenschapValues($zgw['eigenschappen']);
@@ -206,10 +215,14 @@ class ZgwToVrijbrpService
         !isset($properties['voorvoegselGeslachtsnaam']) ?: $output['nameSelection']['prefix'] = $properties['voorvoegselGeslachtsnaam'];
 
         return $output;
-    }
+    }//end getSpecificProperties()
 
-
-
+    /**
+     * Converts ZGW eigenschappen to key, value pairs
+     * 
+     * @param array $eigenschappen The properties of the case
+     * @return array
+     */
     private function getEigenschapValues(array $eigenschappen): array
     {
         $flatProperties = [];
@@ -222,7 +235,7 @@ class ZgwToVrijbrpService
         }
 
         return $flatProperties;
-    }
+    }//end getEigenschapValues()
 
     /**
      * Handles a ZgwToVrijBrp action.
