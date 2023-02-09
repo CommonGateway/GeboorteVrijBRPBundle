@@ -16,7 +16,7 @@
     "minimum-stability": "dev",
     "require": {
         "php": ">=7.4",
-        "commongateway/corebundle": "dev-master || dev-feature/im-24/add-json-to-array-cast",
+        "commongateway/corebundle": "dev-master",
         "common-gateway/zgw-bundle": "^0.1"
     },
     "require-dev": {
