@@ -10,7 +10,6 @@
     "SOAP-ENV:Body.ZKN:Bv3Bericht.ZKN:stuurgegevens.StUF:berichtcode": "Bv03",
     "SOAP-ENV:Body.ZKN:Bv3Bericht.ZKN:stuurgegevens.StUF:zender.StUF:applicatie": "CommonGateway",
     "SOAP-ENV:Body.ZKN:Bv3Bericht.ZKN:stuurgegevens.StUF:ontvanger.StUF:applicatie": "SIMform",
-    "SOAP-ENV:Body.ZKN:Bv3Bericht.ZKN:stuurgegevens.StUF:ontvanger.StUF:applicatie": "SIMform",
     "SOAP-ENV:Body.ZKN:Bv3Bericht.ZKN:stuurgegevens.StUF:referentienummer": "identificatie",
     "SOAP-ENV:Body.ZKN:Bv3Bericht.ZKN:stuurgegevens.StUF:tijdstipbericht": "datum",
     "SOAP-ENV:Body.ZKN:Bv3Bericht.ZKN:stuurgegevens.StUF:crossRefnummmer": "identificatie"

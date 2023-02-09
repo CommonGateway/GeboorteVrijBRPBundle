@@ -12,12 +12,18 @@ use CommonGateway\GeboorteVrijBRPBundle\Service\ZdsToZgwService;
 class ZaakIdentificatieActionHandler implements ActionHandlerInterface
 {
 
+    /**
+     * @var ZdsToZgwService
+     */
     private ZdsToZgwService $zdsToZgwService;
 
+    /**
+     * @param ZdsToZgwService $zdsToZgwService The ZdsToZgwService
+     */
     public function __construct(ZdsToZgwService $zdsToZgwService)
     {
         $this->zdsToZgwService = $zdsToZgwService;
-    }
+    }//end __construct()
 
     /**
      *  This function returns the required configuration as a [json-schema](https://json-schema.org/) array.
