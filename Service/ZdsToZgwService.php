@@ -323,7 +323,7 @@ class ZdsToZgwService
             $zaakArray['zaaktype'] = $zaaktype->getId()->toString();
         }//end if
 
-        $this->logger->info('Case connected to case type with identification'. $zaakArray['zaaktype']['identificatie']);
+        $this->logger->info('Case connected to case type with identification'. $zaaktype->toArray()['identificatie']);
 
         $zaakArray = $this->connectEigenschappen($zaakArray, $zaaktype);
         $zaakArray = $this->connectRolTypes($zaakArray, $zaaktype);
