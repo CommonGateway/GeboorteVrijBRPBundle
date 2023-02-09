@@ -16,17 +16,17 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  */
 class ZgwToVrijbrpCommand extends Command
 {
-    
+
     /**
      * @var string The name of the command (the part after "bin/console").
      */
     protected static $defaultName = 'vrijbrp:ZgwToVrijbrp';
-    
+
     /**
      * @var ZgwToVrijbrpService The ZgwToVrijbrpService that will be used/tested with this command.
      */
     private ZgwToVrijbrpService  $zgwToVrijbrpService;
-    
+
     
     /**
      * Construct a ZgwToVrijbrpCommand.
@@ -39,7 +39,7 @@ class ZgwToVrijbrpCommand extends Command
         parent::__construct();
         
     }//end __construct()
-    
+
     
     /**
      * Configure this command.
@@ -56,12 +56,14 @@ class ZgwToVrijbrpCommand extends Command
             ->addOption('location', 'l', InputOption::VALUE_OPTIONAL, 'The endpoint we will use on the Source to send a request, just a string')
             ->addOption('mapping', 'm', InputOption::VALUE_OPTIONAL, 'The reference of the mapping we will use before sending the data to the source')
             ->addOption('conditionEntity', 'ce', InputOption::VALUE_OPTIONAL, 'The reference of the entity we use as trigger for this handler, we need this to find a synchronization object');
+
     }//end configure()
+
     
     /**
      * What happens when this command is executed.
      *
-     * @param InputInterface $input InputInterface.
+     * @param InputInterface  $input InputInterface.
      * @param OutputInterface $output OutputInterface.
      * @return int 0 for Success, 1 for Failure.
      */
@@ -86,10 +88,11 @@ class ZgwToVrijbrpCommand extends Command
             'conditionEntity' => ($input->getOption('conditionEntity', false) ?? 'https://vng.opencatalogi.nl/schemas/zrc.zaak.schema.json'),
         ];
 
-        if (!$this->zgwToVrijbrpService->zgwToVrijbrpHandler($data, $configuration)) {
+        if ($this->zgwToVrijbrpService->zgwToVrijbrpHandler($data, $configuration) === []) {
             return Command::FAILURE;
         }
 
         return Command::SUCCESS;
+        
     }//end execute()
 }

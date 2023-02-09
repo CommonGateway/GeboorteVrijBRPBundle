@@ -18,6 +18,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * The installationService for this bundle.
+ *
+ * @author Wilco Louwerse <wilco@conduction.nl>, Robert Zondervan <robert@conduction.nl>
  */
 class InstallationService implements InstallerInterface
 {
@@ -26,10 +28,12 @@ class InstallationService implements InstallerInterface
      * @var EntityManagerInterface The EntityManagerInterface.
      */
     private EntityManagerInterface $entityManager;
+    
     /**
      * @var ContainerInterface ContainerInterface.
      */
     private ContainerInterface $container;
+    
     /**
      * @var SymfonyStyle SymfonyStyle for writing user feedback to console.
      */
@@ -43,13 +47,13 @@ class InstallationService implements InstallerInterface
 
     public const SOURCES = [
         ['name' => 'vrijbrp-dossiers', 'location' => 'https://vrijbrp.nl/dossiers', 'auth' => 'vrijbrp-jwt',
-            'username' => 'sim-!ChangeMe!', 'password' => '!secret-ChangeMe!', 'accept' => 'application/json',
-            'configuration' => ['verify' => false]],
+        'username' => 'sim-!ChangeMe!', 'password' => '!secret-ChangeMe!', 'accept' => 'application/json',
+        'configuration' => ['verify' => false]],
     ];
 
     public const ACTION_HANDLERS = [];
-    
-    
+
+
     /**
      * Construct an InstallationService.
      *
@@ -62,7 +66,7 @@ class InstallationService implements InstallerInterface
         $this->container = $container;
         
     }//end __construct()
-    
+
 
     /**
      * Set symfony style in order to output to the console.
@@ -77,7 +81,8 @@ class InstallationService implements InstallerInterface
 
         return $this;
     }
-    
+
+
     /**
      * Install for this bundle.
      *
@@ -87,7 +92,8 @@ class InstallationService implements InstallerInterface
     {
         $this->checkDataConsistency();
     }//end install()
-    
+
+
     /**
      * Update for this bundle.
      *
@@ -97,7 +103,8 @@ class InstallationService implements InstallerInterface
     {
         $this->checkDataConsistency();
     }//end update()
-    
+
+
     /**
      * Uninstall for this bundle.
      *
@@ -107,7 +114,8 @@ class InstallationService implements InstallerInterface
     {
         // Do some cleanup.
     }//end uninstall()
-    
+
+
     /**
      * Adds configuration to an Action.
      *
@@ -145,7 +153,8 @@ class InstallationService implements InstallerInterface
         }
 
         return $defaultConfig;
-    }
+    }//end addActionConfiguration()
+
 
     /**
      * This function creates actions for all the actionHandlers in OpenCatalogi.
@@ -155,13 +164,17 @@ class InstallationService implements InstallerInterface
     public function addActions(): void
     {
         $actionHandlers = $this::ACTION_HANDLERS;
-        (isset($this->symfonyStyle) === true ? $this->symfonyStyle->writeln(['', '<info>Looking for actions</info>']) : '');
+        if (isset($this->symfonyStyle) === true) {
+            $this->symfonyStyle->writeln(['', '<info>Looking for actions</info>']);
+        }
 
         foreach ($actionHandlers as $handler) {
             $actionHandler = $this->container->get($handler);
 
             if ($this->entityManager->getRepository('App:Action')->findOneBy(['class' => get_class($actionHandler)]) === true) {
-                (isset($this->symfonyStyle) ? $this->symfonyStyle->writeln(['Action found for '.$handler]) : '');
+                if (isset($this->symfonyStyle) === true) {
+                    $this->symfonyStyle->writeln(['Action found for '.$handler]);
+                }
                 continue;
             }
     
@@ -204,11 +217,14 @@ class InstallationService implements InstallerInterface
             $action->setAsync(false);
 
             $this->entityManager->persist($action);
-
-            (isset($this->symfonyStyle) ? $this->symfonyStyle->writeln(['Action created for '.$handler]) : '');
+    
+            if (isset($this->symfonyStyle) === true) {
+                $this->symfonyStyle->writeln(['Action created for '.$handler]);
+            }
         }
     }//end addActions()
-    
+
+
     /**
      * Create endpoints for this bundle.
      *
@@ -236,11 +252,14 @@ class InstallationService implements InstallerInterface
                 $createdEndpoints[] = $createdEndpoint;
             }
         }
-        (isset($this->symfonyStyle) ? $this->symfonyStyle->writeln(count($createdEndpoints).' Endpoints Created') : '');
+        if (isset($this->symfonyStyle) === true) {
+            $this->symfonyStyle->writeln(count($createdEndpoints).' Endpoints Created');
+        }
 
         return $createdEndpoints;
     }// createEndpoints()
-    
+
+
     /**
      * Creates dashboard cards for the given objects.
      *
@@ -250,7 +269,9 @@ class InstallationService implements InstallerInterface
     public function createDashboardCards(array $objectsWithCards)
     {
         foreach ($objectsWithCards as $object) {
-            (isset($this->symfonyStyle) ? $this->symfonyStyle->writeln('Looking for a dashboard card for: '.$object) : '');
+            if (isset($this->symfonyStyle) === true) {
+                $this->symfonyStyle->writeln('Looking for a dashboard card for: '.$object);
+            }
             $entity = $this->entityManager->getRepository('App:Entity')->findOneBy(['reference' => $object]);
             $dashboardCard = $this->entityManager->getRepository('App:DashboardCard')->findOneBy(['entityId' => $entity->getId()]);
             if ($dashboardCard instanceof DashboardCard === false) {
@@ -263,13 +284,18 @@ class InstallationService implements InstallerInterface
                 $dashboardCard->setEntityId($entity->getId());
                 $dashboardCard->setOrdering(1);
                 $this->entityManager->persist($dashboardCard);
-                (isset($this->symfonyStyle) ? $this->symfonyStyle->writeln('Dashboard card created') : '');
+                if (isset($this->symfonyStyle) === true) {
+                    $this->symfonyStyle->writeln('Dashboard card created');
+                }
                 continue;
             }
-            (isset($this->symfonyStyle) ? $this->symfonyStyle->writeln('Dashboard card found') : '');
+            if (isset($this->symfonyStyle) === true) {
+                $this->symfonyStyle->writeln('Dashboard card found');
+            }
         }
     }//end createDashboardCards()
-    
+
+
     /**
      * Create cronjobs for this bundle.
      *
@@ -277,7 +303,9 @@ class InstallationService implements InstallerInterface
      */
     public function createCronjobs()
     {
-        (isset($this->symfonyStyle) ? $this->symfonyStyle->writeln(['', '<info>Looking for cronjobs</info>']) : '');
+        if (isset($this->symfonyStyle) === true) {
+            $this->symfonyStyle->writeln(['', '<info>Looking for cronjobs</info>']);
+        }
         // We only need 1 cronjob so lets set that.
         $cronjob = $this->entityManager->getRepository('App:Cronjob')->findOneBy(['name' => 'Open Catalogi']);
         if ($cronjob instanceof Cronjob === false) {
@@ -288,13 +316,17 @@ class InstallationService implements InstallerInterface
             $cronjob->setIsEnabled(true);
 
             $this->entityManager->persist($cronjob);
-
-            (isset($this->symfonyStyle) ? $this->symfonyStyle->writeln(['', 'Created a cronjob for '.$cronjob->getName()]) : '');
-        } else {
-            (isset($this->symfonyStyle) ? $this->symfonyStyle->writeln(['', 'There is alreade a cronjob for '.$cronjob->getName()]) : '');
-        }
-    }//end createCronjobs()
     
+            if (isset($this->symfonyStyle) === true) {
+                $this->symfonyStyle->writeln(['', 'Created a cronjob for '.$cronjob->getName()]);
+            }
+        } else if (isset($this->symfonyStyle) === true) {
+            $this->symfonyStyle->writeln(['', 'There is already a cronjob for '.$cronjob->getName()]);
+        }
+
+    }//end createCronjobs()
+
+
     /**
      * Creates the Sources we need.
      *
@@ -307,21 +339,24 @@ class InstallationService implements InstallerInterface
         $sources = [];
         
         foreach($createSources as $sourceThatShouldExist) {
-            if (!$sourceRepository->findOneBy(['name' => $sourceThatShouldExist['name']])) {
+            if ($sourceRepository->findOneBy(['name' => $sourceThatShouldExist['name']]) === false) {
                 $source = new Source($sourceThatShouldExist);
-                $source->setPassword(array_key_exists('password', $sourceThatShouldExist) ? $sourceThatShouldExist['password'] : '');
+                $source->setPassword(array_key_exists('password', $sourceThatShouldExist) === true ? $sourceThatShouldExist['password'] : '');
                 
                 $this->entityManager->persist($source);
                 $this->entityManager->flush();
                 $sources[] = $source;
             }
         }
-        
-        (isset($this->symfonyStyle) ? $this->symfonyStyle->writeln(count($sources).' Sources Created'): '');
+    
+        if (isset($this->symfonyStyle) === true) {
+            $this->symfonyStyle->writeln(count($sources).' Sources Created');
+        }
         
         return $sources;
     }//end createSources()
-    
+
+
     /**
      * Check if we need to create or update data for this bundle.
      *

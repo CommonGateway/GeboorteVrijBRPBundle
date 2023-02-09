@@ -28,18 +28,22 @@ class ZgwToVrijbrpService
      * @var EntityManagerInterface
      */
     private EntityManagerInterface $entityManager;
+    
     /**
      * @var CallService
      */
     private CallService $callService;
+    
     /**
      * @var SynchronizationService
      */
     private SynchronizationService $synchronizationService;
+    
     /**
      * @var MappingService
      */
     private MappingService $mappingService;
+    
     /**
      * @var SymfonyStyle SymfonyStyle for writing user feedback to console.
      */
@@ -49,18 +53,22 @@ class ZgwToVrijbrpService
      * @var array ActionHandler configuration.
      */
     private array $configuration;
+    
     /**
      * @var array Data of the api call.
      */
     private array $data;
+    
     /**
      * @var Source|null The Source we are using for the outgoing call.
      */
     private ?Source $source;
+    
     /**
      * @var Mapping|null The mapping we are using for the outgoing call.
      */
     private ?Mapping $mapping;
+    
     /**
      * @var Entity|null The entity used for creating a Synchronization object. (and also the entity that triggers the ActionHandler).
      */
@@ -70,10 +78,10 @@ class ZgwToVrijbrpService
     /**
      * Construct a ZgwToVrijbrpService.
      *
-     * @param EntityManagerInterface $entityManager
-     * @param CallService $callService
-     * @param SynchronizationService $synchronizationService
-     * @param MappingService $mappingService
+     * @param EntityManagerInterface $entityManager EntityManagerInterface.
+     * @param CallService $callService CallService.
+     * @param SynchronizationService $synchronizationService SynchronizationService.
+     * @param MappingService $mappingService MappingService.
      */
     public function __construct(
         EntityManagerInterface $entityManager,
@@ -89,7 +97,7 @@ class ZgwToVrijbrpService
 
     /**
      * Set symfony style in order to output to the console when running the handler function through a command.
-     * todo: use monolog
+     * Todo: use monolog
      *
      * @param SymfonyStyle $symfonyStyle SymfonyStyle for writing user feedback to console.
      *
@@ -111,18 +119,21 @@ class ZgwToVrijbrpService
      */
     private function setSource(): ?Source
     {
-        // todo: Add FromSchema function to Gateway Gateway.php, so that we can use .json files for sources as well.
-        // todo: ...For this to work, we also need to change CoreBundle installationService.
-        // todo: ...If we do this we can also add and use reference for Gateways / Sources
-        $this->source = $this->entityManager->getRepository('App:Gateway')->findOneBy(['location'=>$this->configuration['source']]);
+        // Todo: Add FromSchema function to Gateway Gateway.php, so that we can use .json files for sources as well.
+        // Todo: ...For this to work, we also need to change CoreBundle installationService.
+        // Todo: ...If we do this we can also add and use reference for Gateways / Sources
+        $this->source = $this->entityManager->getRepository('App:Gateway')->findOneBy(['location' => $this->configuration['source']]);
         if ($this->source instanceof Source === false) {
-            isset($this->symfonyStyle) && $this->symfonyStyle->error("No source found with location: {$this->configuration['source']}");
+            if (isset($this->symfonyStyle) === true) {
+                $this->symfonyStyle->error("No source found with location: {$this->configuration['source']}");
+            }
         
             return null;
         }
     
         return $this->source;
     }//end setSource()
+
     
     /**
      * Gets and sets a Mapping object using the required configuration['mapping'] to find the correct Mapping.
@@ -131,15 +142,18 @@ class ZgwToVrijbrpService
      */
     private function setMapping(): ?Mapping
     {
-        $this->mapping = $this->entityManager->getRepository('App:Mapping')->findOneBy(['reference'=>$this->configuration['mapping']]);
+        $this->mapping = $this->entityManager->getRepository('App:Mapping')->findOneBy(['reference' => $this->configuration['mapping']]);
         if ($this->source instanceof Mapping === false) {
-            isset($this->symfonyStyle) && $this->symfonyStyle->error("No mapping found with reference: {$this->configuration['mapping']}");
+            if (isset($this->symfonyStyle) === true) {
+                $this->symfonyStyle->error("No mapping found with reference: {$this->configuration['mapping']}");
+            }
         
             return null;
         }
     
         return $this->mapping;
     }//end setMapping()
+    
     
     /**
      * Gets and sets a conditionEntity object using the required configuration['conditionEntity'] to find the correct Entity.
@@ -148,9 +162,11 @@ class ZgwToVrijbrpService
      */
     private function setConditionEntity(): ?Entity
     {
-        $this->conditionEntity = $this->entityManager->getRepository('App:Entity')->findOneBy(['reference'=>$this->configuration['conditionEntity']]);
+        $this->conditionEntity = $this->entityManager->getRepository('App:Entity')->findOneBy(['reference' => $this->configuration['conditionEntity']]);
         if ($this->conditionEntity instanceof Entity === false) {
-            isset($this->symfonyStyle) && $this->symfonyStyle->error("No entity found with reference: {$this->configuration['conditionEntity']}");
+            if (isset($this->symfonyStyle) === true) {
+                $this->symfonyStyle->error("No entity found with reference: {$this->configuration['conditionEntity']}");
+            }
         
             return null;
         }
@@ -158,13 +174,14 @@ class ZgwToVrijbrpService
         return $this->conditionEntity;
     }//end setConditionEntity()
     
+    
     /**
      * Handles a ZgwToVrijBrp action.
      *
-     * @param array $data           The data from the call.
-     * @param array $configuration  The configuration from the ActionHandler.
+     * @param array $data The data from the call.
+     * @param array $configuration The configuration from the ActionHandler.
      *
-     * @return array|null
+     * @return array|null Data.
      */
     public function zgwToVrijbrpHandler(array $data, array $configuration): ?array
     {
@@ -173,36 +190,44 @@ class ZgwToVrijbrpService
         if ($this->setSource() === null || $this->setMapping() === null || $this->setConditionEntity() === null) {
             return [];
         }
+        
         $id = $data['id'];
     
-        // Get (zaak) object that was created
-        isset($this->symfonyStyle) && $this->symfonyStyle->comment("(Zaak) Object with id $id was created");
+        // Get (zaak) object that was created.
+        if (isset($this->symfonyStyle) === true) {
+            $this->symfonyStyle->comment("(Zaak) Object with id $id was created");
+        }
+        
         $object = $this->entityManager->getRepository('App:ObjectEntity')->find($id);
         
-        // Do mapping with Zaak ObjectEntity as array
+        // Do mapping with Zaak ObjectEntity as array.
         $objectArray = $this->mappingService->mapping($this->mapping, $object->toArray());
         
-        // Create synchronization
+        // Create synchronization.
         $synchronization = $this->synchronizationService->findSyncByObject($object, $this->source, $this->conditionEntity);
         $synchronization->setMapping($this->mapping);
     
-        // Send request to source
-        isset($this->symfonyStyle) && $this->symfonyStyle->comment("Synchronize (Zaak) Object to: {$this->source->getLocation()}{$this->configuration['location']}");
-        // todo: change synchronize function so it can also push to a source and not only pull from a source:
-//        $this->synchronizationService->synchronize($synchronization, $objectArray);
+        // Send request to source.
+        if (isset($this->symfonyStyle) === true) {
+            $this->symfonyStyle->comment("Synchronize (Zaak) Object to: {$this->source->getLocation()}{$this->configuration['location']}");
+        }
+        
+        // Todo: change synchronize function so it can also push to a source and not only pull from a source:
+        // $this->synchronizationService->synchronize($synchronization, $objectArray);
     
-        // todo: temp way of doing this without updated synchronize() function...
-        if (empty($this->synchronizeTemp($synchronization, $objectArray))) {
+        // Todo: temp way of doing this without updated synchronize() function...
+        if ($this->synchronizeTemp($synchronization, $objectArray) === []) {
             return [];
         }
 
         return $data;
     }//end zgwToVrijbrpHandler()
     
+    
     /**
      * Temporary function as replacement of the $this->synchronizationService->synchronize() function.
      * Because currently synchronize function can only pull from a source and not push to a source.
-     * // todo: temp way of doing this without updated synchronize() function...
+     * // Todo: temp way of doing this without updated synchronize() function...
      *
      * @param Synchronization $synchronization The synchronization we are going to synchronize.
      * @param array $objectArray The object data we are going to synchronize.
@@ -213,7 +238,7 @@ class ZgwToVrijbrpService
     {
         $objectString = $this->synchronizationService->getObjectString($objectArray);
 
-        // todo: remove this code, here for testing purposes
+        // Todo: remove this code, here for testing purposes
         var_dump($objectString);
         $log = new Log();
         $log->setRequestContent($objectString);
@@ -222,7 +247,7 @@ class ZgwToVrijbrpService
         $log->setResponseTime(0);
         $this->entityManager->persist($log);
         $this->entityManager->flush();
-        // todo: END "remove, here for testing purposes"
+        // Todo: END "remove, here for testing purposes"
 
         try {
             $result = $this->callService->call(
@@ -231,14 +256,20 @@ class ZgwToVrijbrpService
                 'POST',
                 [
                     'body'    => $objectString,
-//                    'query'   => [],
-//                    'headers' => [],
+                    //'query'   => [],
+                    //'headers' => [],
                 ]
             );
-        } catch (Exception|GuzzleException $exception) {
-            $this->synchronizationService->ioCatchException($exception, ['line', 'file', 'message' => [
-                'preMessage' => 'Error while doing syncToSource in zgwToVrijbrpHandler: ',
-            ]]);
+        } catch (Exception |GuzzleException $exception) {
+            $this->synchronizationService->ioCatchException(
+                $exception, [
+                    'line',
+                    'file',
+                    'message' => [
+                        'preMessage' => 'Error while doing syncToSource in zgwToVrijbrpHandler: ',
+                    ]
+                ]
+            );
         
             return [];
         }
