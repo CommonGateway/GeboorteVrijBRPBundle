@@ -3,7 +3,6 @@
 namespace CommonGateway\GeboorteVrijBRPBundle\Service;
 
 use App\Entity\Entity;
-use App\Entity\Gateway as Source;
 use App\Entity\Mapping;
 use App\Entity\ObjectEntity;
 use App\Service\SynchronizationService;
@@ -58,9 +57,10 @@ class ZdsToZgwService
     }//end setStyle()
 
     /**
-     * Get an entity by reference
+     * Get an entity by reference.
      *
      * @param string $reference The reference to look for
+     *
      * @return Entity|null
      */
     public function getEntity(string $reference): ?Entity
@@ -74,21 +74,23 @@ class ZdsToZgwService
     }//end getEntity()
 
     /**
-     * Gets mapping for reference
+     * Gets mapping for reference.
      *
      * @param string $reference The reference to look for
+     *
      * @return Mapping
      */
-    public function getMapping (string $reference): Mapping
+    public function getMapping(string $reference): Mapping
     {
         return $this->entityManager->getRepository('App:Mapping')->findOneBy(['reference' => $reference]);
     }//end getMapping()
 
     /**
-     * Creates a response based on content
+     * Creates a response based on content.
      *
      * @param array $content The content to incorporate in the response
      * @param int   $status  The status code of the response
+     *
      * @return Response
      */
     public function createResponse(array $content, int $status): Response
@@ -100,13 +102,14 @@ class ZdsToZgwService
     }//end createResponse()
 
     /**
-     * Handles incoming creeerZaakIdentificatie messages, creates a case with incoming reference as identificatie field
+     * Handles incoming creeerZaakIdentificatie messages, creates a case with incoming reference as identificatie field.
      *
-     * @param array $data    The inbound data from the request
-     * @param array $config  The configuration for the handler
+     * @param array $data   The inbound data from the request
+     * @param array $config The configuration for the handler
+     *
      * @return array
      */
-    public function zaakIdentificatieActionHandler (array $data, array $config): array
+    public function zaakIdentificatieActionHandler(array $data, array $config): array
     {
         $zaakEntity = $this->getEntity('https://vng.opencatalogi.nl/schemas/zrc.zaak.schema.json');
         $mapping = $this->getMapping('https://opencatalogi.nl/schemas/zds.zdsZaakIdToZgwZaak.schema.json');
@@ -124,20 +127,21 @@ class ZdsToZgwService
                 $data['response'] = $this->createResponse($this->mappingService->mapping($mappingOut, $zaak->toArray()), 200);
             }//end if
         } else {
-            $data['response'] = $this->createResponse(['Error' => 'The case with id ' .$zaakArray['identificatie']. ' already exists'], 400);
+            $data['response'] = $this->createResponse(['Error' => 'The case with id '.$zaakArray['identificatie'].' already exists'], 400);
         }//end if
 
         return $data;
     }//end zaakIdentificatieActionHandler()
 
     /**
-     * Handles incoming creeerDocumentIdentificatie messages, creates a document with incoming reference as identificatie field
+     * Handles incoming creeerDocumentIdentificatie messages, creates a document with incoming reference as identificatie field.
      *
-     * @param array $data    The inbound data from the request
-     * @param array $config  The configuration for the handler
+     * @param array $data   The inbound data from the request
+     * @param array $config The configuration for the handler
+     *
      * @return array
      */
-    public function documentIdentificatieActionHandler (array $data, array $config): array
+    public function documentIdentificatieActionHandler(array $data, array $config): array
     {
         $documentEntity = $this->getEntity('https://vng.opencatalogi.nl/schemas/drc.enkelvoudigInformatieObject.schema.json');
 
@@ -156,17 +160,18 @@ class ZdsToZgwService
                 $data['response'] = $this->createResponse($this->mappingService->mapping($mappingOut, $document->toArray()), 200);
             }//end if
         } else {
-            $data['response'] = $this->createResponse(['Error' => 'The document with id ' .$documentArray['identificatie']. ' already exists'], 400);
+            $data['response'] = $this->createResponse(['Error' => 'The document with id '.$documentArray['identificatie'].' already exists'], 400);
         }//end if
 
         return $data;
     }//end documentIdentificatieActionHandler()
 
     /**
-     * Connects Eigenschappen to ZaakType if eigenschap does not exist yet, or connect existing Eigenschap to ZaakEigenschap
+     * Connects Eigenschappen to ZaakType if eigenschap does not exist yet, or connect existing Eigenschap to ZaakEigenschap.
      *
      * @param array        $zaakArray The mapped zaak
      * @param ObjectEntity $zaakType  The zaakType to connect
+     *
      * @return array
      */
     public function connectEigenschappen(array $zaakArray, ObjectEntity $zaakType): array
@@ -195,10 +200,11 @@ class ZdsToZgwService
     }//end connectEigenschappen()
 
     /**
-     * Connects RoleTypes to ZaakType if RoleType does not exist yet, or connect existing RoleType to Role
+     * Connects RoleTypes to ZaakType if RoleType does not exist yet, or connect existing RoleType to Role.
      *
-     * @param array         $zaakArray The mapped zaak
-     * @param ObjectEntity  $zaakType  The zaakType to connect
+     * @param array        $zaakArray The mapped zaak
+     * @param ObjectEntity $zaakType  The zaakType to connect
+     *
      * @return array
      */
     public function connectRolTypes(array $zaakArray, ObjectEntity $zaakType): array
@@ -228,9 +234,10 @@ class ZdsToZgwService
     }//end connectRolTypes()
 
     /**
-     * Creates ZaakType if no ZaakType exists, connect existing ZaakType if ZaakType with identifier exists
+     * Creates ZaakType if no ZaakType exists, connect existing ZaakType if ZaakType with identifier exists.
      *
      * @param array $zaakArray
+     *
      * @return array
      */
     public function convertZaakType(array $zaakArray): array
@@ -257,10 +264,11 @@ class ZdsToZgwService
     }//end convertZaakType
 
     /**
-     * Receives a case and maps it to a ZGW case
+     * Receives a case and maps it to a ZGW case.
      *
      * @param array $data   The inbound data for the case
      * @param array $config The configuration for the action
+     *
      * @return array
      */
     public function zaakActionHandler(array $data, array $config): array
@@ -294,10 +302,11 @@ class ZdsToZgwService
     }//end zaakActionHandler()
 
     /**
-     * Receives a document and maps it to a ZGW EnkelvoudigInformatieObject
+     * Receives a document and maps it to a ZGW EnkelvoudigInformatieObject.
      *
      * @param array $data   The inbound data for the case
      * @param array $config The configuration for the action
+     *
      * @return array
      */
     public function documentActionHandler(array $data, array $config): array

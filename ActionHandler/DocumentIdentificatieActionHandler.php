@@ -10,7 +10,6 @@ use CommonGateway\GeboorteVrijBRPBundle\Service\ZdsToZgwService;
  */
 class DocumentIdentificatieActionHandler implements ActionHandlerInterface
 {
-
     /**
      * @var ZdsToZgwService
      */

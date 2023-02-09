@@ -10,7 +10,6 @@ use CommonGateway\GeboorteVrijBRPBundle\Service\ZdsToZgwService;
  */
 class ZdsZaakActionHandler implements ActionHandlerInterface
 {
-
     /**
      * @var ZdsToZgwService
      */
