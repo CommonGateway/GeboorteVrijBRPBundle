@@ -8,7 +8,7 @@ use CommonGateway\GeboorteVrijBRPBundle\Service\ZdsToZgwService;
 /**
  * Haalt applications op van de componenten catalogus.
  */
-class ZaakIdentificatieActionHandler implements ActionHandlerInterface
+class DocumentIdentificatieActionHandler implements ActionHandlerInterface
 {
     /**
      * @var ZdsToZgwService
@@ -26,15 +26,15 @@ class ZaakIdentificatieActionHandler implements ActionHandlerInterface
     /**
      *  This function returns the required configuration as a [json-schema](https://json-schema.org/) array.
      *
-     * @throws array a [json-schema](https://json-schema.org/) that this  action should comply to
+     * @return array a [json-schema](https://json-schema.org/) that this  action should comply to
      */
     public function getConfiguration(): array
     {
         return [
-            '$id'        => 'https://vrijbrp.nl/vrijbrp.zds.creerzaakid.schema.json',
-            '$schema'    => 'https://json-schema.org/draft/2020-12/schema',
-            'title'      => 'ExampleActionHandler',
-            'description'=> 'This is a action to create objects from the fetched applications from the componenten catalogus.',
+            '$id'         => 'https://vrijbrp.nl/vrijbrp.zds.creerdocumentid.schema.json',
+            '$schema'     => 'https://json-schema.org/draft/2020-12/schema',
+            'title'       => 'ExampleActionHandler',
+            'description' => 'This is a action to create objects from the fetched applications from the componenten catalogus.',
         ];
     }//end getConfiguration()
 
@@ -48,6 +48,6 @@ class ZaakIdentificatieActionHandler implements ActionHandlerInterface
      */
     public function run(array $data, array $configuration): array
     {
-        return $this->zdsToZgwService->zaakIdentificatieActionHandler($data, $configuration);
+        return $this->zdsToZgwService->documentIdentificatieActionHandler($data, $configuration);
     }//end run()
 }

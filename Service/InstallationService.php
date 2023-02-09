@@ -6,7 +6,6 @@ use App\Entity\Action;
 use App\Entity\Cronjob;
 use App\Entity\DashboardCard;
 use App\Entity\Endpoint;
-use App\Entity\Entity;
 use App\Entity\Gateway as Source;
 use CommonGateway\CoreBundle\Installer\InstallerInterface;
 use Doctrine\ORM\EntityManagerInterface;
@@ -38,17 +37,22 @@ class InstallationService implements InstallerInterface
     public const OBJECTS_WITH_CARDS = [];
 
     public const ENDPOINTS = [
-        ['path' => 'stuf/zds', 'throws' => ['vrijbrp.zds.inbound'], 'name' => 'zds-endpoint'],
+        ['path' => 'stuf/zds', 'throws' => ['vrijbrp.zds.inbound'], 'name' => 'zds-endpoint', 'methods' => []],
     ];
 
     public const SOURCES = [
-        ['name'             => 'vrijbrp-dossiers', 'location' => 'https://vrijbrp.nl/dossiers', 'auth' => 'vrijbrp-jwt',
-            'username'      => 'sim-!ChangeMe!', 'password' => '!secret-ChangeMe!', 'accept' => 'application/json',
-            'configuration' => ['verify' => false], ],
+        ['name'         => 'vrijbrp-dossiers', 'location' => 'https://vrijbrp.nl/dossiers', 'auth' => 'vrijbrp-jwt',
+        'username'      => 'sim-!ChangeMe!', 'password' => '!secret-ChangeMe!', 'accept' => 'application/json',
+        'configuration' => ['verify' => false], ],
     ];
 
-    public const ACTION_HANDLERS = [];
-
+    public const ACTION_HANDLERS = [
+        'CommonGateway\GeboorteVrijBRPBundle\ActionHandler\ZaakIdentificatieActionHandler',
+        'CommonGateway\GeboorteVrijBRPBundle\ActionHandler\DocumentIdentificatieActionHandler',
+        'CommonGateway\GeboorteVrijBRPBundle\ActionHandler\ZdsZaakActionHandler',
+        'CommonGateway\GeboorteVrijBRPBundle\ActionHandler\ZdsDocumentActionHandler',
+    ];
+        
     /**
      * Construct an InstallationService.
      *
@@ -177,25 +181,23 @@ class InstallationService implements InstallerInterface
 
             if ($schema['$id'] === 'https://vrijbrp.nl/vrijbrp.zds.creerzaakid.schema.json') {
                 $action->setListens(['vrijbrp.zds.inbound']);
-                $action->setConditions(
-                    [
-                        ['var' => 'SOAP-ENV:Envelope.SOAP-ENV:Body.ns2:genereerZaakIdentificatie_Di02'],
-                    ]
-                );
-            } elseif ($schema['$id'] === 'https://vrijbrp.nl/vrijbrp.zds.creerdocumentid.schema.json') {
+                $action->setConditions([
+                    'var' => 'body.SOAP-ENV:Body.ns2:genereerZaakIdentificatie_Di02',
+                ]);
+            } elseif ($schema['$id'] == 'https://vrijbrp.nl/vrijbrp.zds.creerdocumentid.schema.json') {
                 $action->setListens(['vrijbrp.zds.inbound']);
                 $action->setConditions([
-                    ['var' => 'SOAP-ENV:Envelope.SOAP-ENV:Body.ns2:genereerDocumentIdentificatie_Di02'],
+                    'var' => 'body.SOAP-ENV:Body.ns2:genereerDocumentIdentificatie_Di02',
                 ]);
             } elseif ($schema['$id'] === 'https://opencatalogi.nl/vrijbrp.zds.creerzaak.schema.json') {
                 $action->setListens(['vrijbrp.zds.inbound']);
                 $action->setConditions([
-                    ['var' => 'SOAP-ENV:Envelope.SOAP-ENV:Body.ns2:zakLk01'],
+                    'var' => 'body.SOAP-ENV:Body.ns2:zakLk01',
                 ]);
             } elseif ($schema['$id'] === 'https://opencatalogi.nl/vrijbrp.zds.creerdocument.schema.json') {
                 $action->setListens(['vrijbrp.zds.inbound']);
                 $action->setConditions([
-                    ['var' => 'SOAP-ENV:Envelope.SOAP-ENV:Body.ns2:edcLK01'],
+                    'var' => 'body.SOAP-ENV:Body.ns2:edcLk01',
                 ]);
             } else {
                 $action->setListens(['vrijbrp.default.listens']);
@@ -236,9 +238,13 @@ class InstallationService implements InstallerInterface
                 $createdEndpoint->setName($endpoint['name']);
                 $createdEndpoint->setPath($explodedPath);
                 $createdEndpoint->setPathRegex($pathRegEx);
-
+                $createdEndpoint->setMethods(['GET', 'POST', 'PUT', 'PATCH', 'DELETE']);
                 $createdEndpoint->setThrows($endpoint['throws']);
+                $createdEndpoint->getDefaultContentType('text/xml');
                 $createdEndpoints[] = $createdEndpoint;
+
+                $this->entityManager->persist($createdEndpoint);
+                $this->entityManager->flush();
             }
         }
         if (isset($this->symfonyStyle) === true) {
