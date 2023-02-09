@@ -305,23 +305,6 @@ class ZgwToVrijbrpService
     {
         $objectString = $this->syncService->getObjectString($objectArray);
 
-        // Todo: remove this code, here for testing purposes.
-        var_dump($objectString);
-        $log = new Log();
-        $log->setRequestContent($objectString);
-        $log->setType('out');
-        $log->setCallId(Uuid::uuid4());
-        $log->setRequestMethod('POST');
-        $log->setRequestHeaders([]);
-        $log->setRequestQuery([]);
-        $log->setRequestPathInfo('');
-        $log->setRequestLanguages([]);
-        $log->setSession('');
-        $log->setResponseTime(0);
-        $this->entityManager->persist($log);
-        $this->entityManager->flush();
-        // Todo: END "remove, here for testing purposes".
-
         try {
             $result = $this->callService->call(
                 $this->source,
