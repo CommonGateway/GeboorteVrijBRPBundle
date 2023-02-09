@@ -76,7 +76,7 @@ class ZgwToVrijbrpHandler implements ActionHandlerInterface
                 ],
             ],
         ];
-    }
+    }//end getConfiguration()
 
     /**
      * This function will call the handler function to the corresponding service of this Handler.
@@ -89,5 +89,5 @@ class ZgwToVrijbrpHandler implements ActionHandlerInterface
     public function run(array $data, array $configuration): array
     {
         return $this->zgwToVrijbrpService->zgwToVrijbrpHandler($data, $configuration);
-    }
+    }//end run()
 }

@@ -10,19 +10,42 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
- * Command to execute the FindGithubRepositoryThroughOrganizationService.
+ * Command to execute the ZgwToVrijbrpService.
+ *
+ * @author Wilco Louwerse <wilco@conduction.nl>
  */
 class ZgwToVrijbrpCommand extends Command
 {
+    
+    /**
+     * @var string The name of the command (the part after "bin/console").
+     */
     protected static $defaultName = 'vrijbrp:ZgwToVrijbrp';
+    
+    /**
+     * @var ZgwToVrijbrpService The ZgwToVrijbrpService that will be used/tested with this command.
+     */
     private ZgwToVrijbrpService  $zgwToVrijbrpService;
-
+    
+    
+    /**
+     * Construct a ZgwToVrijbrpCommand.
+     *
+     * @param ZgwToVrijbrpService $zgwToVrijbrpService The ZgwToVrijbrpService.
+     */
     public function __construct(ZgwToVrijbrpService $zgwToVrijbrpService)
     {
         $this->zgwToVrijbrpService = $zgwToVrijbrpService;
         parent::__construct();
-    }
-
+        
+    }//end __construct()
+    
+    
+    /**
+     * Configure this command.
+     *
+     * @return void Nothing.
+     */
     protected function configure(): void
     {
         $this
@@ -33,26 +56,34 @@ class ZgwToVrijbrpCommand extends Command
             ->addOption('location', 'l', InputOption::VALUE_OPTIONAL, 'The endpoint we will use on the Source to send a request, just a string')
             ->addOption('mapping', 'm', InputOption::VALUE_OPTIONAL, 'The reference of the mapping we will use before sending the data to the source')
             ->addOption('conditionEntity', 'ce', InputOption::VALUE_OPTIONAL, 'The reference of the entity we use as trigger for this handler, we need this to find a synchronization object');
-    }
-
+    }//end configure()
+    
+    /**
+     * What happens when this command is executed.
+     *
+     * @param InputInterface $input InputInterface.
+     * @param OutputInterface $output OutputInterface.
+     * @return int 0 for Success, 1 for Failure.
+     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $symfonyStyle = new SymfonyStyle($input, $output);
         $this->zgwToVrijbrpService->setStyle($symfonyStyle);
 
-        // Handle the command options
+        // Handle the command options.
         $zaakId = $input->getOption('zaak', false);
-        if (!$zaakId) {
+        if ($zaakId === false) {
             $symfonyStyle->error("Please use vrijbrp:ZgwToVrijbrp -z {uuid of a zaak}");
             return Command::FAILURE;
         }
+
         $data = ['id' => $zaakId];
-        
+
         $configuration = [
-            'source' => $input->getOption('source', false) ?? 'https://vrijbrp.nl/dossiers',
-            'location' => $input->getOption('location', false) ?? '/api/births',
-            'mapping' => $input->getOption('mapping', false) ?? 'https://vrijbrp.nl/mapping/vrijbrp.ZgwToVrijbrp.mapping.json',
-            'conditionEntity' => $input->getOption('conditionEntity', false) ?? 'https://vng.opencatalogi.nl/schemas/zrc.zaak.schema.json',
+            'source' => ($input->getOption('source', false) ?? 'https://vrijbrp.nl/dossiers'),
+            'location' => ($input->getOption('location', false) ?? '/api/births'),
+            'mapping' => ($input->getOption('mapping', false) ?? 'https://vrijbrp.nl/mapping/vrijbrp.ZgwToVrijbrp.mapping.json'),
+            'conditionEntity' => ($input->getOption('conditionEntity', false) ?? 'https://vng.opencatalogi.nl/schemas/zrc.zaak.schema.json'),
         ];
 
         if (!$this->zgwToVrijbrpService->zgwToVrijbrpHandler($data, $configuration)) {
@@ -60,5 +91,5 @@ class ZgwToVrijbrpCommand extends Command
         }
 
         return Command::SUCCESS;
-    }
+    }//end execute()
 }

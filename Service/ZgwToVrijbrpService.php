@@ -41,7 +41,7 @@ class ZgwToVrijbrpService
      */
     private MappingService $mappingService;
     /**
-     * @var SymfonyStyle
+     * @var SymfonyStyle SymfonyStyle for writing user feedback to console.
      */
     private SymfonyStyle $symfonyStyle;
     
@@ -85,7 +85,7 @@ class ZgwToVrijbrpService
         $this->callService = $callService;
         $this->synchronizationService = $synchronizationService;
         $this->mappingService = $mappingService;
-    }
+    }//end __construct()
 
     /**
      * Set symfony style in order to output to the console when running the handler function through a command.
@@ -115,7 +115,7 @@ class ZgwToVrijbrpService
         // todo: ...For this to work, we also need to change CoreBundle installationService.
         // todo: ...If we do this we can also add and use reference for Gateways / Sources
         $this->source = $this->entityManager->getRepository('App:Gateway')->findOneBy(['location'=>$this->configuration['source']]);
-        if (!$this->source instanceof Source) {
+        if ($this->source instanceof Source === false) {
             isset($this->symfonyStyle) && $this->symfonyStyle->error("No source found with location: {$this->configuration['source']}");
         
             return null;
@@ -132,7 +132,7 @@ class ZgwToVrijbrpService
     private function setMapping(): ?Mapping
     {
         $this->mapping = $this->entityManager->getRepository('App:Mapping')->findOneBy(['reference'=>$this->configuration['mapping']]);
-        if (!$this->source instanceof Mapping) {
+        if ($this->source instanceof Mapping === false) {
             isset($this->symfonyStyle) && $this->symfonyStyle->error("No mapping found with reference: {$this->configuration['mapping']}");
         
             return null;
@@ -149,7 +149,7 @@ class ZgwToVrijbrpService
     private function setConditionEntity(): ?Entity
     {
         $this->conditionEntity = $this->entityManager->getRepository('App:Entity')->findOneBy(['reference'=>$this->configuration['conditionEntity']]);
-        if (!$this->conditionEntity instanceof Entity) {
+        if ($this->conditionEntity instanceof Entity === false) {
             isset($this->symfonyStyle) && $this->symfonyStyle->error("No entity found with reference: {$this->configuration['conditionEntity']}");
         
             return null;
