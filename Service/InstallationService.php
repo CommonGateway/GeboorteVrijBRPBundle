@@ -28,11 +28,11 @@ class InstallationService implements InstallerInterface
     ];
 
     public const ACTION_HANDLERS = [
-                                        'CommonGateway\GeboorteVrijBRPBundle\ActionHandler\ZaakIdentificatieActionHandler',
-                                        'CommonGateway\GeboorteVrijBRPBundle\ActionHandler\DocumentIdentificatieActionHandler',
-                                        'CommonGateway\GeboorteVrijBRPBundle\ActionHandler\ZdsZaakActionHandler',
-                                        'CommonGateway\GeboorteVrijBRPBundle\ActionHandler\ZdsDocumentActionHandler',
-                                   ];
+        'CommonGateway\GeboorteVrijBRPBundle\ActionHandler\ZaakIdentificatieActionHandler',
+        'CommonGateway\GeboorteVrijBRPBundle\ActionHandler\DocumentIdentificatieActionHandler',
+        'CommonGateway\GeboorteVrijBRPBundle\ActionHandler\ZdsZaakActionHandler',
+        'CommonGateway\GeboorteVrijBRPBundle\ActionHandler\ZdsDocumentActionHandler',
+    ];
 
     public function __construct(EntityManagerInterface $entityManager, ContainerInterface $container)
     {
