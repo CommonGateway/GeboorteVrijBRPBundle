@@ -155,7 +155,7 @@ class InstallationService implements InstallerInterface
     public function addActions(): void
     {
         $actionHandlers = $this::ACTION_HANDLERS;
-        (isset($this->symfonyStyle) ? $this->symfonyStyle->writeln(['', '<info>Looking for actions</info>']) : '');
+        (isset($this->symfonyStyle) === true ? $this->symfonyStyle->writeln(['', '<info>Looking for actions</info>']) : '');
 
         foreach ($actionHandlers as $handler) {
             $actionHandler = $this->container->get($handler);
