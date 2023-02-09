@@ -3,7 +3,6 @@
 namespace CommonGateway\GeboorteVrijBRPBundle\Service;
 
 use App\Entity\Action;
-use App\Entity\CollectionEntity;
 use App\Entity\Cronjob;
 use App\Entity\DashboardCard;
 use App\Entity\Endpoint;
@@ -11,8 +10,6 @@ use App\Entity\Entity;
 use App\Entity\Gateway as Source;
 use CommonGateway\CoreBundle\Installer\InstallerInterface;
 use Doctrine\ORM\EntityManagerInterface;
-use Exception;
-use OpenCatalogi\OpenCatalogiBundle\Service\CatalogiService;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -23,17 +20,16 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class InstallationService implements InstallerInterface
 {
-    
     /**
      * @var EntityManagerInterface The EntityManagerInterface.
      */
     private EntityManagerInterface $entityManager;
-    
+
     /**
      * @var ContainerInterface ContainerInterface.
      */
     private ContainerInterface $container;
-    
+
     /**
      * @var SymfonyStyle SymfonyStyle for writing user feedback to console.
      */
@@ -42,31 +38,28 @@ class InstallationService implements InstallerInterface
     public const OBJECTS_WITH_CARDS = [];
 
     public const ENDPOINTS = [
-        ['path' => 'stuf/zds', 'throws' => ['vrijbrp.zds.inbound'], 'name' => 'zds-endpoint']
+        ['path' => 'stuf/zds', 'throws' => ['vrijbrp.zds.inbound'], 'name' => 'zds-endpoint'],
     ];
 
     public const SOURCES = [
-        ['name' => 'vrijbrp-dossiers', 'location' => 'https://vrijbrp.nl/dossiers', 'auth' => 'vrijbrp-jwt',
-        'username' => 'sim-!ChangeMe!', 'password' => '!secret-ChangeMe!', 'accept' => 'application/json',
-        'configuration' => ['verify' => false]],
+        ['name'             => 'vrijbrp-dossiers', 'location' => 'https://vrijbrp.nl/dossiers', 'auth' => 'vrijbrp-jwt',
+            'username'      => 'sim-!ChangeMe!', 'password' => '!secret-ChangeMe!', 'accept' => 'application/json',
+            'configuration' => ['verify' => false], ],
     ];
 
     public const ACTION_HANDLERS = [];
-
 
     /**
      * Construct an InstallationService.
      *
      * @param EntityManagerInterface $entityManager EntityManagerInterface.
-     * @param ContainerInterface $container ContainerInterface.
+     * @param ContainerInterface     $container     ContainerInterface.
      */
     public function __construct(EntityManagerInterface $entityManager, ContainerInterface $container)
     {
         $this->entityManager = $entityManager;
         $this->container = $container;
-        
     }//end __construct()
-
 
     /**
      * Set symfony style in order to output to the console.
@@ -82,7 +75,6 @@ class InstallationService implements InstallerInterface
         return $this;
     }
 
-
     /**
      * Install for this bundle.
      *
@@ -92,7 +84,6 @@ class InstallationService implements InstallerInterface
     {
         $this->checkDataConsistency();
     }//end install()
-
 
     /**
      * Update for this bundle.
@@ -104,7 +95,6 @@ class InstallationService implements InstallerInterface
         $this->checkDataConsistency();
     }//end update()
 
-
     /**
      * Uninstall for this bundle.
      *
@@ -115,11 +105,11 @@ class InstallationService implements InstallerInterface
         // Do some cleanup.
     }//end uninstall()
 
-
     /**
      * Adds configuration to an Action.
      *
      * @param mixed $actionHandler The action Handler to add configuration for.
+     *
      * @return array The configuration.
      */
     public function addActionConfiguration($actionHandler): array
@@ -155,7 +145,6 @@ class InstallationService implements InstallerInterface
         return $defaultConfig;
     }//end addActionConfiguration()
 
-
     /**
      * This function creates actions for all the actionHandlers in OpenCatalogi.
      *
@@ -177,7 +166,7 @@ class InstallationService implements InstallerInterface
                 }
                 continue;
             }
-    
+
             $schema = $actionHandler->getConfiguration();
             if ($schema === null) {
                 continue;
@@ -193,17 +182,17 @@ class InstallationService implements InstallerInterface
                         ['var' => 'SOAP-ENV:Envelope.SOAP-ENV:Body.ns2:genereerZaakIdentificatie_Di02'],
                     ]
                 );
-            } else if ($schema['$id'] === 'https://vrijbrp.nl/vrijbrp.zds.creerdocumentid.schema.json') {
+            } elseif ($schema['$id'] === 'https://vrijbrp.nl/vrijbrp.zds.creerdocumentid.schema.json') {
                 $action->setListens(['vrijbrp.zds.inbound']);
                 $action->setConditions([
                     ['var' => 'SOAP-ENV:Envelope.SOAP-ENV:Body.ns2:genereerDocumentIdentificatie_Di02'],
                 ]);
-            } else if ($schema['$id'] === 'https://opencatalogi.nl/vrijbrp.zds.creerzaak.schema.json') {
+            } elseif ($schema['$id'] === 'https://opencatalogi.nl/vrijbrp.zds.creerzaak.schema.json') {
                 $action->setListens(['vrijbrp.zds.inbound']);
                 $action->setConditions([
                     ['var' => 'SOAP-ENV:Envelope.SOAP-ENV:Body.ns2:zakLk01'],
                 ]);
-            } else if ($schema['$id'] === 'https://opencatalogi.nl/vrijbrp.zds.creerdocument.schema.json') {
+            } elseif ($schema['$id'] === 'https://opencatalogi.nl/vrijbrp.zds.creerdocument.schema.json') {
                 $action->setListens(['vrijbrp.zds.inbound']);
                 $action->setConditions([
                     ['var' => 'SOAP-ENV:Envelope.SOAP-ENV:Body.ns2:edcLK01'],
@@ -217,18 +206,18 @@ class InstallationService implements InstallerInterface
             $action->setAsync(false);
 
             $this->entityManager->persist($action);
-    
+
             if (isset($this->symfonyStyle) === true) {
                 $this->symfonyStyle->writeln(['Action created for '.$handler]);
             }
         }
     }//end addActions()
 
-
     /**
      * Create endpoints for this bundle.
      *
      * @param array $endpoints An array of data used to create Endpoints.
+     *
      * @return array Created endpoints.
      */
     private function createEndpoints(array $endpoints): array
@@ -240,7 +229,7 @@ class InstallationService implements InstallerInterface
             if ($explodedPath[0] === '') {
                 array_shift($explodedPath);
             }
-            
+
             $pathRegEx = '^'.$endpoint['path'].'$';
             if ($endpointRepository->findOneBy(['pathRegex' => $pathRegEx]) === false) {
                 $createdEndpoint = new Endpoint();
@@ -259,11 +248,11 @@ class InstallationService implements InstallerInterface
         return $createdEndpoints;
     }// createEndpoints()
 
-
     /**
      * Creates dashboard cards for the given objects.
      *
      * @param array $objectsWithCards The objects to create cards for.
+     *
      * @return void Nothing.
      */
     public function createDashboardCards(array $objectsWithCards)
@@ -295,7 +284,6 @@ class InstallationService implements InstallerInterface
         }
     }//end createDashboardCards()
 
-
     /**
      * Create cronjobs for this bundle.
      *
@@ -316,46 +304,44 @@ class InstallationService implements InstallerInterface
             $cronjob->setIsEnabled(true);
 
             $this->entityManager->persist($cronjob);
-    
+
             if (isset($this->symfonyStyle) === true) {
                 $this->symfonyStyle->writeln(['', 'Created a cronjob for '.$cronjob->getName()]);
             }
-        } else if (isset($this->symfonyStyle) === true) {
+        } elseif (isset($this->symfonyStyle) === true) {
             $this->symfonyStyle->writeln(['', 'There is already a cronjob for '.$cronjob->getName()]);
         }
-
     }//end createCronjobs()
-
 
     /**
      * Creates the Sources we need.
      *
      * @param array $createSources Data for Sources we want to create.
+     *
      * @return array The created sources.
      */
     private function createSources(array $createSources): array
     {
         $sourceRepository = $this->entityManager->getRepository('App:Gateway');
         $sources = [];
-        
-        foreach($createSources as $sourceThatShouldExist) {
+
+        foreach ($createSources as $sourceThatShouldExist) {
             if ($sourceRepository->findOneBy(['name' => $sourceThatShouldExist['name']]) === false) {
                 $source = new Source($sourceThatShouldExist);
                 $source->setPassword(array_key_exists('password', $sourceThatShouldExist) === true ? $sourceThatShouldExist['password'] : '');
-                
+
                 $this->entityManager->persist($source);
                 $this->entityManager->flush();
                 $sources[] = $source;
             }
         }
-    
+
         if (isset($this->symfonyStyle) === true) {
             $this->symfonyStyle->writeln(count($sources).' Sources Created');
         }
-        
+
         return $sources;
     }//end createSources()
-
 
     /**
      * Check if we need to create or update data for this bundle.

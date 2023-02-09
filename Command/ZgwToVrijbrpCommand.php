@@ -16,7 +16,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  */
 class ZgwToVrijbrpCommand extends Command
 {
-
     /**
      * @var string The name of the command (the part after "bin/console").
      */
@@ -27,7 +26,6 @@ class ZgwToVrijbrpCommand extends Command
      */
     private ZgwToVrijbrpService $zgwToVrijbrpService;
 
-
     /**
      * Construct a ZgwToVrijbrpCommand.
      *
@@ -37,10 +35,8 @@ class ZgwToVrijbrpCommand extends Command
     {
         $this->zgwToVrijbrpService = $zgwToVrijbrpService;
         parent::__construct();
-        
     }//end __construct()
 
-    
     /**
      * Configure this command.
      *
@@ -56,15 +52,14 @@ class ZgwToVrijbrpCommand extends Command
             ->addOption('location', 'l', InputOption::VALUE_OPTIONAL, 'The endpoint we will use on the Source to send a request, just a string')
             ->addOption('mapping', 'm', InputOption::VALUE_OPTIONAL, 'The reference of the mapping we will use before sending the data to the source')
             ->addOption('conditionEntity', 'ce', InputOption::VALUE_OPTIONAL, 'The reference of the entity we use as trigger for this handler, we need this to find a synchronization object');
-
     }//end configure()
 
-    
     /**
      * What happens when this command is executed.
      *
-     * @param InputInterface  $input InputInterface.
+     * @param InputInterface  $input  InputInterface.
      * @param OutputInterface $output OutputInterface.
+     *
      * @return int 0 for Success, 1 for Failure.
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -75,16 +70,17 @@ class ZgwToVrijbrpCommand extends Command
         // Handle the command options.
         $zaakId = $input->getOption('zaak', false);
         if ($zaakId === false) {
-            $symfonyStyle->error("Please use vrijbrp:ZgwToVrijbrp -z {uuid of a zaak}");
+            $symfonyStyle->error('Please use vrijbrp:ZgwToVrijbrp -z {uuid of a zaak}');
+
             return Command::FAILURE;
         }
 
         $data = ['id' => $zaakId];
 
         $configuration = [
-            'source' => ($input->getOption('source', false) ?? 'https://vrijbrp.nl/dossiers'),
-            'location' => ($input->getOption('location', false) ?? '/api/births'),
-            'mapping' => ($input->getOption('mapping', false) ?? 'https://vrijbrp.nl/mapping/vrijbrp.ZgwToVrijbrp.mapping.json'),
+            'source'          => ($input->getOption('source', false) ?? 'https://vrijbrp.nl/dossiers'),
+            'location'        => ($input->getOption('location', false) ?? '/api/births'),
+            'mapping'         => ($input->getOption('mapping', false) ?? 'https://vrijbrp.nl/mapping/vrijbrp.ZgwToVrijbrp.mapping.json'),
             'conditionEntity' => ($input->getOption('conditionEntity', false) ?? 'https://vng.opencatalogi.nl/schemas/zrc.zaak.schema.json'),
         ];
 
@@ -93,8 +89,5 @@ class ZgwToVrijbrpCommand extends Command
         }
 
         return Command::SUCCESS;
-        
     }//end execute()
-    
-    
 }
