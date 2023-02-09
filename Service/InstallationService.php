@@ -41,9 +41,9 @@ class InstallationService implements InstallerInterface
     ];
 
     public const SOURCES = [
-        ['name'         => 'vrijbrp-dossiers', 'location' => 'https://vrijbrp.nl/dossiers', 'auth' => 'vrijbrp-jwt',
-        'username'      => 'sim-!ChangeMe!', 'password' => '!secret-ChangeMe!', 'accept' => 'application/json',
-        'configuration' => ['verify' => false], ],
+        ['name'             => 'vrijbrp-dossiers', 'location' => 'https://vrijbrp.nl/dossiers', 'auth' => 'vrijbrp-jwt',
+            'username'      => 'sim-!ChangeMe!', 'password' => '!secret-ChangeMe!', 'accept' => 'application/json',
+            'configuration' => ['verify' => false], ],
     ];
 
     public const ACTION_HANDLERS = [
@@ -52,7 +52,7 @@ class InstallationService implements InstallerInterface
         'CommonGateway\GeboorteVrijBRPBundle\ActionHandler\ZdsZaakActionHandler',
         'CommonGateway\GeboorteVrijBRPBundle\ActionHandler\ZdsDocumentActionHandler',
     ];
-        
+
     /**
      * Construct an InstallationService.
      *

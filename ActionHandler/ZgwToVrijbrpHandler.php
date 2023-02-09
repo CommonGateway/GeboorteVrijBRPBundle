@@ -2,8 +2,8 @@
 
 namespace CommonGateway\GeboorteVrijBRPBundle\ActionHandler;
 
-use CommonGateway\GeboorteVrijBRPBundle\Service\ZgwToVrijbrpService;
 use CommonGateway\CoreBundle\ActionHandler\ActionHandlerInterface;
+use CommonGateway\GeboorteVrijBRPBundle\Service\ZgwToVrijbrpService;
 
 /**
  * This ActionHandler handles the mapping and sending of ZGW zaak data to the Vrijbrp api with a corresponding Service.
