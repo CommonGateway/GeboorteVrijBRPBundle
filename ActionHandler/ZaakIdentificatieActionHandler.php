@@ -31,7 +31,7 @@ class ZaakIdentificatieActionHandler implements ActionHandlerInterface
     public function getConfiguration(): array
     {
         return [
-            '$id'        => 'https://vrijbrp.nl/vrijbrp.zds.creerzaakid.schema.json',
+            '$id'        => 'https://zds.nl/zds.creerzaakid.handler.json',
             '$schema'    => 'https://json-schema.org/draft/2020-12/schema',
             'title'      => 'ExampleActionHandler',
             'description'=> 'This is a action to create objects from the fetched applications from the componenten catalogus.',

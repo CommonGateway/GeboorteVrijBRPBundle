@@ -1,0 +1,27 @@
+{
+  "title": "ZgwToVrijbrpBirthAction",
+  "$id": "https://vrijbrp.nl/action/vrijbrp.ZgwToVrijbrpBirthAction.action.json",
+  "$schema": "https://json-schema.org/draft/2020-12/action",
+  "version": "0.0.1",
+  "listens": [
+    "commongateway.object.create"
+  ],
+  "throws": [],
+  "conditions": {
+    "==": [
+      {
+        "var": "entity"
+      },
+      "https://vng.opencatalogi.nl/schemas/zrc.zaak.schema.json"
+    ]
+  },
+  "class": "CommonGateway\\GeboorteVrijBRPBundle\\ActionHandler\\ZgwToVrijbrpHandler",
+  "configuration": {
+    "source": "https://vrijbrp.nl/dossiers",
+    "location": "/api/births",
+    "mapping": "https://vrijbrp.nl/mapping/vrijbrp.ZgwToVrijbrp.mapping.json",
+    "conditionEntity": "https://vng.opencatalogi.nl/schemas/zrc.zaak.schema.json"
+  },
+  "isLockable": false,
+  "isEnabled": true
+}

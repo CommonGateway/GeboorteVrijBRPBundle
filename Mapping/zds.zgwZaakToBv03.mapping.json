@@ -1,8 +1,8 @@
 {
   "title": "ZGWZaakToDu02",
-  "$id": "https://opencatalogi.nl/schemas/zds.zgwDocumentToBv03.schema.json",
+  "$id": "https://zds.nl/mapping/zds.zgwZaakToBv03.mapping.json",
   "$schema": "https://json-schema.org/draft/2020-12/mapping",
-  "version": "0.0.2",
+  "version": "0.0.1",
   "passTrough": false,
   "mapping": {
     "@xmlns:SOAP-ENV": "http://schemas.xmlsoap.org/soap/envelope/",
@@ -10,8 +10,8 @@
     "SOAP-ENV:Body.ZKN:Bv3Bericht.ZKN:stuurgegevens.StUF:berichtcode": "Bv03",
     "SOAP-ENV:Body.ZKN:Bv3Bericht.ZKN:stuurgegevens.StUF:zender.StUF:applicatie": "CommonGateway",
     "SOAP-ENV:Body.ZKN:Bv3Bericht.ZKN:stuurgegevens.StUF:ontvanger.StUF:applicatie": "SIMform",
-    "SOAP-ENV:Body.ZKN:Bv3Bericht.ZKN:stuurgegevens.StUF:referentienummer": "informatieobject.identificatie",
+    "SOAP-ENV:Body.ZKN:Bv3Bericht.ZKN:stuurgegevens.StUF:referentienummer": "identificatie",
     "SOAP-ENV:Body.ZKN:Bv3Bericht.ZKN:stuurgegevens.StUF:tijdstipbericht": "datum",
-    "SOAP-ENV:Body.ZKN:Bv3Bericht.ZKN:stuurgegevens.StUF:crossRefnummmer": "informatieobject.identificatie"
+    "SOAP-ENV:Body.ZKN:Bv3Bericht.ZKN:stuurgegevens.StUF:crossRefnummmer": "identificatie"
   }
 }
