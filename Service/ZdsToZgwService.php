@@ -209,8 +209,8 @@ class ZdsToZgwService
                 $this->entityManager->flush();
                 $eigenschapObjects[] = $zaakArray['eigenschappen'][$key]['eigenschap'] = $eigenschapObject->getId()->toString();
             }//end if
-
         }//end foreach
+
         $zaakType->hydrate(['eigenschappen' => $eigenschapObjects]);
 
         $this->entityManager->persist($zaakType);
@@ -247,7 +247,6 @@ class ZdsToZgwService
 
                 $rolTypeObjects[] = $zaakArray['rollen'][$key]['roltype'] = $rolType->getId()->toString();
             }//end if
-
         }//end foreach
 
         $zaakType->hydrate(['roltypen' => $rolTypeObjects]);
@@ -283,7 +282,7 @@ class ZdsToZgwService
         $zaakArray = $this->connectRolTypes($zaakArray, $zaaktype);
 
         return $zaakArray;
-    }//end convertZaakType
+    }//end convertZaakType()
 
     /**
      * Receives a case and maps it to a ZGW case.
@@ -366,7 +365,6 @@ class ZdsToZgwService
         } else {
             $data['response'] = $this->createResponse(['Error' => 'The case with id '.$zaakDocumentArray['informatieobject']['identificatie'].' does not exist']);
         }//end if
-
         return $data;
     }//end documentActionHandler()
 }
