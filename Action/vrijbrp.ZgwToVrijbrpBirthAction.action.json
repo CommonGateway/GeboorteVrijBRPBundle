@@ -7,6 +7,11 @@
     "vrijbrp.zaak.birth.created"
   ],
   "throws": [],
+  "conditions": {
+    "==": [
+      1,1
+    ]
+  },
   "class": "CommonGateway\\GeboorteVrijBRPBundle\\ActionHandler\\ZgwToVrijbrpHandler",
   "configuration": {
     "source": "https://vrijbrp.nl/dossiers",
