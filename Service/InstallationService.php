@@ -231,7 +231,7 @@ class InstallationService implements InstallerInterface
             }
 
             $pathRegEx = '^'.$endpoint['path'].'$';
-            if ($endpointRepository->findOneBy(['pathRegex' => $pathRegEx]) === false) {
+            if ($endpointRepository->findOneBy(['pathRegex' => $pathRegEx]) instanceof Endpoint === false) {
                 $createdEndpoint = new Endpoint();
                 $createdEndpoint->setName($endpoint['name']);
                 $createdEndpoint->setPath($explodedPath);
