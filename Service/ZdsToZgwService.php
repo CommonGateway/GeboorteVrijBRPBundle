@@ -22,7 +22,6 @@ class ZdsToZgwService
 {
     private EntityManagerInterface $entityManager;
     private CallService $callService;
-    private Source $source;
     private SynchronizationService $synchronizationService;
     private MappingService $mappingService;
     private SymfonyStyle $io;
@@ -85,6 +84,13 @@ class ZdsToZgwService
         return $this->entityManager->getRepository('App:Mapping')->findOneBy(['reference' => $reference]);
     }//end getMapping()
 
+    /**
+     * Creates a response based on content
+     *
+     * @param array $content The content to incorporate in the response
+     * @param int   $status  The status code of the response
+     * @return Response
+     */
     public function createResponse(array $content, int $status): Response
     {
         $xmlEncoder = new XmlEncoder(['xml_root_node_name' => 'SOAP-ENV:Envelope']);
