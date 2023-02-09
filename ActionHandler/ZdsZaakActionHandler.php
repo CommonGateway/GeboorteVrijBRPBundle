@@ -3,7 +3,6 @@
 namespace CommonGateway\GeboorteVrijBRPBundle\ActionHandler;
 
 use CommonGateway\CoreBundle\ActionHandler\ActionHandlerInterface;
-use CommonGateway\GeboorteVrijBRPBundle\Service\CatalogiService;
 use CommonGateway\GeboorteVrijBRPBundle\Service\ZdsToZgwService;
 
 /**

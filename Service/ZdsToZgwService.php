@@ -80,7 +80,7 @@ class ZdsToZgwService
      * @param string $reference The reference to look for
      * @return Mapping
      */
-    public function getMapping(string $reference): Mapping
+    public function getMapping (string $reference): Mapping
     {
         return $this->entityManager->getRepository('App:Mapping')->findOneBy(['reference' => $reference]);
     }//end getMapping()
@@ -114,7 +114,7 @@ class ZdsToZgwService
             $this->entityManager->persist($zaak);
             $this->entityManager->flush();
 
-            if($mappingOut = $this->getMapping('https://opencatalogi.nl/schemas/zds.zgwZaakToDu02.schema.json')) {
+            if ($mappingOut = $this->getMapping('https://opencatalogi.nl/schemas/zds.zgwZaakToDu02.schema.json')) {
                 $data['response'] = $this->createResponse($this->mappingService->mapping($mappingOut, $zaak->toArray()), 200);
             }//end if
         } else {
@@ -146,7 +146,7 @@ class ZdsToZgwService
             $this->entityManager->persist($document);
             $this->entityManager->flush();
 
-            if($mappingOut = $this->getMapping('https://opencatalogi.nl/schemas/zds.zgwDocumentToDu02.schema.json')) {
+            if ($mappingOut = $this->getMapping('https://opencatalogi.nl/schemas/zds.zgwDocumentToDu02.schema.json')) {
                 $data['response'] = $this->createResponse($this->mappingService->mapping($mappingOut, $document->toArray()), 200);
             }//end if
         } else {
@@ -167,8 +167,8 @@ class ZdsToZgwService
     {
         $eigenschapEntity = $this->getEntity('https://vng.opencatalogi.nl/schemas/ztc.eigenschap.schema.json');
         $eigenschappenAsObjects = $zaakType->getValue('eigenschappen');
-        foreach($zaakArray['eigenschappen'] as $key => $eigenschap) {
-            if($eigenschappen = $this->cacheService->searchObjects(null, ['naam' => $eigenschap['eigenschap']['naam'], 'zaaktype' => $zaakType->getSelf()], [$eigenschapEntity->getId()->toString()])['results']) {
+        foreach ($zaakArray['eigenschappen'] as $key => $eigenschap) {
+            if ($eigenschappen = $this->cacheService->searchObjects(null, ['naam' => $eigenschap['eigenschap']['naam'], 'zaaktype' => $zaakType->getSelf()], [$eigenschapEntity->getId()->toString()])['results']) {
                 $zaakArray['eigenschappen'][$key]['eigenschap'] = $eigenschappen[0]['_self']['id'];
             } else {
                 $eigenschapObject = new ObjectEntity($eigenschapEntity);
@@ -184,6 +184,7 @@ class ZdsToZgwService
 
         $this->entityManager->persist($zaakType);
         $this->entityManager->flush();
+
         return $zaakArray;
     }//end connectEigenschappen()
 
@@ -199,8 +200,8 @@ class ZdsToZgwService
         $rolTypeEntity = $this->getEntity('https://vng.opencatalogi.nl/schemas/ztc.rolType.schema.json');
         $rolTypeObjects = $zaakType->getValue('roltypen');
 
-        foreach($zaakArray['rollen'] as $key => $role) {
-            if($rollen = $this->cacheService->searchObjects(null, ['omschrijvingGeneriek' => $role['roltype']['omschrijvingGeneriek'], 'zaaktype' => $zaakType->getSelf()], [$rolTypeEntity->getId()->toString()])['results']) {
+        foreach ($zaakArray['rollen'] as $key => $role) {
+            if ($rollen = $this->cacheService->searchObjects(null, ['omschrijvingGeneriek' => $role['roltype']['omschrijvingGeneriek'], 'zaaktype' => $zaakType->getSelf()], [$rolTypeEntity->getId()->toString()])['results']) {
                 $zaakArray['rollen'][$key]['roltype'] = $rollen[0]['_self']['id'];
                 $rolType = $this->entityManager->find('App:ObjectEntity', $rollen[0]['_self']['id']);
             } else {
@@ -216,6 +217,7 @@ class ZdsToZgwService
         }//end foreach
 
         $zaakType->hydrate(['roltypen' => $rolTypeObjects]);
+
         return $zaakArray;
     }//end connectRolTypes()
 
@@ -229,7 +231,7 @@ class ZdsToZgwService
     {
         $zaakTypeEntity = $this->getEntity('https://vng.opencatalogi.nl/schemas/ztc.zaakType.schema.json');
         $zaaktypes = $this->cacheService->searchObjects(null, ['identificatie' => $zaakArray['zaaktype']['identificatie']], [$zaakTypeEntity->getId()->toString()])['results'];
-        if(count($zaaktypes) > 0) {
+        if (count($zaaktypes) > 0) {
             $zaaktype = $this->entityManager->find('App:ObjectEntity', $zaaktypes[0]['_self']['id']);
             $zaakArray['zaaktype'] = $zaaktype->getId()->toString();
         } else {
@@ -273,13 +275,13 @@ class ZdsToZgwService
             $this->entityManager->persist($zaak);
             $this->entityManager->flush();
 
-            if($mappingOut = $this->getMapping('https://opencatalogi.nl/schemas/zds.zgwZaakToBv03.schema.json')) {
+            if ($mappingOut = $this->getMapping('https://opencatalogi.nl/schemas/zds.zgwZaakToBv03.schema.json')) {
                 $data['response'] = $this->createResponse($this->mappingService->mapping($mappingOut, $zaak->toArray()), 200);
             }
         } elseif (count($zaken) > 1) {
             $data['response'] = $this->createResponse(['Error' => 'More than one case exists with id '.$zaakArray['identificatie']]);
         } else {
-            $data['response'] = $this->createResponse(['Error' => 'The case with id ' .$zaakArray['identificatie']. ' does not exist']);
+            $data['response'] = $this->createResponse(['Error' => 'The case with id '.$zaakArray['identificatie'].' does not exist']);
         }//end if
 
         return $data;
@@ -316,13 +318,13 @@ class ZdsToZgwService
             $this->entityManager->persist($zaakInformatieObject);
             $this->entityManager->flush();
 
-            if($mappingOut = $this->getMapping('https://opencatalogi.nl/schemas/zds.zgwDocumentToBv03.schema.json')) {
+            if ($mappingOut = $this->getMapping('https://opencatalogi.nl/schemas/zds.zgwDocumentToBv03.schema.json')) {
                 $data['response'] = $this->createResponse($this->mappingService->mapping($mappingOut, $zaakInformatieObject->toArray()), 200);
             }//end if
         } elseif (count($documenten) > 1) {
             $data['response'] = $this->createResponse(['Error' => 'More than one document exists with id '.$zaakInformatieObjectArray['informatieobject']['identificatie']]);
         } else {
-            $data['response'] = $this->createResponse(['Error' => 'The case with id ' .$zaakInformatieObjectArray['informatieobject']['identificatie']. ' does not exist']);
+            $data['response'] = $this->createResponse(['Error' => 'The case with id '.$zaakInformatieObjectArray['informatieobject']['identificatie'].' does not exist']);
         }//end if
 
         return $data;
