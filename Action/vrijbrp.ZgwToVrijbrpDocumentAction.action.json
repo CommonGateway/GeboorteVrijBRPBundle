@@ -1,0 +1,24 @@
+{
+  "title": "ZgwToVrijbrpBirthAction",
+  "$id": "https://vrijbrp.nl/action/vrijbrp.ZgwToVrijbrpDocumentAction.action.json",
+  "$schema": "https://json-schema.org/draft/2020-12/action",
+  "version": "0.0.1",
+  "listens": [
+    "vrijbrp.zaak.document.created"
+  ],
+  "throws": [],
+  "conditions": {
+    "==": [
+      1,1
+    ]
+  },
+  "class": "CommonGateway\\GeboorteVrijBRPBundle\\ActionHandler\\ZgwToVrijbrpDocumentHandler",
+  "configuration": {
+    "source": "https://vrijbrp.nl/dossiers",
+    "location": "/api/v1/dossiers",
+    "mapping": "https://vrijbrp.nl/mapping/vrijbrp.ZgwToVrijbrpDocument.mapping.json",
+    "conditionEntity": "https://vng.opencatalogi.nl/schemas/zrc.zaak.schema.json"
+  },
+  "isLockable": false,
+  "isEnabled": true
+}

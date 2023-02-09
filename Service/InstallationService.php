@@ -197,6 +197,7 @@ class InstallationService implements InstallerInterface
                 ]);
             } elseif ($schema['$id'] === 'https://zds.nl/zds.creerdocument.handler.json') {
                 $action->setListens(['zds.inbound']);
+                $action->setThrows(['vrijbrp.zaak.document.created']);
                 $action->setConditions([
                     'var' => 'body.SOAP-ENV:Body.ns2:edcLk01',
                 ]);
