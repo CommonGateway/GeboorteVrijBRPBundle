@@ -181,7 +181,6 @@ class InstallationService implements InstallerInterface
 
             if ($schema['$id'] === 'https://zds.nl/zds.creerzaakid.handler.json') {
                 $action->setListens(['zds.inbound']);
-                $action->setThrows(['vrijbrp.zaak.birth.created']);
                 $action->setConditions([
                     'var' => 'body.SOAP-ENV:Body.ns2:genereerZaakIdentificatie_Di02',
                 ]);
@@ -192,6 +191,7 @@ class InstallationService implements InstallerInterface
                 ]);
             } elseif ($schema['$id'] === 'https://zds.nl/zds.creerzaak.handler.json') {
                 $action->setListens(['zds.inbound']);
+                $action->setThrows(['vrijbrp.zaak.birth.created']);
                 $action->setConditions([
                     'var' => 'body.SOAP-ENV:Body.ns2:zakLk01',
                 ]);

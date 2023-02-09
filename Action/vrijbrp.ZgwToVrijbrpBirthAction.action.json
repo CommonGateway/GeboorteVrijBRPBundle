@@ -7,14 +7,6 @@
     "vrijbrp.zaak.birth.created"
   ],
   "throws": [],
-  "conditions": {
-    "==": [
-      {
-        "var": "entity"
-      },
-      "https://vng.opencatalogi.nl/schemas/zrc.zaak.schema.json"
-    ]
-  },
   "class": "CommonGateway\\GeboorteVrijBRPBundle\\ActionHandler\\ZgwToVrijbrpHandler",
   "configuration": {
     "source": "https://vrijbrp.nl/dossiers",
