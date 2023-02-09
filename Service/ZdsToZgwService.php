@@ -298,7 +298,7 @@ class ZdsToZgwService
 
         $zaakEntity = $this->getEntity('https://vng.opencatalogi.nl/schemas/zrc.zaak.schema.json');
 
-        $mapping = $this->getMapping('https://zds.nl/schemas/zds.zdsZaakToZgwZaak.schema.json');
+        $mapping = $this->getMapping('https://zds.nl/mapping/zds.zdsZaakToZgwZaak.mapping.json');
 
         $zaakArray = $this->mappingService->mapping($mapping, $data['body']);
 

@@ -179,22 +179,22 @@ class InstallationService implements InstallerInterface
             $defaultConfig = $this->addActionConfiguration($actionHandler);
             $action = new Action($actionHandler);
 
-            if ($schema['$id'] === 'https://zds.nl/zds.creerzaakid.schema.json') {
+            if ($schema['$id'] === 'https://zds.nl/zds.creerzaakid.handler.json') {
                 $action->setListens(['zds.inbound']);
                 $action->setConditions([
                     'var' => 'body.SOAP-ENV:Body.ns2:genereerZaakIdentificatie_Di02',
                 ]);
-            } elseif ($schema['$id'] == 'https://zds.nl/zds.creerdocumentid.schema.json') {
+            } elseif ($schema['$id'] == 'https://zds.nl/zds.creerdocumentid.handler.json') {
                 $action->setListens(['zds.inbound']);
                 $action->setConditions([
                     'var' => 'body.SOAP-ENV:Body.ns2:genereerDocumentIdentificatie_Di02',
                 ]);
-            } elseif ($schema['$id'] === 'https://zds.nl/zds.creerzaak.schema.json') {
+            } elseif ($schema['$id'] === 'https://zds.nl/zds.creerzaak.handler.json') {
                 $action->setListens(['zds.inbound']);
                 $action->setConditions([
                     'var' => 'body.SOAP-ENV:Body.ns2:zakLk01',
                 ]);
-            } elseif ($schema['$id'] === 'https://zds.nl/zds.creerdocument.schema.json') {
+            } elseif ($schema['$id'] === 'https://zds.nl/zds.creerdocument.handler.json') {
                 $action->setListens(['zds.inbound']);
                 $action->setConditions([
                     'var' => 'body.SOAP-ENV:Body.ns2:edcLk01',
