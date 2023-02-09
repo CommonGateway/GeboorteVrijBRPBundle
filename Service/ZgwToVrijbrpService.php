@@ -66,6 +66,7 @@ class ZgwToVrijbrpService
      */
     private ?Entity $conditionEntity;
     
+    
     /**
      * Construct a ZgwToVrijbrpService.
      *

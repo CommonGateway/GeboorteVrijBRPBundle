@@ -14,17 +14,29 @@ use Respect\Validation\Exceptions\ComponentException;
  */
 class ZgwToVrijbrpHandler implements ActionHandlerInterface
 {
+    
+    /**
+     * @var ZgwToVrijbrpService The ZgwToVrijbrpService that will handle code for this Handler.
+     */
     private ZgwToVrijbrpService $zgwToVrijbrpService;
-
+    
+    
+    /**
+     * Construct a ZgwToVrijbrpHandler.
+     *
+     * @param ZgwToVrijbrpService $zgwToVrijbrpService
+     */
     public function __construct(ZgwToVrijbrpService $zgwToVrijbrpService)
     {
         $this->zgwToVrijbrpService = $zgwToVrijbrpService;
-    }
+        
+    }//end __construct()
+    
 
     /**
-     *  This function returns the requered configuration as a [json-schema](https://json-schema.org/) array.
+     * This function returns the requered configuration as a [json-schema](https://json-schema.org/) array.
      *
-     * @throws array a [json-schema](https://json-schema.org/) that this  action should comply to
+     * @return array a [json-schema](https://json-schema.org/) that this  action should comply to
      */
     public function getConfiguration(): array
     {
@@ -65,12 +77,12 @@ class ZgwToVrijbrpHandler implements ActionHandlerInterface
             ],
         ];
     }
-    
+
     /**
      * This function will call the handler function to the corresponding service of this Handler.
      *
-     * @param array $data           The data from the call
-     * @param array $configuration  The configuration from the call
+     * @param array $data The data from the call
+     * @param array $configuration The configuration from the call
      *
      * @return array
      */
