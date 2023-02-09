@@ -2,7 +2,6 @@
 
 namespace CommonGateway\GeboorteVrijBRPBundle\Command;
 
-use CommonGateway\GeboorteVrijBRPBundle\Service\ExampleService;
 use CommonGateway\GeboorteVrijBRPBundle\Service\ZdsToZgwService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;

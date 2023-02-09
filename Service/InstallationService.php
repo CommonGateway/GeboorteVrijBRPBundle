@@ -5,16 +5,12 @@
 namespace CommonGateway\GeboorteVrijBRPBundle\Service;
 
 use App\Entity\Action;
-use App\Entity\CollectionEntity;
 use App\Entity\Cronjob;
 use App\Entity\DashboardCard;
 use App\Entity\Endpoint;
-use App\Entity\Entity;
 use App\Entity\Gateway as Source;
 use CommonGateway\CoreBundle\Installer\InstallerInterface;
 use Doctrine\ORM\EntityManagerInterface;
-use Exception;
-use OpenCatalogi\OpenCatalogiBundle\Service\CatalogiService;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -28,7 +24,7 @@ class InstallationService implements InstallerInterface
     ];
 
     public const ENDPOINTS = [
-        ['path' => 'stuf/zds', 'throws' => ['vrijbrp.zds.inbound'], 'name' => 'zds-endpoint', 'methods' => []]
+        ['path' => 'stuf/zds', 'throws' => ['vrijbrp.zds.inbound'], 'name' => 'zds-endpoint', 'methods' => []],
     ];
 
     public const ACTION_HANDLERS = [
@@ -175,7 +171,7 @@ class InstallationService implements InstallerInterface
             if ($explodedPath[0] == '') {
                 array_shift($explodedPath);
             }
-            $pathRegEx = '^' . $endpoint['path'] . '$';
+            $pathRegEx = '^'.$endpoint['path'].'$';
             if (!$endpointRepository->findOneBy(['pathRegex' => $pathRegEx])) {
                 $createdEndpoint = new Endpoint();
                 $createdEndpoint->setName($endpoint['name']);
@@ -250,7 +246,6 @@ class InstallationService implements InstallerInterface
         $vrijbrpDossiers->setIsEnabled(true);
         $this->entityManager->persist($vrijbrpDossiers);
         isset($this->io) && $this->io->writeln('Gateway: '.$vrijbrpDossiers->getName().' created');
-
     }
 
     public function checkDataConsistency()
