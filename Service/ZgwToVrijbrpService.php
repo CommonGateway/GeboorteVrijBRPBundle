@@ -5,7 +5,6 @@ namespace CommonGateway\GeboorteVrijBRPBundle\Service;
 use Adbar\Dot;
 use App\Entity\Entity;
 use App\Entity\Gateway as Source;
-use App\Entity\Log;
 use App\Entity\Mapping;
 use App\Entity\ObjectEntity;
 use App\Entity\Synchronization;
@@ -239,15 +238,16 @@ class ZgwToVrijbrpService
 
         return $flatProperties;
     }//end getEigenschapValues()
-    
+
     /**
      * Handles a ZgwToVrijBrp action.
      *
-     * @param array $data The data from the call.
+     * @param array $data          The data from the call.
      * @param array $configuration The configuration from the ActionHandler.
      *
-     * @return array|null Data.
      * @throws Exception
+     *
+     * @return array|null Data.
      */
     public function zgwToVrijbrpHandler(array $data, array $configuration): ?array
     {
@@ -256,7 +256,7 @@ class ZgwToVrijbrpService
         if ($this->setSource() === null || $this->setMapping() === null || $this->setConditionEntity() === null) {
             return [];
         }
-    
+
         $dataId = $data['response']['id'];
 
         // Get (zaak) object that was created.

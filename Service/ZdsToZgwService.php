@@ -315,7 +315,7 @@ class ZdsToZgwService
             if ($mappingOut = $this->getMapping('https://opencatalogi.nl/schemas/zds.zgwZaakToBv03.schema.json')) {
                 $data['response'] = $this->createResponse($this->mappingService->mapping($mappingOut, $zaak->toArray()), 200);
             }
-        } else if (count($zaken) > 1) {
+        } elseif (count($zaken) > 1) {
             $data['response'] = $this->createResponse(['Error' => 'More than one case exists with id '.$zaakArray['identificatie']]);
         } else {
             $data['response'] = $this->createResponse(['Error' => 'The case with id '.$zaakArray['identificatie'].' does not exist']);
@@ -360,11 +360,12 @@ class ZdsToZgwService
 
             $mappingOut = $this->getMapping('https://opencatalogi.nl/schemas/zds.zgwDocumentToBv03.schema.json');
             $data['response'] = $this->createResponse($this->mappingService->mapping($mappingOut, $zaakInformatieObject->toArray()), 200);
-        } else if (count($documenten) > 1) {
+        } elseif (count($documenten) > 1) {
             $data['response'] = $this->createResponse(['Error' => 'More than one document exists with id '.$zaakDocumentArray['informatieobject']['identificatie']]);
         } else {
             $data['response'] = $this->createResponse(['Error' => 'The case with id '.$zaakDocumentArray['informatieobject']['identificatie'].' does not exist']);
         }//end if
+
         return $data;
     }//end documentActionHandler()
 }
