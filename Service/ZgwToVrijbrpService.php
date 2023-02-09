@@ -93,7 +93,9 @@ class ZgwToVrijbrpService
         $this->callService = $callService;
         $this->synchronizationService = $synchronizationService;
         $this->mappingService = $mappingService;
+
     }//end __construct()
+
 
     /**
      * Set symfony style in order to output to the console when running the handler function through a command.
@@ -110,6 +112,7 @@ class ZgwToVrijbrpService
         $this->mappingService->setStyle($symfonyStyle);
 
         return $this;
+        
     }//end setStyle()
     
     /**
@@ -132,6 +135,7 @@ class ZgwToVrijbrpService
         }
     
         return $this->source;
+        
     }//end setSource()
 
     
@@ -152,6 +156,7 @@ class ZgwToVrijbrpService
         }
     
         return $this->mapping;
+        
     }//end setMapping()
     
     
@@ -172,6 +177,7 @@ class ZgwToVrijbrpService
         }
     
         return $this->conditionEntity;
+        
     }//end setConditionEntity()
     
     
@@ -191,14 +197,14 @@ class ZgwToVrijbrpService
             return [];
         }
         
-        $id = $data['id'];
+        $dataId = $data['id'];
     
         // Get (zaak) object that was created.
         if (isset($this->symfonyStyle) === true) {
-            $this->symfonyStyle->comment("(Zaak) Object with id $id was created");
+            $this->symfonyStyle->comment("(Zaak) Object with id $dataId was created");
         }
         
-        $object = $this->entityManager->getRepository('App:ObjectEntity')->find($id);
+        $object = $this->entityManager->getRepository('App:ObjectEntity')->find($dataId);
         
         // Do mapping with Zaak ObjectEntity as array.
         $objectArray = $this->mappingService->mapping($this->mapping, $object->toArray());
@@ -221,6 +227,7 @@ class ZgwToVrijbrpService
         }
 
         return $data;
+        
     }//end zgwToVrijbrpHandler()
     
     
@@ -284,5 +291,8 @@ class ZgwToVrijbrpService
         $synchronization->setHash(hash('sha384', serialize($bodyDot->jsonSerialize())));
         
         return $body;
+        
     }//end synchronizeTemp()
+    
+    
 }

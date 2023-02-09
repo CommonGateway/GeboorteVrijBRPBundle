@@ -25,9 +25,9 @@ class ZgwToVrijbrpCommand extends Command
     /**
      * @var ZgwToVrijbrpService The ZgwToVrijbrpService that will be used/tested with this command.
      */
-    private ZgwToVrijbrpService  $zgwToVrijbrpService;
+    private ZgwToVrijbrpService $zgwToVrijbrpService;
 
-    
+
     /**
      * Construct a ZgwToVrijbrpCommand.
      *
@@ -95,4 +95,6 @@ class ZgwToVrijbrpCommand extends Command
         return Command::SUCCESS;
         
     }//end execute()
+    
+    
 }
