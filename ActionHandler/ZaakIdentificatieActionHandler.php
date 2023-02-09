@@ -3,14 +3,12 @@
 namespace CommonGateway\GeboorteVrijBRPBundle\ActionHandler;
 
 use CommonGateway\CoreBundle\ActionHandler\ActionHandlerInterface;
-use CommonGateway\GeboorteVrijBRPBundle\Service\CatalogiService;
 
 /**
  * Haalt applications op van de componenten catalogus.
  */
 class ZaakIdentificatieActionHandler implements ActionHandlerInterface
 {
-
     public function __construct()
     {
     }
