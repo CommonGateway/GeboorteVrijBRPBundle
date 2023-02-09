@@ -19,26 +19,44 @@ use Symfony\Component\Serializer\Encoder\XmlEncoder;
  */
 class ZdsToZgwService
 {
+
+
+    /**
+     * @var EntityManagerInterface
+     */
     private EntityManagerInterface $entityManager;
-    private CallService $callService;
-    private SynchronizationService $synchronizationService;
+
+    /**
+     * @var MappingService
+     */
     private MappingService $mappingService;
+
+    /**
+     * @var SymfonyStyle
+     */
     private SymfonyStyle $io;
+
+    /**
+     * @var CacheService
+     */
     private CacheService $cacheService;
 
+    /**
+     * @param EntityManagerInterface $entityManager The Entity Manager
+     * @param MappingService $mappingService The MappingService
+     * @param CacheService $cacheService The CacheService
+     */
     public function __construct(
         EntityManagerInterface $entityManager,
-        CallService $callService,
-        SynchronizationService $synchronizationService,
         MappingService $mappingService,
         CacheService $cacheService
     ) {
         $this->entityManager = $entityManager;
-        $this->callService = $callService;
-        $this->synchronizationService = $synchronizationService;
         $this->mappingService = $mappingService;
         $this->cacheService = $cacheService;
+        
     }//end __construct()
+
 
     /**
      * Set symfony style in order to output to the console.
@@ -50,11 +68,12 @@ class ZdsToZgwService
     public function setStyle(SymfonyStyle $io): self
     {
         $this->io = $io;
-        $this->synchronizationService->setStyle($io);
         $this->mappingService->setStyle($io);
 
         return $this;
+
     }//end setStyle()
+
 
     /**
      * Get an entity by reference.
@@ -71,7 +90,9 @@ class ZdsToZgwService
         }//end if
 
         return $entity;
+
     }//end getEntity()
+
 
     /**
      * Gets mapping for reference.
@@ -83,7 +104,9 @@ class ZdsToZgwService
     public function getMapping(string $reference): Mapping
     {
         return $this->entityManager->getRepository('App:Mapping')->findOneBy(['reference' => $reference]);
+
     }//end getMapping()
+
 
     /**
      * Creates a response based on content.
@@ -99,7 +122,9 @@ class ZdsToZgwService
         $contentString = $xmlEncoder->encode($content, 'xml', ['xml_encoding' => 'utf-8', 'remove_empty_tags' => true]);
 
         return new Response($contentString, $status);
+
     }//end createResponse()
+
 
     /**
      * Handles incoming creeerZaakIdentificatie messages, creates a case with incoming reference as identificatie field.
@@ -131,7 +156,9 @@ class ZdsToZgwService
         }//end if
 
         return $data;
+
     }//end zaakIdentificatieActionHandler()
+
 
     /**
      * Handles incoming creeerDocumentIdentificatie messages, creates a document with incoming reference as identificatie field.
@@ -164,7 +191,9 @@ class ZdsToZgwService
         }//end if
 
         return $data;
+
     }//end documentIdentificatieActionHandler()
+
 
     /**
      * Connects Eigenschappen to ZaakType if eigenschap does not exist yet, or connect existing Eigenschap to ZaakEigenschap.
@@ -197,7 +226,9 @@ class ZdsToZgwService
         $this->entityManager->flush();
 
         return $zaakArray;
+
     }//end connectEigenschappen()
+
 
     /**
      * Connects RoleTypes to ZaakType if RoleType does not exist yet, or connect existing RoleType to Role.
@@ -231,7 +262,9 @@ class ZdsToZgwService
         $zaakType->hydrate(['roltypen' => $rolTypeObjects]);
 
         return $zaakArray;
+
     }//end connectRolTypes()
+
 
     /**
      * Creates ZaakType if no ZaakType exists, connect existing ZaakType if ZaakType with identifier exists.
@@ -261,7 +294,9 @@ class ZdsToZgwService
         $zaakArray = $this->connectRolTypes($zaakArray, $zaaktype);
 
         return $zaakArray;
+
     }//end convertZaakType
+
 
     /**
      * Receives a case and maps it to a ZGW case.
@@ -299,7 +334,9 @@ class ZdsToZgwService
         }//end if
 
         return $data;
+
     }//end zaakActionHandler()
+
 
     /**
      * Receives a document and maps it to a ZGW EnkelvoudigInformatieObject.
@@ -343,5 +380,8 @@ class ZdsToZgwService
         }//end if
 
         return $data;
+
     }//end documentActionHandler()
+
+
 }

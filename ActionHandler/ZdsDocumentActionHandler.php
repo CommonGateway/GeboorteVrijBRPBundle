@@ -10,6 +10,8 @@ use CommonGateway\GeboorteVrijBRPBundle\Service\ZdsToZgwService;
  */
 class ZdsDocumentActionHandler implements ActionHandlerInterface
 {
+
+
     /**
      * @var ZdsToZgwService
      */
@@ -21,7 +23,9 @@ class ZdsDocumentActionHandler implements ActionHandlerInterface
     public function __construct(ZdsToZgwService $zdsToZgwService)
     {
         $this->zdsToZgwService = $zdsToZgwService;
+
     }//end __construct()
+
 
     /**
      *  This function returns the required configuration as a [json-schema](https://json-schema.org/) array.
@@ -31,12 +35,14 @@ class ZdsDocumentActionHandler implements ActionHandlerInterface
     public function getConfiguration(): array
     {
         return [
-            '$id'         => 'https://opencatalogi.nl/vrijbrp.zds.creerdocument.schema.json',
-            '$schema'     => 'https://json-schema.org/draft/2020-12/schema',
-            'title'       => 'ExampleActionHandler',
-            'description' => 'This is a action to create objects from the fetched applications from the componenten catalogus.',
-        ];
+                '$id'         => 'https://opencatalogi.nl/vrijbrp.zds.creerdocument.schema.json',
+                '$schema'     => 'https://json-schema.org/draft/2020-12/schema',
+                'title'       => 'ExampleActionHandler',
+                'description' => 'This is a action to create objects from the fetched applications from the componenten catalogus.',
+               ];
+
     }//end getConfiguration()
+
 
     /**
      * This function runs the application to gateway service plugin.
@@ -49,5 +55,8 @@ class ZdsDocumentActionHandler implements ActionHandlerInterface
     public function run(array $data, array $configuration): array
     {
         return $this->zdsToZgwService->documentActionHandler($data, $configuration);
+
     }//end run()
+
+
 }
