@@ -234,7 +234,7 @@ class ZdsToZgwService
 
         foreach ($zaakArray['rollen'] as $key => $role) {
             $rollen = $this->cacheService->searchObjects(null, ['omschrijvingGeneriek' => $role['roltype']['omschrijvingGeneriek'], 'zaaktype' => $zaakType->getSelf()], [$rolTypeEntity->getId()->toString()])['results'];
-            if ($rollen === []) {
+            if ($rollen !== []) {
                 $zaakArray['rollen'][$key]['roltype'] = $rollen[0]['_self']['id'];
                 $rolType = $this->entityManager->find('App:ObjectEntity', $rollen[0]['_self']['id']);
             } else {
