@@ -121,7 +121,9 @@ class ZdsToZgwService
         }
 
         return $this->eigenschapEntity;
-    }    /**
+    }
+
+    /**
      * Get the eigenschap entity.
      *
      * @return ?Entity
@@ -166,7 +168,7 @@ class ZdsToZgwService
         return new Response($contentString, $status);
     }
 
-    public function zaakIdentificatieActionHandler (array $data, array $config): array
+    public function zaakIdentificatieActionHandler(array $data, array $config): array
     {
         $this->getZaakEntity();
 
@@ -181,19 +183,17 @@ class ZdsToZgwService
             $this->entityManager->persist($zaak);
             $this->entityManager->flush();
 
-            if($mappingOut = $this->getMapping('https://opencatalogi.nl/schemas/zds.zgwZaakToDu02.schema.json')) {
+            if ($mappingOut = $this->getMapping('https://opencatalogi.nl/schemas/zds.zgwZaakToDu02.schema.json')) {
                 $data['response'] = $this->createResponse($this->mappingService->mapping($mappingOut, $zaak->toArray()), 200);
             }
         } else {
-            $data['response'] = $this->createResponse(['Error' => 'The case with id ' .$zaakArray['identificatie']. ' already exists'], 400);
+            $data['response'] = $this->createResponse(['Error' => 'The case with id '.$zaakArray['identificatie'].' already exists'], 400);
         }
-
-
 
         return $data;
     }
 
-    public function documentIdentificatieActionHandler (array $data, array $config): array
+    public function documentIdentificatieActionHandler(array $data, array $config): array
     {
         $this->getDocumentEntity();
 
@@ -208,11 +208,11 @@ class ZdsToZgwService
             $this->entityManager->persist($document);
             $this->entityManager->flush();
 
-            if($mappingOut = $this->getMapping('https://opencatalogi.nl/schemas/zds.zgwDocumentToDu02.schema.json')) {
+            if ($mappingOut = $this->getMapping('https://opencatalogi.nl/schemas/zds.zgwDocumentToDu02.schema.json')) {
                 $data['response'] = $this->createResponse($this->mappingService->mapping($mappingOut, $document->toArray()), 200);
             }
         } else {
-            $data['response'] = $this->createResponse(['Error' => 'The document with id ' .$documentArray['identificatie']. ' already exists'], 400);
+            $data['response'] = $this->createResponse(['Error' => 'The document with id '.$documentArray['identificatie'].' already exists'], 400);
         }
 
         return $data;
@@ -222,8 +222,8 @@ class ZdsToZgwService
     {
         $this->getEigenschapEntity();
         $eigenschappenAsObjects = $zaakType->getValue('eigenschappen');
-        foreach($zaakArray['eigenschappen'] as $key => $eigenschap) {
-            if($eigenschappen = $this->cacheService->searchObjects(null, ['naam' => $eigenschap['eigenschap']['naam'], 'zaaktype' => $zaakType->getSelf()], [$this->eigenschapEntity->getId()->toString()])['results']) {
+        foreach ($zaakArray['eigenschappen'] as $key => $eigenschap) {
+            if ($eigenschappen = $this->cacheService->searchObjects(null, ['naam' => $eigenschap['eigenschap']['naam'], 'zaaktype' => $zaakType->getSelf()], [$this->eigenschapEntity->getId()->toString()])['results']) {
                 $zaakArray['eigenschappen'][$key]['eigenschap'] = $eigenschappen[0]['_self']['id'];
                 $eigenschapObject = $this->entityManager->find('App:ObjectEntity', $eigenschappen[0]['_self']['id']);
             } else {
@@ -238,10 +238,9 @@ class ZdsToZgwService
         }
         $zaakType->hydrate(['eigenschappen' => $eigenschappenAsObjects]);
 
-
-
         $this->entityManager->persist($zaakType);
         $this->entityManager->flush();
+
         return $zaakArray;
     }
 
@@ -249,8 +248,8 @@ class ZdsToZgwService
     {
         $this->getRolTypeEntity();
         $rolTypeObjects = $zaakType->getValue('roltypen');
-        foreach($zaakArray['rollen'] as $key => $role) {
-            if($rollen = $this->cacheService->searchObjects(null, ['omschrijvingGeneriek' => $role['roltype']['omschrijvingGeneriek'], 'zaaktype' => $zaakType->getSelf()], [$this->rolTypeEntity->getId()->toString()])['results']) {
+        foreach ($zaakArray['rollen'] as $key => $role) {
+            if ($rollen = $this->cacheService->searchObjects(null, ['omschrijvingGeneriek' => $role['roltype']['omschrijvingGeneriek'], 'zaaktype' => $zaakType->getSelf()], [$this->rolTypeEntity->getId()->toString()])['results']) {
                 $zaakArray['rollen'][$key]['roltype'] = $rollen[0]['_self']['id'];
                 $rolType = $this->entityManager->find('App:ObjectEntity', $rollen[0]['_self']['id']);
             } else {
@@ -263,9 +262,9 @@ class ZdsToZgwService
 
                 $rolTypeObjects[] = $zaakArray['rollen'][$key]['roltype'] = $rolType->getId()->toString();
             }
-
         }
         $zaakType->hydrate(['roltypen' => $rolTypeObjects]);
+
         return $zaakArray;
     }
 
@@ -273,7 +272,7 @@ class ZdsToZgwService
     {
         $this->getZaakTypeEntity();
         $zaaktypes = $this->cacheService->searchObjects(null, ['identificatie' => $zaakArray['zaaktype']['identificatie']], [$this->zaakTypeEntity->getId()->toString()])['results'];
-        if(count($zaaktypes) > 0) {
+        if (count($zaaktypes) > 0) {
             $zaaktype = $zaaktypes[0];
             $zaaktype = $this->entityManager->find('App:ObjectEntity', $zaaktypes[0]['_self']['id']);
             $zaakArray['zaaktype'] = $zaaktype->getId()->toString();
@@ -310,13 +309,13 @@ class ZdsToZgwService
             $this->entityManager->persist($zaak);
             $this->entityManager->flush();
 
-            if($mappingOut = $this->getMapping('https://opencatalogi.nl/schemas/zds.zgwZaakToBv03.schema.json')) {
+            if ($mappingOut = $this->getMapping('https://opencatalogi.nl/schemas/zds.zgwZaakToBv03.schema.json')) {
                 $data['response'] = $this->createResponse($this->mappingService->mapping($mappingOut, $zaak->toArray()), 200);
             }
         } elseif (count($zaken) > 1) {
             $data['response'] = $this->createResponse(['Error' => 'More than one case exists with id '.$zaakArray['identificatie']]);
         } else {
-            $data['response'] = $this->createResponse(['Error' => 'The case with id ' .$zaakArray['identificatie']. ' does not exist']);
+            $data['response'] = $this->createResponse(['Error' => 'The case with id '.$zaakArray['identificatie'].' does not exist']);
         }
 
         return $data;
@@ -345,13 +344,13 @@ class ZdsToZgwService
             $this->entityManager->persist($zaakInformatieObject);
             $this->entityManager->flush();
 
-            if($mappingOut = $this->getMapping('https://opencatalogi.nl/schemas/zds.zgwDocumentToBv03.schema.json')) {
+            if ($mappingOut = $this->getMapping('https://opencatalogi.nl/schemas/zds.zgwDocumentToBv03.schema.json')) {
                 $data['response'] = $this->createResponse($this->mappingService->mapping($mappingOut, $zaakInformatieObject->toArray()), 200);
             }
         } elseif (count($documenten) > 1) {
             $data['response'] = $this->createResponse(['Error' => 'More than one document exists with id '.$zaakInformatieObjectArray['informatieobject']['identificatie']]);
         } else {
-            $data['response'] = $this->createResponse(['Error' => 'The case with id ' .$zaakInformatieObjectArray['informatieobject']['identificatie']. ' does not exist']);
+            $data['response'] = $this->createResponse(['Error' => 'The case with id '.$zaakInformatieObjectArray['informatieobject']['identificatie'].' does not exist']);
         }
 
         return $data;

@@ -84,11 +84,11 @@ class ExampleService
         return $this->zaakEntity;
     }
 
-    public function zaakIdentificatieActionHandler (array $data, array $config): array
+    public function zaakIdentificatieActionHandler(array $data, array $config): array
     {
         $this->getZaakEntity();
 
-        if($data['']) {
+        if ($data['']) {
             $zaakArray = $this->mappingService->map();
             $zaak = new ObjectEntity($this->zaakEntity);
             $zaak->hydrate($zaakArray);
