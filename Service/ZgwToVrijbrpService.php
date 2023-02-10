@@ -311,11 +311,49 @@ class ZgwToVrijbrpService
 
         // Todo: temp way of doing this without updated synchronize() function...
         if ($this->synchronizeTemp($synchronization, $objectArray) === []) {
-            return [];
+            return $data;
         }
 
         return $data;
     }//end zgwToVrijbrpHandler()
+
+    public function zgwToVrijbrpDocumentHandler(array $data, array $configuration): array
+    {
+        $this->configuration = $configuration;
+        $this->logger->info('Converting ZGW document to VrijBRP document');
+        if ($this->setSource() === null || $this->setMapping() === null || $this->setConditionEntity() === null) {
+            return [];
+        }
+
+        $dataId = $data['object']['_self']['id'];
+
+        $this->logger->debug("(Document) Object with id $dataId was created");
+
+        $object = $this->entityManager->getRepository('App:ObjectEntity')->find($dataId);
+
+        // Do mapping with Document ObjectEntity as array.
+        $objectArray = $this->mappingService->mapping($this->mapping, $object->toArray());
+
+        $this->configuration['location'] = $this->configuration['location'].'/'.$objectArray['dossierId'].'/documents';
+        unset($objectArray['dossierId']);
+
+        // Create synchronization.
+        $synchronization = $this->syncService->findSyncByObject($object, $this->source, $this->conditionEntity);
+        $synchronization->setMapping($this->mapping);
+
+        // Send request to source.
+        $this->logger->debug("Synchronize (Document) Object to: {$this->source->getLocation()}{$this->configuration['location']}");
+
+        // Todo: change synchronize function so it can also push to a source and not only pull from a source:
+        // $this->syncService->synchronize($synchronization, $objectArray);
+
+        // Todo: temp way of doing this without updated synchronize() function...
+        if ($this->synchronizeTemp($synchronization, $objectArray) === []) {
+            return $data;
+        }//end if
+
+        return $data;
+    }//end zgwToVrijbrpDocumentHandler()
 
     /**
      * Temporary function as replacement of the $this->syncService->synchronize() function.
