@@ -270,9 +270,9 @@ class ZgwToVrijbrpService
      *
      * @throws Exception
      *
-     * @return array|null Data.
+     * @return array Data.
      */
-    public function zgwToVrijbrpHandler(array $data, array $configuration): ?array
+    public function zgwToVrijbrpHandler(array $data, array $configuration): array
     {
         $this->logger->info('Converting ZGW object to VrijBRP');
         $this->configuration = $configuration;
@@ -288,14 +288,22 @@ class ZgwToVrijbrpService
             $this->symfonyStyle->comment("(Zaak) Object with id $dataId was created");
         }
         $this->logger->debug("(Zaak) Object with id $dataId was created");
-
+    
         $object = $this->entityManager->getRepository('App:ObjectEntity')->find($dataId);
+        $objectArray = $object->toArray();
+        $zaakTypeId = $objectArray['zaaktype']['identificatie'];
 
         // Do mapping with Zaak ObjectEntity as array.
-        $objectArray = $this->mappingService->mapping($this->mapping, $object->toArray());
+        $objectArray = $this->mappingService->mapping($this->mapping, $objectArray);
     
-        // todo: make this a switch (in a function?) or something when merging all Vrijbrp Bundles:
-        $objectArray = $this->getBirthProperties($object->toArray(), $objectArray);
+        // todo: make this a function? when merging all Vrijbrp Bundles:
+        switch ($zaakTypeId) {
+            case 'B0237':
+                $objectArray = $this->getBirthProperties($object->toArray(), $objectArray);
+                break;
+            default:
+                return [];
+        }
 
         // Create synchronization.
         $synchronization = $this->syncService->findSyncByObject($object, $this->source, $this->synchronizationEntity);

@@ -37,7 +37,7 @@ class ZgwToVrijbrpHandler implements ActionHandlerInterface
     public function getConfiguration(): array
     {
         return [
-            '$id'         => 'https://vrijbrp.nl/vrijbrp.zaak.birth.handler.json',
+            '$id'         => 'https://vrijbrp.nl/vrijbrp.zaak.handler.json',
             '$schema'     => 'https://json-schema.org/draft/2020-12/schema',
             'title'       => 'ZgwToVrijbrpHandler',
             'description' => 'This handler posts zaak eigenschappen from ZGW to VrijBrp',
