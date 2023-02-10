@@ -8,7 +8,7 @@ use Exception;
 
 /**
  * This ActionHandler handles the mapping and sending of ZGW zaak data to the Vrijbrp api with a corresponding Service.
- * Should be the same as NaamgebruikVrijBRPBundle->ZgwToVrijbrpHandler
+ * Should be the same as NaamgebruikVrijBRPBundle->ZgwToVrijbrpHandler.
  *
  * @author Wilco Louwerse <wilco@conduction.nl>
  */
@@ -37,7 +37,7 @@ class ZgwToVrijbrpHandler implements ActionHandlerInterface
     public function getConfiguration(): array
     {
         return [
-            '$id'         => 'https://vrijbrp.nl/vrijbrp.zaak.birth.handler.json',
+            '$id'         => 'https://vrijbrp.nl/vrijbrp.zaak.handler.json',
             '$schema'     => 'https://json-schema.org/draft/2020-12/schema',
             'title'       => 'ZgwToVrijbrpHandler',
             'description' => 'This handler posts zaak eigenschappen from ZGW to VrijBrp',
@@ -73,15 +73,16 @@ class ZgwToVrijbrpHandler implements ActionHandlerInterface
             ],
         ];
     }//end getConfiguration()
-    
+
     /**
      * This function will call the handler function to the corresponding service of this Handler.
      *
-     * @param array $data The data from the call
+     * @param array $data          The data from the call
      * @param array $configuration The configuration from the call
      *
-     * @return array
      * @throws Exception
+     *
+     * @return array
      */
     public function run(array $data, array $configuration): array
     {

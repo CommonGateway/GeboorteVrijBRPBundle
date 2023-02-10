@@ -2,14 +2,15 @@
   "title": "ZgwToVrijbrpBirthAction",
   "$id": "https://vrijbrp.nl/action/vrijbrp.ZgwToVrijbrpBirthAction.action.json",
   "$schema": "https://json-schema.org/draft/2020-12/action",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "listens": [
-    "vrijbrp.zaak.birth.created"
+    "vrijbrp.zaak.created"
   ],
   "throws": [],
   "conditions": {
     "==": [
-      1,1
+      {"var": "object.zaaktype.identificatie"},
+      "B0237"
     ]
   },
   "class": "CommonGateway\\GeboorteVrijBRPBundle\\ActionHandler\\ZgwToVrijbrpHandler",
