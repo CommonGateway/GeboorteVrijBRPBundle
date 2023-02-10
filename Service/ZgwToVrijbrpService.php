@@ -73,7 +73,7 @@ class ZgwToVrijbrpService
     /**
      * @var Entity|null The entity used for creating a Synchronization object. (and also the entity that triggers the ActionHandler).
      */
-    private ?Entity $conditionEntity;
+    private ?Entity $synchronizationEntity;
 
     /**
      * @var LoggerInterface
@@ -170,24 +170,24 @@ class ZgwToVrijbrpService
     }//end setMapping()
 
     /**
-     * Gets and sets a conditionEntity object using the required configuration['conditionEntity'] to find the correct Entity.
+     * Gets and sets a synchronizationEntity object using the required configuration['synchronizationEntity'] to find the correct Entity.
      *
-     * @return Entity|null The conditionEntity object we found or null if we don't find one.
+     * @return Entity|null The synchronizationEntity object we found or null if we don't find one.
      */
-    private function setConditionEntity(): ?Entity
+    private function setSynchronizationEntity(): ?Entity
     {
-        $this->conditionEntity = $this->entityManager->getRepository('App:Entity')->findOneBy(['reference' => $this->configuration['conditionEntity']]);
-        if ($this->conditionEntity instanceof Entity === false) {
+        $this->synchronizationEntity = $this->entityManager->getRepository('App:Entity')->findOneBy(['reference' => $this->configuration['synchronizationEntity']]);
+        if ($this->synchronizationEntity instanceof Entity === false) {
             if (isset($this->symfonyStyle) === true) {
-                $this->symfonyStyle->error("No entity found with reference: {$this->configuration['conditionEntity']}");
+                $this->symfonyStyle->error("No entity found with reference: {$this->configuration['synchronizationEntity']}");
             }
             $this->logger->error("No entity found with reference: {$this->configuration['conditionEntity']}");
 
             return null;
         }
 
-        return $this->conditionEntity;
-    }//end setConditionEntity()
+        return $this->synchronizationEntity;
+    }//end setSynchronizationEntity()
 
     /**
      * Maps zgw eigenschappen to vrijbrp mapping.
@@ -277,7 +277,7 @@ class ZgwToVrijbrpService
         $this->logger->info('Converting ZGW object to VrijBRP');
         $this->configuration = $configuration;
         $this->data = $data;
-        if ($this->setSource() === null || $this->setMapping() === null || $this->setConditionEntity() === null) {
+        if ($this->setSource() === null || $this->setMapping() === null || $this->setSynchronizationEntity() === null) {
             return [];
         }
 
@@ -297,7 +297,7 @@ class ZgwToVrijbrpService
         $objectArray = $this->getSpecificProperties($object->toArray(), $objectArray);
 
         // Create synchronization.
-        $synchronization = $this->syncService->findSyncByObject($object, $this->source, $this->conditionEntity);
+        $synchronization = $this->syncService->findSyncByObject($object, $this->source, $this->synchronizationEntity);
         $synchronization->setMapping($this->mapping);
 
         // Send request to source.

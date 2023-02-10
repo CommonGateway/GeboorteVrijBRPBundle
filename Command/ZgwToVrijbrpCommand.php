@@ -51,7 +51,7 @@ class ZgwToVrijbrpCommand extends Command
             ->addOption('source', 's', InputOption::VALUE_OPTIONAL, 'The location of the Source we will send a request to, location of an existing Source object')
             ->addOption('location', 'l', InputOption::VALUE_OPTIONAL, 'The endpoint we will use on the Source to send a request, just a string')
             ->addOption('mapping', 'm', InputOption::VALUE_OPTIONAL, 'The reference of the mapping we will use before sending the data to the source')
-            ->addOption('conditionEntity', 'ce', InputOption::VALUE_OPTIONAL, 'The reference of the entity we use as trigger for this handler, we need this to find a synchronization object');
+            ->addOption('synchronizationEntity', 'se', InputOption::VALUE_OPTIONAL, 'The reference of the entity we need to create a synchronization object');
     }//end configure()
 
     /**
@@ -75,13 +75,13 @@ class ZgwToVrijbrpCommand extends Command
             return Command::FAILURE;
         }
 
-        $data = ['response' => ['id' => $zaakId]];
+        $data = ['object' => ['_self' => ['id' => $zaakId]]];
 
         $configuration = [
             'source'          => ($input->getOption('source', false) ?? 'https://vrijbrp.nl/dossiers'),
             'location'        => ($input->getOption('location', false) ?? '/api/births'),
             'mapping'         => ($input->getOption('mapping', false) ?? 'https://vrijbrp.nl/mapping/vrijbrp.ZgwToVrijbrpGeboorte.mapping.json'),
-            'conditionEntity' => ($input->getOption('conditionEntity', false) ?? 'https://vng.opencatalogi.nl/schemas/zrc.zaak.schema.json'),
+            'synchronizationEntity' => ($input->getOption('synchronizationEntity', false) ?? 'https://vng.opencatalogi.nl/schemas/zrc.zaak.schema.json'),
         ];
 
         if ($this->zgwToVrijbrpService->zgwToVrijbrpHandler($data, $configuration) === []) {
