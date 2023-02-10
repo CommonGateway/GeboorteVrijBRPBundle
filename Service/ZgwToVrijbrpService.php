@@ -319,8 +319,10 @@ class ZgwToVrijbrpService
         // $this->syncService->synchronize($synchronization, $objectArray);
 
         // Todo: temp way of doing this without updated synchronize() function...
-        if ($this->synchronizeTemp($synchronization, $objectArray) === []) {
-            return $data;
+        if ($this->synchronizeTemp($synchronization, $objectArray) === [] &&
+            isset($this->symfonyStyle) === true) {
+            // Return empty array on error for when we got here through a command.
+            return [];
         }
 
         return $data;
@@ -365,9 +367,11 @@ class ZgwToVrijbrpService
         // $this->syncService->synchronize($synchronization, $objectArray);
 
         // Todo: temp way of doing this without updated synchronize() function...
-        if ($this->synchronizeTemp($synchronization, $objectArray) === []) {
-            return $data;
-        }//end if
+        if ($this->synchronizeTemp($synchronization, $objectArray) === [] &&
+            isset($this->symfonyStyle) === true) {
+            // Return empty array on error for when we got here through a command.
+            return [];
+        }
 
         return $data;
     }//end zgwToVrijbrpDocumentHandler()
