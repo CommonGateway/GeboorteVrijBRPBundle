@@ -181,7 +181,7 @@ class ZgwToVrijbrpService
             if (isset($this->symfonyStyle) === true) {
                 $this->symfonyStyle->error("No entity found with reference: {$this->configuration['synchronizationEntity']}");
             }
-            $this->logger->error("No entity found with reference: {$this->configuration['conditionEntity']}");
+            $this->logger->error("No entity found with reference: {$this->configuration['synchronizationEntity']}");
 
             return null;
         }
