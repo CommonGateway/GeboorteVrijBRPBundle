@@ -39,7 +39,7 @@ class ZgwToVrijbrpHandler implements ActionHandlerInterface
             '$schema'     => 'https://json-schema.org/draft/2020-12/schema',
             'title'       => 'ZgwToVrijbrpHandler',
             'description' => 'This handler posts zaak eigenschappen from ZGW to VrijBrp',
-            'required'    => ['source', 'location', 'mapping', 'conditionEntity'],
+            'required'    => ['source', 'location', 'mapping', 'zaakEntity'],
             'properties'  => [
                 'source' => [
                     'type'        => 'string',
@@ -61,7 +61,7 @@ class ZgwToVrijbrpHandler implements ActionHandlerInterface
                     'required'    => true,
                     '$ref'        => 'https://commongroundgateway.nl/commongroundgateway.mapping.entity.json',
                 ],
-                'conditionEntity' => [
+                'synchronizationEntity' => [
                     'type'        => 'string',
                     'description' => 'The reference of the entity we use as trigger for this handler, we need this to find a synchronization object',
                     'example'     => 'https://vng.opencatalogi.nl/schemas/zrc.zaak.schema.json',
