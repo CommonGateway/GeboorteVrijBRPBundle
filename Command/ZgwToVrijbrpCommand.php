@@ -78,9 +78,9 @@ class ZgwToVrijbrpCommand extends Command
         $data = ['object' => ['_self' => ['id' => $zaakId]]];
 
         $configuration = [
-            'source'          => ($input->getOption('source', false) ?? 'https://vrijbrp.nl/dossiers'),
-            'location'        => ($input->getOption('location', false) ?? '/api/births'),
-            'mapping'         => ($input->getOption('mapping', false) ?? 'https://vrijbrp.nl/mapping/vrijbrp.ZgwToVrijbrpGeboorte.mapping.json'),
+            'source'                => ($input->getOption('source', false) ?? 'https://vrijbrp.nl/dossiers'),
+            'location'              => ($input->getOption('location', false) ?? '/api/births'),
+            'mapping'               => ($input->getOption('mapping', false) ?? 'https://vrijbrp.nl/mapping/vrijbrp.ZgwToVrijbrpGeboorte.mapping.json'),
             'synchronizationEntity' => ($input->getOption('synchronizationEntity', false) ?? 'https://vng.opencatalogi.nl/schemas/zrc.zaak.schema.json'),
         ];
 
