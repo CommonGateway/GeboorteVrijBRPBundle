@@ -14,12 +14,12 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  *
  * @author Wilco Louwerse <wilco@conduction.nl>
  */
-class ZgwToVrijbrpCommand extends Command
+class ZgwToVrijbrpBirthCommand extends Command
 {
     /**
      * @var string The name of the command (the part after "bin/console").
      */
-    protected static $defaultName = 'vrijbrp:ZgwToVrijbrp';
+    protected static $defaultName = 'vrijbrp:ZgwToVrijbrp:birth';
 
     /**
      * @var ZgwToVrijbrpService The ZgwToVrijbrpService that will be used/tested with this command.
@@ -27,7 +27,7 @@ class ZgwToVrijbrpCommand extends Command
     private ZgwToVrijbrpService $zgwToVrijbrpService;
 
     /**
-     * Construct a ZgwToVrijbrpCommand.
+     * Construct a ZgwToVrijbrpBirthCommand.
      *
      * @param ZgwToVrijbrpService $zgwToVrijbrpService The ZgwToVrijbrpService.
      */
@@ -45,7 +45,7 @@ class ZgwToVrijbrpCommand extends Command
     protected function configure(): void
     {
         $this
-            ->setDescription('This command triggers ZgwToVrijbrpService->zgwToVrijbrpHandler()')
+            ->setDescription('This command triggers ZgwToVrijbrpService->zgwToVrijbrpHandler() for a birth e-dienst')
             ->setHelp('This command allows you to test mapping and sending a ZGW zaak to the Vrijbrp api /dossiers')
             ->addOption('zaak', 'z', InputOption::VALUE_REQUIRED, 'The zaak uuid we should test with')
             ->addOption('source', 's', InputOption::VALUE_OPTIONAL, 'The location of the Source we will send a request to, location of an existing Source object')
@@ -70,7 +70,7 @@ class ZgwToVrijbrpCommand extends Command
         // Handle the command options.
         $zaakId = $input->getOption('zaak', false);
         if ($zaakId === false) {
-            $symfonyStyle->error('Please use vrijbrp:ZgwToVrijbrp -z {uuid of a zaak}');
+            $symfonyStyle->error('Please use vrijbrp:ZgwToVrijbrp:birth -z {uuid of a zaak}');
 
             return Command::FAILURE;
         }
@@ -79,7 +79,7 @@ class ZgwToVrijbrpCommand extends Command
 
         $configuration = [
             'source'                => ($input->getOption('source', false) ?? 'https://vrijbrp.nl/dossiers'),
-            'location'              => ($input->getOption('location', false) ?? '/api/births'),
+            'location'              => ($input->getOption('location', false) ?? '/api/v1/births'),
             'mapping'               => ($input->getOption('mapping', false) ?? 'https://vrijbrp.nl/mapping/vrijbrp.ZgwToVrijbrpGeboorte.mapping.json'),
             'synchronizationEntity' => ($input->getOption('synchronizationEntity', false) ?? 'https://vng.opencatalogi.nl/schemas/zrc.zaak.schema.json'),
         ];
