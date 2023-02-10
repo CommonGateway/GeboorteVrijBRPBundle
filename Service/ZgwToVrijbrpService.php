@@ -288,14 +288,14 @@ class ZgwToVrijbrpService
             $this->symfonyStyle->comment("(Zaak) Object with id $dataId was created");
         }
         $this->logger->debug("(Zaak) Object with id $dataId was created");
-    
+
         $object = $this->entityManager->getRepository('App:ObjectEntity')->find($dataId);
         $objectArray = $object->toArray();
         $zaakTypeId = $objectArray['zaaktype']['identificatie'];
 
         // Do mapping with Zaak ObjectEntity as array.
         $objectArray = $this->mappingService->mapping($this->mapping, $objectArray);
-    
+
         // todo: make this a function? when merging all Vrijbrp Bundles:
         switch ($zaakTypeId) {
             case 'B0237':
@@ -327,12 +327,13 @@ class ZgwToVrijbrpService
 
         return $data;
     }//end zgwToVrijbrpHandler()
-    
+
     /**
-     * Todo: just re-use the zgwToVrijbrpHandler function^ but add a switch, this is a duplicate that should not exist this way
+     * Todo: just re-use the zgwToVrijbrpHandler function^ but add a switch, this is a duplicate that should not exist this way.
      *
      * @param array $data
      * @param array $configuration
+     *
      * @return array
      */
     public function zgwToVrijbrpDocumentHandler(array $data, array $configuration): array
@@ -351,7 +352,7 @@ class ZgwToVrijbrpService
 
         // Do mapping with Document ObjectEntity as array.
         $objectArray = $this->mappingService->mapping($this->mapping, $object->toArray());
-    
+
         // todo: make this a switch (in a function?) or something when merging all Vrijbrp Bundles:
         $this->configuration['location'] = $this->configuration['location'].'/'.$objectArray['dossierId'].'/documents';
         unset($objectArray['dossierId']);
