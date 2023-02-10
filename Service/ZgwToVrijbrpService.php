@@ -111,7 +111,6 @@ class ZgwToVrijbrpService
 
     /**
      * Set symfony style in order to output to the console when running the handler function through a command.
-     * Todo: use monolog.
      *
      * @param SymfonyStyle $symfonyStyle SymfonyStyle for writing user feedback to console.
      *
@@ -199,7 +198,7 @@ class ZgwToVrijbrpService
      *
      * @return array
      */
-    private function getSpecificProperties(array $zgw, array $output): array
+    private function getBirthProperties(array $zgw, array $output): array
     {
         $this->mappingLogger->info('Do additional mapping with case properties');
 
@@ -293,8 +292,9 @@ class ZgwToVrijbrpService
 
         // Do mapping with Zaak ObjectEntity as array.
         $objectArray = $this->mappingService->mapping($this->mapping, $object->toArray());
-
-        $objectArray = $this->getSpecificProperties($object->toArray(), $objectArray);
+    
+        // todo: make this a switch (in a function?) or something when merging all Vrijbrp Bundles:
+        $objectArray = $this->getBirthProperties($object->toArray(), $objectArray);
 
         // Create synchronization.
         $synchronization = $this->syncService->findSyncByObject($object, $this->source, $this->synchronizationEntity);
@@ -316,7 +316,14 @@ class ZgwToVrijbrpService
 
         return $data;
     }//end zgwToVrijbrpHandler()
-
+    
+    /**
+     * Todo: just re-use the zgwToVrijbrpHandler function^ but add a switch, this is a duplicate that should not exist this way
+     *
+     * @param array $data
+     * @param array $configuration
+     * @return array
+     */
     public function zgwToVrijbrpDocumentHandler(array $data, array $configuration): array
     {
         $this->configuration = $configuration;
@@ -333,7 +340,8 @@ class ZgwToVrijbrpService
 
         // Do mapping with Document ObjectEntity as array.
         $objectArray = $this->mappingService->mapping($this->mapping, $object->toArray());
-
+    
+        // todo: make this a switch (in a function?) or something when merging all Vrijbrp Bundles:
         $this->configuration['location'] = $this->configuration['location'].'/'.$objectArray['dossierId'].'/documents';
         unset($objectArray['dossierId']);
 

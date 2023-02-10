@@ -8,6 +8,7 @@ use Exception;
 
 /**
  * This ActionHandler handles the mapping and sending of ZGW zaak data to the Vrijbrp api with a corresponding Service.
+ * Should be the same as NaamgebruikVrijBRPBundle->ZgwToVrijbrpHandler
  *
  * @author Wilco Louwerse <wilco@conduction.nl>
  */
