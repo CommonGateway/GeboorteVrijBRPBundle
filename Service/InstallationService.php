@@ -375,9 +375,6 @@ class InstallationService implements InstallerInterface
         // Create actions from the given actionHandlers.
         $this->addActions();
 
-        /*@todo register this catalogi to the federation*/
-        // Todo: This requires a post to a preset webhook.
-
         $this->entityManager->flush();
     }//end checkDataConsistency()
 }

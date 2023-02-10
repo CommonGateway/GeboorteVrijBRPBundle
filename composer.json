@@ -1,6 +1,6 @@
 {
     "name": "common-gateway/geboorte-vrijbrp-bundle",
-    "description": "An example package for creating symfony flex bundles as plugins",
+    "description": "A vrijbrp e-dienst bundle for birth",
     "type": "symfony-bundle",
     "keywords": [
         "commongateway",
@@ -9,7 +9,10 @@
         "conduction",
         "symfony",
         "common-gateway-plugin",
-        "pet store"
+        "vrijbrp",
+        "e-dienst",
+        "geboorte",
+        "birth"
     ],
     "homepage": "https://commongateway.nl",
     "license": "EUPL-1.2",
@@ -28,8 +31,8 @@
         }
     },
     "scripts": {
-        "post-package-install": "bin/console common-gateway/pet-store-bundle",
-        "post-package-update": "bin/console common-gateway/pet-store-bundle",
-        "post-package-uninstall": "bin/console common-gateway/pet-store-bundle"
+        "post-package-install": "bin/console common-gateway/geboorte-vrijbrp-bundle",
+        "post-package-update": "bin/console common-gateway/geboorte-vrijbrp-bundle",
+        "post-package-uninstall": "bin/console common-gateway/geboorte-vrijbrp-bundle"
     }
 }

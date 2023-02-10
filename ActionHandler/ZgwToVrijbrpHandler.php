@@ -4,6 +4,7 @@ namespace CommonGateway\GeboorteVrijBRPBundle\ActionHandler;
 
 use CommonGateway\CoreBundle\ActionHandler\ActionHandlerInterface;
 use CommonGateway\GeboorteVrijBRPBundle\Service\ZgwToVrijbrpService;
+use Exception;
 
 /**
  * This ActionHandler handles the mapping and sending of ZGW zaak data to the Vrijbrp api with a corresponding Service.
@@ -71,14 +72,15 @@ class ZgwToVrijbrpHandler implements ActionHandlerInterface
             ],
         ];
     }//end getConfiguration()
-
+    
     /**
      * This function will call the handler function to the corresponding service of this Handler.
      *
-     * @param array $data          The data from the call
+     * @param array $data The data from the call
      * @param array $configuration The configuration from the call
      *
      * @return array
+     * @throws Exception
      */
     public function run(array $data, array $configuration): array
     {
