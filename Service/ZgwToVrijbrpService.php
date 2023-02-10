@@ -251,6 +251,7 @@ class ZgwToVrijbrpService
         $this->mappingLogger->debug('Flatten properties to key value pairs');
         $flatProperties = [];
         foreach ($eigenschappen as $eigenschap) {
+            // Check if last character of $eigenschap['naam'] is a string or an integer. === 0 if it is a string.
             if (intval(substr($eigenschap['naam'], -1)) === 0) {
                 $flatProperties[$eigenschap['naam']] = $eigenschap['waarde'];
             } else {
