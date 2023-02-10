@@ -321,7 +321,7 @@ class ZgwToVrijbrpService
     {
         $this->configuration = $configuration;
         $this->logger->info('Converting ZGW document to VrijBRP document');
-        if ($this->setSource() === null || $this->setMapping() === null || $this->setConditionEntity() === null) {
+        if ($this->setSource() === null || $this->setMapping() === null || $this->setSynchronizationEntity() === null) {
             return [];
         }
 
@@ -338,7 +338,7 @@ class ZgwToVrijbrpService
         unset($objectArray['dossierId']);
 
         // Create synchronization.
-        $synchronization = $this->syncService->findSyncByObject($object, $this->source, $this->conditionEntity);
+        $synchronization = $this->syncService->findSyncByObject($object, $this->source, $this->synchronizationEntity);
         $synchronization->setMapping($this->mapping);
 
         // Send request to source.
