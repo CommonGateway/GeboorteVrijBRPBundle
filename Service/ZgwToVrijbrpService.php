@@ -353,7 +353,7 @@ class ZgwToVrijbrpService
                     ],
                 ]
             );
-            $this->logger->error('Could not synchronize object. Error message: '. $exception->getMessage());
+            $this->logger->error('Could not synchronize object. Error message: '.$exception->getMessage());
 
             return [];
         }//end try
