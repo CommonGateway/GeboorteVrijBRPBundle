@@ -13,6 +13,7 @@ use CommonGateway\CoreBundle\Service\CallService;
 use CommonGateway\CoreBundle\Service\MappingService;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
@@ -75,6 +76,16 @@ class ZgwToVrijbrpService
     private ?Entity $synchronizationEntity;
 
     /**
+     * @var LoggerInterface
+     */
+    private LoggerInterface $logger;
+
+    /**
+     * @var LoggerInterface
+     */
+    private LoggerInterface $mappingLogger;
+
+    /**
      * Construct a ZgwToVrijbrpService.
      *
      * @param EntityManagerInterface $entityManager  EntityManagerInterface.
@@ -86,12 +97,16 @@ class ZgwToVrijbrpService
         EntityManagerInterface $entityManager,
         CallService $callService,
         SynchronizationService $syncService,
-        MappingService $mappingService
+        MappingService $mappingService,
+        LoggerInterface $actionLogger,
+        LoggerInterface $mappingLogger
     ) {
         $this->entityManager = $entityManager;
         $this->callService = $callService;
         $this->syncService = $syncService;
         $this->mappingService = $mappingService;
+        $this->logger = $actionLogger;
+        $this->mappingLogger = $mappingLogger;
     }//end __construct()
 
     /**
@@ -126,6 +141,7 @@ class ZgwToVrijbrpService
             if (isset($this->symfonyStyle) === true) {
                 $this->symfonyStyle->error("No source found with location: {$this->configuration['source']}");
             }
+            $this->logger->error("No source found with location: {$this->configuration['source']}");
 
             return null;
         }
@@ -145,6 +161,7 @@ class ZgwToVrijbrpService
             if (isset($this->symfonyStyle) === true) {
                 $this->symfonyStyle->error("No mapping found with reference: {$this->configuration['mapping']}");
             }
+            $this->logger->error("No mapping found with reference: {$this->configuration['mapping']}");
 
             return null;
         }
@@ -164,6 +181,7 @@ class ZgwToVrijbrpService
             if (isset($this->symfonyStyle) === true) {
                 $this->symfonyStyle->error("No entity found with reference: {$this->configuration['synchronizationEntity']}");
             }
+            $this->logger->error("No entity found with reference: {$this->configuration['conditionEntity']}");
 
             return null;
         }
@@ -183,6 +201,8 @@ class ZgwToVrijbrpService
      */
     private function getSpecificProperties(array $zgw, array $output): array
     {
+        $this->mappingLogger->info('Do additional mapping with case properties');
+
         $properties = $this->getEigenschapValues($zgw['eigenschappen']);
         $output['qualificationForDeclaringType'] = $properties['relatie'] ?? null;
 
@@ -215,6 +235,8 @@ class ZgwToVrijbrpService
         $output['nameSelection']['lastname'] = $properties['geslachtsnaam'];
         !isset($properties['voorvoegselGeslachtsnaam']) ?: $output['nameSelection']['prefix'] = $properties['voorvoegselGeslachtsnaam'];
 
+        $this->mappingLogger->info('Done with additional mapping');
+
         return $output;
     }//end getSpecificProperties()
 
@@ -227,6 +249,7 @@ class ZgwToVrijbrpService
      */
     private function getEigenschapValues(array $eigenschappen): array
     {
+        $this->mappingLogger->debug('Flatten properties to key value pairs');
         $flatProperties = [];
         foreach ($eigenschappen as $eigenschap) {
             if (intval(substr($eigenschap['naam'], -1)) === 0) {
@@ -251,6 +274,7 @@ class ZgwToVrijbrpService
      */
     public function zgwToVrijbrpHandler(array $data, array $configuration): ?array
     {
+        $this->logger->info('Converting ZGW object to VrijBRP');
         $this->configuration = $configuration;
         $this->data = $data;
         if ($this->setSource() === null || $this->setMapping() === null || $this->setSynchronizationEntity() === null) {
@@ -263,6 +287,7 @@ class ZgwToVrijbrpService
         if (isset($this->symfonyStyle) === true) {
             $this->symfonyStyle->comment("(Zaak) Object with id $dataId was created");
         }
+        $this->logger->debug("(Zaak) Object with id $dataId was created");
 
         $object = $this->entityManager->getRepository('App:ObjectEntity')->find($dataId);
 
@@ -279,6 +304,7 @@ class ZgwToVrijbrpService
         if (isset($this->symfonyStyle) === true) {
             $this->symfonyStyle->comment("Synchronize (Zaak) Object to: {$this->source->getLocation()}{$this->configuration['location']}");
         }
+        $this->logger->debug("Synchronize (Zaak) Object to: {$this->source->getLocation()}{$this->configuration['location']}");
 
         // Todo: change synchronize function so it can also push to a source and not only pull from a source:
         // $this->syncService->synchronize($synchronization, $objectArray);
@@ -327,6 +353,7 @@ class ZgwToVrijbrpService
                     ],
                 ]
             );
+            $this->logger->error('Could not synchronize object. Error message: '.$exception->getMessage());
 
             return [];
         }//end try
