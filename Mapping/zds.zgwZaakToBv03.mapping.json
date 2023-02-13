@@ -6,12 +6,12 @@
   "passTrough": false,
   "mapping": {
     "@xmlns:SOAP-ENV": "http://schemas.xmlsoap.org/soap/envelope/",
-    "SOAP-ENV:Body.ZKN:Bv3Bericht.@xmlns:StUF": "http://www.egem.nl/StUF/StUF0301",
-    "SOAP-ENV:Body.ZKN:Bv3Bericht.ZKN:stuurgegevens.StUF:berichtcode": "Bv03",
-    "SOAP-ENV:Body.ZKN:Bv3Bericht.ZKN:stuurgegevens.StUF:zender.StUF:applicatie": "CommonGateway",
-    "SOAP-ENV:Body.ZKN:Bv3Bericht.ZKN:stuurgegevens.StUF:ontvanger.StUF:applicatie": "SIMform",
-    "SOAP-ENV:Body.ZKN:Bv3Bericht.ZKN:stuurgegevens.StUF:referentienummer": "identificatie",
-    "SOAP-ENV:Body.ZKN:Bv3Bericht.ZKN:stuurgegevens.StUF:tijdstipbericht": "{{ 'now'|date('YmdHis') }}",
-    "SOAP-ENV:Body.ZKN:Bv3Bericht.ZKN:stuurgegevens.StUF:crossRefnummmer": "identificatie"
+    "SOAP-ENV:Body.ZKN:Bv03Bericht.@xmlns:StUF": "http://www.egem.nl/StUF/StUF0301",
+    "SOAP-ENV:Body.ZKN:Bv03Bericht.ZKN:stuurgegevens.StUF:berichtcode": "Bv03",
+    "SOAP-ENV:Body.ZKN:Bv03Bericht.ZKN:stuurgegevens.StUF:zender.StUF:applicatie": "CommonGateway",
+    "SOAP-ENV:Body.ZKN:Bv03Bericht.ZKN:stuurgegevens.StUF:ontvanger.StUF:applicatie": "SIMform",
+    "SOAP-ENV:Body.ZKN:Bv03Bericht.ZKN:stuurgegevens.StUF:referentienummer": "identificatie",
+    "SOAP-ENV:Body.ZKN:Bv03Bericht.ZKN:stuurgegevens.StUF:tijdstipbericht": "{{ 'now'|date('YmdHis') }}",
+    "SOAP-ENV:Body.ZKN:Bv03Bericht.ZKN:stuurgegevens.StUF:crossRefnummmer": "identificatie"
   }
 }
