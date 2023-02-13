@@ -11,7 +11,7 @@
     "SOAP-ENV:Body.ZKN:Bv3Bericht.ZKN:stuurgegevens.StUF:zender.StUF:applicatie": "CommonGateway",
     "SOAP-ENV:Body.ZKN:Bv3Bericht.ZKN:stuurgegevens.StUF:ontvanger.StUF:applicatie": "SIMform",
     "SOAP-ENV:Body.ZKN:Bv3Bericht.ZKN:stuurgegevens.StUF:referentienummer": "informatieobject.identificatie",
-    "SOAP-ENV:Body.ZKN:Bv3Bericht.ZKN:stuurgegevens.StUF:tijdstipbericht": "datum",
+    "SOAP-ENV:Body.ZKN:Bv3Bericht.ZKN:stuurgegevens.StUF:tijdstipbericht": "{{ 'now'|date('YmdHis') }}",
     "SOAP-ENV:Body.ZKN:Bv3Bericht.ZKN:stuurgegevens.StUF:crossRefnummmer": "informatieobject.identificatie"
   }
 }
