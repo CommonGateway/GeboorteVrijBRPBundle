@@ -2,7 +2,7 @@
   "title": "ZGWZaakToDu02",
   "$id": "https://zds.nl/mapping/zds.zgwDocumentToBv03.mapping.json",
   "$schema": "https://json-schema.org/draft/2020-12/mapping",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "passTrough": false,
   "mapping": {
     "@xmlns:SOAP-ENV": "http://schemas.xmlsoap.org/soap/envelope/",
