@@ -11,6 +11,7 @@ use App\Entity\Synchronization;
 use App\Service\SynchronizationService;
 use CommonGateway\CoreBundle\Service\CallService;
 use CommonGateway\CoreBundle\Service\MappingService;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Psr\Log\LoggerInterface;
@@ -202,8 +203,60 @@ class ZgwToVrijbrpService
     {
         $this->mappingLogger->info('Do additional mapping with case properties');
         
-        $properties = $this->getEigenschapValues($zgw['eigenschappen']);
-        // todo
+        $properties = $this->getZaakEigenschappen($zgw['eigenschappen'], ['all']);
+    
+        $output['dossier'] = [
+            'type' => [],
+            'status' => [],
+        ];
+        $output['partner1'] = [
+            'nameAfterCommitment' => [],
+        ];
+        $output['partner2'] = [
+            'nameAfterCommitment' => [],
+        ];
+        
+        // Todo: maybe check if all these $properties['key'] exist?
+    
+        // Planning. Todo: make this a function
+        $date = new DateTime($properties['verbintenisDatum']);
+        $time = new DateTime($properties['verbintenisTijd']);
+        $dateTime = new DateTime($date->format('Y-m-d\T').$time->format('H:i:s'));
+        $output['planning']['commitmentDateTime'] = $dateTime->format('Y-m-d\TH:i:s');
+        if (in_array($properties['verbintenisType'], ['MARRIAGE', 'GPS'])) {
+            $output['planning']['commitmentType'] = $properties['verbintenisType'];
+        }
+        
+        // Location. Todo: make this a function
+        $output['location']['name'] = $properties['naam'];
+        $output['location']['aliases'][0] = $properties['naam'];
+        if (array_key_exists('trouwboekje', $properties) === true && $properties['trouwboekje'] == true) {
+            $output['location']['options'][0] = [
+                'name' => 'trouwboekje',
+                'value' => 'trouwboekje',
+                'type' => 'TEXT',
+                'aliases' => [
+                    'trouwboekje'
+                ]
+            ];
+        }
+        
+        // Officials. Todo: make this a function
+        $output['officials']['preferences'][0] = [
+            'name' => $properties['naam1'],
+            'aliases' => [
+                $properties['naam1']
+            ]
+        ];
+        $output['officials']['preferences'][1] = [
+            'name' => $properties['naam2'],
+            'aliases' => [
+                $properties['naam2']
+            ]
+        ];
+        
+        // Witnesses.
+        $output['witnesses']['numberOfMunicipalWitnesses'] = intval($properties['verzorgdgem']);
         
         $this->mappingLogger->info('Done with additional mapping');
         
@@ -245,8 +298,8 @@ class ZgwToVrijbrpService
         foreach ($properties['children'] as $key => $child) {
             $output['children'][$key]['firstname'] = $child['voornamen'];
             $output['children'][$key]['gender'] = $child['geslachtsaanduiding'];
-            $birthDate = new \DateTime($child['geboortedatum']);
-            $birthTime = new \DateTime($child['geboortetijd']);
+            $birthDate = new DateTime($child['geboortedatum']);
+            $birthTime = new DateTime($child['geboortetijd']);
 
             $output['children'][$key]['birthDateTime'] = $birthDate->format('Y-m-d').'T'.$birthTime->format('H:i:s');
         }
@@ -260,7 +313,27 @@ class ZgwToVrijbrpService
 
         return $output;
     }//end getSpecificProperties()
-
+    
+    /**
+     * This function gets the zaakEigenschappen from the zgwZaak with the given properties (simXml elementen and Stuf extraElementen).
+     *
+     * @param ObjectEntity $zaakObjectEntity The zaak ObjectEntity.
+     * @param array        $properties The properties / eigenschappen we want to get.
+     *
+     * @return array zaakEigenschappen
+     */
+    public function getZaakEigenschappen(ObjectEntity $zaakObjectEntity, array $properties): array
+    {
+        $zaakEigenschappen = [];
+        foreach ($zaakObjectEntity->getValue('eigenschappen') as $eigenschap) {
+            if (in_array($eigenschap->getValue('naam'), $properties) || in_array('all', $properties)) {
+                $zaakEigenschappen[$eigenschap->getValue('naam')] = $eigenschap->getValue('waarde');
+            }
+        }
+        
+        return $zaakEigenschappen;
+    }//end getZaakEigenschappen()
+    
     /**
      * Converts ZGW eigenschappen to key, value pairs.
      *
@@ -415,6 +488,8 @@ class ZgwToVrijbrpService
     private function synchronizeTemp(Synchronization $synchronization, array $objectArray): array
     {
         $objectString = $this->syncService->getObjectString($objectArray);
+        
+        $this->logger->debug("SynchronizeTemp with objectString: $objectString");
 
         try {
             $result = $this->callService->call(
