@@ -82,7 +82,7 @@ class InstallationService implements InstallerInterface
     /**
      * Install for this bundle.
      *
-     * @return void Nothing.
+     * @return void This function doesn't return anything.
      */
     public function install()
     {
@@ -92,7 +92,7 @@ class InstallationService implements InstallerInterface
     /**
      * Update for this bundle.
      *
-     * @return void Nothing.
+     * @return void This function doesn't return anything.
      */
     public function update()
     {
@@ -102,7 +102,7 @@ class InstallationService implements InstallerInterface
     /**
      * Uninstall for this bundle.
      *
-     * @return void Nothing.
+     * @return void This function doesn't return anything.
      */
     public function uninstall()
     {
@@ -152,7 +152,7 @@ class InstallationService implements InstallerInterface
     /**
      * This function creates actions for all the actionHandlers in OpenCatalogi.
      *
-     * @return void Nothing.
+     * @return void This function doesn't return anything.
      */
     public function addActions(): void
     {
@@ -262,7 +262,7 @@ class InstallationService implements InstallerInterface
      *
      * @param array $objectsWithCards The objects to create cards for.
      *
-     * @return void Nothing.
+     * @return void This function doesn't return anything.
      */
     public function createDashboardCards(array $objectsWithCards)
     {
@@ -296,7 +296,7 @@ class InstallationService implements InstallerInterface
     /**
      * Create cronjobs for this bundle.
      *
-     * @return void Nothing.
+     * @return void This function doesn't return anything.
      */
     public function createCronjobs()
     {
@@ -357,7 +357,7 @@ class InstallationService implements InstallerInterface
     /**
      * Check if we need to create or update data for this bundle.
      *
-     * @return void Nothing.
+     * @return void This function doesn't return anything.
      */
     public function checkDataConsistency()
     {
