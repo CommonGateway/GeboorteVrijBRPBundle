@@ -206,11 +206,6 @@ class ZgwToVrijbrpService
         $properties = ['verbintenisDatum', 'verbintenisTijd', 'verbintenisType', 'naam',
             'trouwboekje', 'naam1', 'naam2', 'verzorgdgem'];
         $zaakEigenschappen = $this->getCommitmentZaakEigenschappen($object, $properties);
-    
-        $output['dossier'] = [
-            'type' => [],
-            'status' => [],
-        ];
         
         // Partners Todo: make this a function?
         $output['partner1'] = $zaakEigenschappen['partner1'];
