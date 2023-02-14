@@ -416,16 +416,20 @@ class ZgwToVrijbrpService
                     break;
                 case 'bsn1':
                     // Todo: add some abstract function here, that works like the 'getCommitmentPartnerEigenschap()' function.
-                    // Todo: make it add data to $zaakEigenschappen['witnesses'][]= [bsn = bsn1, firstname = voornamen1, etc] (do an if key exists check for voornamen1 etc?)
+                    // Todo: make it add data to $zaakEigenschappen['witnesses'][0]= [bsn = bsn1, firstname = voornamen1, etc]
+                    $this->getCommitmentWitnessEigenschap($zaakEigenschappen, 1, $zaakObjectEntity);
                     break;
                 case 'bsn2':
                     // Todo: repeat / re-use of function for bsn1 but with a different integer...
+                    $this->getCommitmentWitnessEigenschap($zaakEigenschappen, 2, $zaakObjectEntity);
                     break;
                 case 'bsn3':
                     // Todo: repeat / re-use of function for bsn1 but with a different integer...
+                    $this->getCommitmentWitnessEigenschap($zaakEigenschappen, 3, $zaakObjectEntity);
                     break;
                 case 'bsn4':
                     // Todo: repeat / re-use of function for bsn1 but with a different integer...
+                    $this->getCommitmentWitnessEigenschap($zaakEigenschappen, 4, $zaakObjectEntity);
                     break;
                 default:
                     if (in_array($eigenschap->getValue('naam'), $properties) || in_array('all', $properties)) {
@@ -468,6 +472,30 @@ class ZgwToVrijbrpService
             return;
         }
         $zaakEigenschappen['partner1'][$keys[0]] = $eigenschap->getValue('waarde');
+    }//end getCommitmentPartnerEigenschap()
+    
+    /**
+     * Adds a single Witness to the zaakEigenschappen array. Will use $number to find the correct data for this witness.
+     *
+     * @param array $zaakEigenschappen Array of key value pairs of the zaakEigenschappen of a Case.
+     * @param int $number Number of the witness, used to get the correct keys.
+     * @param ObjectEntity $zaakObjectEntity The zaak ObjectEntity.
+     *
+     * @return void This function doesn't return anything.
+     */
+    private function getCommitmentWitnessEigenschap(array &$zaakEigenschappen, int $number, ObjectEntity $zaakObjectEntity)
+    {
+        // Todo: $zaakObjectEntity->getValue('eigenschappen')->get("bsn$number") Does not work like this, but you get the idea :P
+        // Todo: do an if key exists check for voornamen1 etc?
+        
+        $zaakEigenschappen['witnesses']['chosen'][] = [
+            'bsn' => $zaakObjectEntity->getValue('eigenschappen')->get("bsn$number"),
+            'firstname' => $zaakObjectEntity->getValue('eigenschappen')->get("voornamen$number"),
+            'prefix' => $zaakObjectEntity->getValue('eigenschappen')->get("voorvoegselGeslachtsnaam$number"),
+            'lastname' => $zaakObjectEntity->getValue('eigenschappen')->get("geslachtsnaam$number"),
+            'birthdate' => $zaakObjectEntity->getValue('eigenschappen')->get("geboortedatum$number"),
+            'remarks' => 'todo?'
+        ];
     }//end getCommitmentPartnerEigenschap()
     
     /**
