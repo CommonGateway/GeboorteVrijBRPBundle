@@ -164,7 +164,6 @@ class InstallationService implements InstallerInterface
         foreach ($actionHandlers as $handler) {
             $actionHandler = $this->container->get($handler);
 
-
             $schema = $actionHandler->getConfiguration();
             if ($schema === null) {
                 continue;
