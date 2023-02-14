@@ -417,19 +417,19 @@ class ZgwToVrijbrpService
                 case 'bsn1':
                     // Todo: add some abstract function here, that works like the 'getCommitmentPartnerEigenschap()' function.
                     // Todo: make it add data to $zaakEigenschappen['witnesses'][]= [bsn = bsn1, firstname = voornamen1, etc]
-                    $this->getCommitmentWitnessEigenschap($zaakEigenschappen, 1, $zaakObjectEntity);
+                    $this->getCommitmentWitness($zaakEigenschappen, 1, $zaakObjectEntity);
                     break;
                 case 'bsn2':
                     // Todo: repeat / re-use of function for bsn1 but with a different integer...
-                    $this->getCommitmentWitnessEigenschap($zaakEigenschappen, 2, $zaakObjectEntity);
+                    $this->getCommitmentWitness($zaakEigenschappen, 2, $zaakObjectEntity);
                     break;
                 case 'bsn3':
                     // Todo: repeat / re-use of function for bsn1 but with a different integer...
-                    $this->getCommitmentWitnessEigenschap($zaakEigenschappen, 3, $zaakObjectEntity);
+                    $this->getCommitmentWitness($zaakEigenschappen, 3, $zaakObjectEntity);
                     break;
                 case 'bsn4':
                     // Todo: repeat / re-use of function for bsn1 but with a different integer...
-                    $this->getCommitmentWitnessEigenschap($zaakEigenschappen, 4, $zaakObjectEntity);
+                    $this->getCommitmentWitness($zaakEigenschappen, 4, $zaakObjectEntity);
                     break;
                 default:
                     if (in_array($eigenschap->getValue('naam'), $properties) || in_array('all', $properties)) {
@@ -483,7 +483,7 @@ class ZgwToVrijbrpService
      *
      * @return void This function doesn't return anything.
      */
-    private function getCommitmentWitnessEigenschap(array &$zaakEigenschappen, int $number, ObjectEntity $zaakObjectEntity)
+    private function getCommitmentWitness(array &$zaakEigenschappen, int $number, ObjectEntity $zaakObjectEntity)
     {
         // Todo: $zaakObjectEntity->getValue('eigenschappen')->get("bsn$number") Does not work like this, but you get the idea :P
         // Todo: do an if key exists check for voornamen1 etc?
