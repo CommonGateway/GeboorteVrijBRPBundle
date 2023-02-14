@@ -272,8 +272,9 @@ class ZgwToVrijbrpService
         ];
         
         // Witnesses.
+        // Todo: See todo comments in the getCommitmentZaakEigenschappen() function !!!
+        $output['witnesses'] = $zaakEigenschappen['witnesses'];
         $output['witnesses']['numberOfMunicipalWitnesses'] = intval($zaakEigenschappen['verzorgdgem']);
-        // Todo: A function to add all witnesses, up to 4
         
         $this->mappingLogger->info('Done with additional mapping');
         
@@ -413,6 +414,19 @@ class ZgwToVrijbrpService
                     // Probably only for partner1.
                     $this->getCommitmentPartnerEigenschap($zaakEigenschappen, ['nameAfterCommitment', 'lastname'], $eigenschap);
                     break;
+                case 'bsn1':
+                    // Todo: add some abstract function here, that works like the 'getCommitmentPartnerEigenschap()' function.
+                    // Todo: make it add data to $zaakEigenschappen['witnesses'][]= [bsn = bsn1, firstname = voornamen1, etc] (do an if key exists check for voornamen1 etc?)
+                    break;
+                case 'bsn2':
+                    // Todo: repeat / re-use of function for bsn1 but with a different integer...
+                    break;
+                case 'bsn3':
+                    // Todo: repeat / re-use of function for bsn1 but with a different integer...
+                    break;
+                case 'bsn4':
+                    // Todo: repeat / re-use of function for bsn1 but with a different integer...
+                    break;
                 default:
                     if (in_array($eigenschap->getValue('naam'), $properties) || in_array('all', $properties)) {
                         $zaakEigenschappen[$eigenschap->getValue('naam')] = $eigenschap->getValue('waarde');
@@ -447,7 +461,8 @@ class ZgwToVrijbrpService
             return;
         }
         
-        // If count($keys) == 1 (only used for bsn, so could be removed if we don't use it for bsn anymore)
+        // If count($keys) == 1
+        // Todo: This with only 1 key is only used for bsn, so could be removed if we don't use it for bsn anymore
         if (isset($zaakEigenschappen['partner1'][$keys[0]]) === true) {
             $zaakEigenschappen['partner2'][$keys[0]] = $eigenschap->getValue('waarde');
             return;
