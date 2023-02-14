@@ -395,6 +395,7 @@ class ZgwToVrijbrpService
         $objectString = $this->syncService->getObjectString($objectArray);
 
         $this->logger->info('Sending message with body '.$objectString);
+
         try {
             $result = $this->callService->call(
                 $this->source,
@@ -417,7 +418,7 @@ class ZgwToVrijbrpService
                     ],
                 ]
             );
-            $this->logger->error('Could not synchronize object. Error message: '.$exception->getMessage().'\nFull Response'. ($exception instanceof ServerException||$exception instanceof ClientException||$exception instanceof RequestException === true ? $exception->getResponse()->getBody() : ''));
+            $this->logger->error('Could not synchronize object. Error message: '.$exception->getMessage().'\nFull Response'.($exception instanceof ServerException || $exception instanceof ClientException || $exception instanceof RequestException === true ? $exception->getResponse()->getBody() : ''));
 
             return [];
         }//end try
