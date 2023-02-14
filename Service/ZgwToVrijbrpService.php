@@ -416,7 +416,7 @@ class ZgwToVrijbrpService
                     break;
                 case 'bsn1':
                     // Todo: add some abstract function here, that works like the 'getCommitmentPartnerEigenschap()' function.
-                    // Todo: make it add data to $zaakEigenschappen['witnesses'][0]= [bsn = bsn1, firstname = voornamen1, etc]
+                    // Todo: make it add data to $zaakEigenschappen['witnesses'][]= [bsn = bsn1, firstname = voornamen1, etc]
                     $this->getCommitmentWitnessEigenschap($zaakEigenschappen, 1, $zaakObjectEntity);
                     break;
                 case 'bsn2':
