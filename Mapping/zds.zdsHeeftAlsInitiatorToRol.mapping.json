@@ -23,6 +23,10 @@
     "betrokkeneIdentificatie.verblijfsadres.aoaHuisnummertoevoeging": "ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:verblijfsadres.ns3:aoa&#46;huisnummertoevoeging"
   },
   "cast": {
-    "roltype": "jsonToArray"
+    "roltype": "jsonToArray",
+    "betrokkeneIdentificatie.inpBsn": "keyCantBeValue",
+    "betrokkeneIdentificatie.geslachtsnaam": "keyCantBeValue",
+    "betrokkeneIdentificatie.voornamen": "keyCantBeValue",
+    "betrokkeneIdentificatie.voorvoegselGeslachtsnaam": "keyCantBeValue"
   }
 }

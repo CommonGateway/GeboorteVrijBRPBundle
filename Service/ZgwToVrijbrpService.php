@@ -218,13 +218,16 @@ class ZgwToVrijbrpService
             $output['partner2']['nameAfterCommitment']['nameUseType'] = 'N';
         }
     
-        if (!isset($output['partner2']['bsn'])) {
+        if (isset($output['partner2']['bsn']) === false) {
             $output['partner2']['bsn'] = $this->getZaakInitiatorValue($object, 'inpBsn');
         }
     
-        if (!isset($output['partner2']['nameAfterCommitment']['lastname'])) {
+        if (isset($output['partner2']['nameAfterCommitment']['title']) === false) {
+            $output['partner2']['nameAfterCommitment']['title'] = $this->getZaakInitiatorValue($object, 'voornamen');
+        }
+        if (isset($output['partner2']['nameAfterCommitment']['lastname']) === false) {
             $output['partner2']['nameAfterCommitment']['lastname'] = $this->getZaakInitiatorValue($object, 'geslachtsnaam');
-            if (!isset($output['partner2']['nameAfterCommitment']['prefix'])) {
+            if (isset($output['partner2']['nameAfterCommitment']['prefix']) === false) {
                 $output['partner2']['nameAfterCommitment']['prefix'] = $this->getZaakInitiatorValue($object, 'voorvoegselGeslachtsnaam');
             }
         }
@@ -270,6 +273,7 @@ class ZgwToVrijbrpService
         
         // Witnesses.
         $output['witnesses']['numberOfMunicipalWitnesses'] = intval($zaakEigenschappen['verzorgdgem']);
+        // Todo: A function to add all witnesses, up to 4
         
         $this->mappingLogger->info('Done with additional mapping');
         
@@ -288,8 +292,8 @@ class ZgwToVrijbrpService
     private function getZaakInitiatorValue(ObjectEntity $zaakObjectEntity, string $key): ?string
     {
         foreach ($zaakObjectEntity->getValue('rollen') as $rol) {
-            if ($rol['omschrijvingGeneriek'] == 'initiator' && $rol['betrokkeneType'] == 'natuurlijk_persoon') {
-                return $rol['betrokkeneIdentificatie'][$key];
+            if ($rol->getValue('roltoelichting') == 'initiator' && $rol->getValue('betrokkeneType') == 'natuurlijk_persoon') {
+                return $rol->getValue('betrokkeneIdentificatie')->toArray()[$key];
             }
         }
         
@@ -378,10 +382,15 @@ class ZgwToVrijbrpService
     private function getCommitmentZaakEigenschappen(ObjectEntity $zaakObjectEntity, array $properties): array
     {
         $zaakEigenschappen = [];
+        $tempCountForBsn = 1; // Todo: fix this bsn shizzle
         foreach ($zaakObjectEntity->getValue('eigenschappen') as $eigenschap) {
             switch ($eigenschap->getValue('naam')) {
                 case 'inp.bsn':
-                    $this->getCommitmentPartnerEigenschap($zaakEigenschappen, ['bsn'], $eigenschap);
+                    // Todo: fix this bsn shizzle:
+                    if ($tempCountForBsn === 2) {
+                        $this->getCommitmentPartnerEigenschap($zaakEigenschappen, ['bsn'], $eigenschap);
+                    }
+                    $tempCountForBsn++;
                     break;
                 case 'sub.telefoonnummer':
                     $this->getCommitmentPartnerEigenschap($zaakEigenschappen, ['contactInformation', 'telephoneNumber'], $eigenschap);
@@ -391,6 +400,10 @@ class ZgwToVrijbrpService
                     break;
                 case 'geselecteerdNaamgebruik':
                     $this->getCommitmentPartnerEigenschap($zaakEigenschappen, ['nameAfterCommitment', 'nameUseType'], $eigenschap);
+                    break;
+                case 'voornamen':
+                    // Probably only for partner1.
+                    $this->getCommitmentPartnerEigenschap($zaakEigenschappen, ['nameAfterCommitment', 'title'], $eigenschap);
                     break;
                 case 'voorvoegselGeslachtsnaam':
                     // Probably only for partner1.
@@ -434,7 +447,7 @@ class ZgwToVrijbrpService
             return;
         }
         
-        // If count($keys) == 1
+        // If count($keys) == 1 (only used for bsn, so could be removed if we don't use it for bsn anymore)
         if (isset($zaakEigenschappen['partner1'][$keys[0]]) === true) {
             $zaakEigenschappen['partner2'][$keys[0]] = $eigenschap->getValue('waarde');
             return;
