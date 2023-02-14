@@ -187,16 +187,38 @@ class ZgwToVrijbrpService
 
         return $this->synchronizationEntity;
     }//end setSynchronizationEntity()
-
+    
     /**
-     * Maps zgw eigenschappen to vrijbrp mapping.
+     * Maps zgw eigenschappen to vrijbrp mapping for a Commitment e-dienst.
+     *
+     * @param array $zgw    The ZGW case.
+     * @param array $output The output data.
+     *
+     * @throws Exception
+     *
+     * @return array The updated output array.
+     */
+    private function getCommitmentProperties(array $zgw, array $output): array
+    {
+        $this->mappingLogger->info('Do additional mapping with case properties');
+        
+        $properties = $this->getEigenschapValues($zgw['eigenschappen']);
+        // todo
+        
+        $this->mappingLogger->info('Done with additional mapping');
+        
+        return $output;
+    }//end getSpecificProperties()
+    
+    /**
+     * Maps zgw eigenschappen to vrijbrp mapping for a Birth e-dienst.
      *
      * @param array $zgw    The ZGW case
      * @param array $output The output data
      *
      * @throws Exception
      *
-     * @return array
+     * @return array The updated output array.
      */
     private function getBirthProperties(array $zgw, array $output): array
     {
@@ -300,6 +322,9 @@ class ZgwToVrijbrpService
         switch ($zaakTypeId) {
             case 'B0237':
                 $objectArray = $this->getBirthProperties($object->toArray(), $objectArray);
+                break;
+            case 'B0337':
+                $objectArray = $this->getCommitmentProperties($object->toArray(), $objectArray);
                 break;
             default:
                 return [];

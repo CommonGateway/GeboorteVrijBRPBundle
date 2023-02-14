@@ -1,0 +1,25 @@
+{
+  "title": "ZgwToVrijbrpCommitmentAction",
+  "$id": "https://vrijbrp.nl/action/vrijbrp.ZgwToVrijbrpCommitmentAction.action.json",
+  "$schema": "https://json-schema.org/draft/2020-12/action",
+  "version": "0.0.1",
+  "listens": [
+    "vrijbrp.zaak.created"
+  ],
+  "throws": [],
+  "conditions": {
+    "==": [
+      {"var": "object.zaaktype.identificatie"},
+      "B0337"
+    ]
+  },
+  "class": "CommonGateway\\GeboorteVrijBRPBundle\\ActionHandler\\ZgwToVrijbrpHandler",
+  "configuration": {
+    "source": "https://vrijbrp.nl/dossiers",
+    "location": "/api/v1/commitments",
+    "mapping": "https://vrijbrp.nl/mapping/vrijbrp.ZgwToVrijbrpCommitment.mapping.json",
+    "synchronizationEntity": "https://vng.opencatalogi.nl/schemas/zrc.zaak.schema.json"
+  },
+  "isLockable": false,
+  "isEnabled": true
+}
