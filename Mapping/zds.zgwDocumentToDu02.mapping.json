@@ -12,8 +12,8 @@
     "SOAP-ENV:Body.ZKN:genereerDocumentIdentificatie_Du02.ZKN:stuurgegevens.StUF:zender.StUF:applicatie": "CommonGateway",
     "SOAP-ENV:Body.ZKN:genereerDocumentIdentificatie_Du02.ZKN:stuurgegevens.StUF:ontvanger.StUF:applicatie": "SIMform",
     "SOAP-ENV:Body.ZKN:genereerDocumentIdentificatie_Du02.ZKN:stuurgegevens.StUF:referentienummer": "identificatie",
-    "SOAP-ENV:Body.ZKN:genereerDocumentIdentificatie_Du02.ZKN:stuurgegevens.StUF:tijdstipbericht": "datum",
-    "SOAP-ENV:Body.ZKN:genereerDocumentIdentificatie_Du02.ZKN:stuurgegevens.StUF:crossRefnummmer": "identificatie",
+    "SOAP-ENV:Body.ZKN:genereerDocumentIdentificatie_Du02.ZKN:stuurgegevens.StUF:tijdstipBericht": "datum",
+    "SOAP-ENV:Body.ZKN:genereerDocumentIdentificatie_Du02.ZKN:stuurgegevens.StUF:crossRefnummer": "identificatie",
     "SOAP-ENV:Body.ZKN:genereerDocumentIdentificatie_Du02.ZKN:document.@StUF:functie": "entiteit",
     "SOAP-ENV:Body.ZKN:genereerDocumentIdentificatie_Du02.ZKN:document.@StUF:entiteittype": "EDC",
     "SOAP-ENV:Body.ZKN:genereerDocumentIdentificatie_Du02.ZKN:document.ZKN:identificatie": "identificatie"
