@@ -14,6 +14,9 @@ use CommonGateway\CoreBundle\Service\MappingService;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Exception\ServerException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
@@ -655,6 +658,8 @@ class ZgwToVrijbrpService
         
         $this->logger->debug("SynchronizeTemp with objectString: $objectString");
 
+        $this->logger->info('Sending message with body '.$objectString);
+
         try {
             $result = $this->callService->call(
                 $this->source,
@@ -677,7 +682,7 @@ class ZgwToVrijbrpService
                     ],
                 ]
             );
-            $this->logger->error('Could not synchronize object. Error message: '.$exception->getMessage());
+            $this->logger->error('Could not synchronize object. Error message: '.$exception->getMessage().'\nFull Response'.($exception instanceof ServerException || $exception instanceof ClientException || $exception instanceof RequestException === true ? $exception->getResponse()->getBody() : ''));
 
             return [];
         }//end try
