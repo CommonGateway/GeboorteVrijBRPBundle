@@ -191,7 +191,7 @@ class ZgwToVrijbrpService
 
         return $this->synchronizationEntity;
     }//end setSynchronizationEntity()
-    
+
     /**
      * Maps zgw eigenschappen to vrijbrp mapping for a Commitment e-dienst.
      *
@@ -205,26 +205,26 @@ class ZgwToVrijbrpService
     private function getCommitmentProperties(ObjectEntity $object, array $output): array
     {
         $this->mappingLogger->info('Do additional mapping with case properties');
-        
+
         $properties = ['verbintenisDatum', 'verbintenisTijd', 'verbintenisType', 'naam',
             'trouwboekje', 'naam1', 'naam2', 'verzorgdgem'];
         $zaakEigenschappen = $this->getCommitmentZaakEigenschappen($object, $properties);
-        
+
         // Partners Todo: make this a function?
         $output['partner1'] = $zaakEigenschappen['partner1'];
         $output['partner2'] = $zaakEigenschappen['partner2'];
-    
+
         if (isset($output['partner1']['nameAfterCommitment']['nameUseType']) === false) {
             $output['partner1']['nameAfterCommitment']['nameUseType'] = 'N';
         }
         if (isset($output['partner2']['nameAfterCommitment']['nameUseType']) === false) {
             $output['partner2']['nameAfterCommitment']['nameUseType'] = 'N';
         }
-    
+
         if (isset($output['partner2']['bsn']) === false) {
             $output['partner2']['bsn'] = $this->getZaakInitiatorValue($object, 'inpBsn');
         }
-    
+
         if (isset($output['partner2']['nameAfterCommitment']['title']) === false) {
             $output['partner2']['nameAfterCommitment']['title'] = $this->getZaakInitiatorValue($object, 'voornamen');
         }
@@ -234,9 +234,9 @@ class ZgwToVrijbrpService
                 $output['partner2']['nameAfterCommitment']['prefix'] = $this->getZaakInitiatorValue($object, 'voorvoegselGeslachtsnaam');
             }
         }
-        
+
         // Todo: maybe check if all these $properties['key'] exist?
-    
+
         // Planning. Todo: make this a function?
         $date = new DateTime($zaakEigenschappen['verbintenisDatum']);
         $time = new DateTime($zaakEigenschappen['verbintenisTijd']);
@@ -245,7 +245,7 @@ class ZgwToVrijbrpService
         if (in_array($zaakEigenschappen['verbintenisType'], ['MARRIAGE', 'GPS'])) {
             $output['planning']['commitmentType'] = $zaakEigenschappen['verbintenisType'];
         }
-        
+
         // Location. Todo: make this a function?
         $output['location']['name'] = $zaakEigenschappen['naam'];
         $output['location']['aliases'][0] = $zaakEigenschappen['naam'];
@@ -259,7 +259,7 @@ class ZgwToVrijbrpService
                 ]
             ];
         }
-        
+
         // Officials. Todo: make this a function?
         $output['officials']['preferences'][0] = [
             'name' => $zaakEigenschappen['naam1'],
@@ -273,17 +273,17 @@ class ZgwToVrijbrpService
                 $zaakEigenschappen['naam2']
             ]
         ];
-        
+
         // Witnesses.
         // Todo: See todo comments in the getCommitmentZaakEigenschappen() function !!!
         $output['witnesses'] = $zaakEigenschappen['witnesses'];
         $output['witnesses']['numberOfMunicipalWitnesses'] = intval($zaakEigenschappen['verzorgdgem']);
-        
+
         $this->mappingLogger->info('Done with additional mapping');
-        
+
         return $output;
     }//end getSpecificProperties()
-    
+
     /**
      * This function gets a specific value from the case->rollen->betrokkeneIdentificatie->[$key] for a Commitment eDienst.
      * For the role with omschrijvingGeneriek = 'initiator' and betrokkeneType = 'natuurlijk_persoon'.
@@ -300,10 +300,10 @@ class ZgwToVrijbrpService
                 return $rol->getValue('betrokkeneIdentificatie')->toArray()[$key];
             }
         }
-        
+
         return null;
     }
-    
+
     /**
      * Maps zgw eigenschappen to vrijbrp mapping for a Birth e-dienst.
      *
@@ -354,7 +354,7 @@ class ZgwToVrijbrpService
 
         return $output;
     }//end getSpecificProperties()
-    
+
     /**
      * This function gets the zaakEigenschappen from the zgwZaak with the given properties (simXml elementen and Stuf extraElementen).
      *
@@ -371,10 +371,10 @@ class ZgwToVrijbrpService
                 $zaakEigenschappen[$eigenschap->getValue('naam')] = $eigenschap->getValue('waarde');
             }
         }
-        
+
         return $zaakEigenschappen;
     }//end getZaakEigenschappen()
-    
+
     /**
      * This function gets the zaakEigenschappen from the zgwZaak for a Commitment eDienst.
      *
@@ -386,6 +386,7 @@ class ZgwToVrijbrpService
     private function getCommitmentZaakEigenschappen(ObjectEntity $zaakObjectEntity, array $properties): array
     {
         $zaakEigenschappen = [];
+        $eigenschappen = $this->getZaakEigenschappen($zaakObjectEntity, ['all']);
         $tempCountForBsn = 1; // Todo: fix this bsn shizzle
         foreach ($zaakObjectEntity->getValue('eigenschappen') as $eigenschap) {
             switch ($eigenschap->getValue('naam')) {
@@ -418,21 +419,16 @@ class ZgwToVrijbrpService
                     $this->getCommitmentPartnerEigenschap($zaakEigenschappen, ['nameAfterCommitment', 'lastname'], $eigenschap);
                     break;
                 case 'bsn1':
-                    // Todo: add some abstract function here, that works like the 'getCommitmentPartnerEigenschap()' function.
-                    // Todo: make it add data to $zaakEigenschappen['witnesses'][]= [bsn = bsn1, firstname = voornamen1, etc]
-                    $this->getCommitmentWitness($zaakEigenschappen, 1, $zaakObjectEntity);
+                    $this->getCommitmentWitness($zaakEigenschappen, 1, $eigenschappen);
                     break;
                 case 'bsn2':
-                    // Todo: repeat / re-use of function for bsn1 but with a different integer...
-                    $this->getCommitmentWitness($zaakEigenschappen, 2, $zaakObjectEntity);
+                    $this->getCommitmentWitness($zaakEigenschappen, 2, $eigenschappen);
                     break;
                 case 'bsn3':
-                    // Todo: repeat / re-use of function for bsn1 but with a different integer...
-                    $this->getCommitmentWitness($zaakEigenschappen, 3, $zaakObjectEntity);
+                    $this->getCommitmentWitness($zaakEigenschappen, 3, $eigenschappen);
                     break;
                 case 'bsn4':
-                    // Todo: repeat / re-use of function for bsn1 but with a different integer...
-                    $this->getCommitmentWitness($zaakEigenschappen, 4, $zaakObjectEntity);
+                    $this->getCommitmentWitness($zaakEigenschappen, 4, $eigenschappen);
                     break;
                 default:
                     if (in_array($eigenschap->getValue('naam'), $properties) || in_array('all', $properties)) {
@@ -441,10 +437,10 @@ class ZgwToVrijbrpService
                     break;
             }
         }
-        
+
         return $zaakEigenschappen;
     }//end getCommitmentZaakEigenschappen()
-    
+
     /**
      * Adds a single Eigenschap value to the zaakEigenschappen array for Partner1 or Partner2 if it already is set for Partner1.
      *
@@ -467,7 +463,7 @@ class ZgwToVrijbrpService
             $zaakEigenschappen['partner1'][$keys[0]][$keys[1]] = $eigenschap->getValue('waarde');
             return;
         }
-        
+
         // If count($keys) == 1
         // Todo: This with only 1 key is only used for bsn, so could be removed if we don't use it for bsn anymore
         if (isset($zaakEigenschappen['partner1'][$keys[0]]) === true) {
@@ -476,7 +472,17 @@ class ZgwToVrijbrpService
         }
         $zaakEigenschappen['partner1'][$keys[0]] = $eigenschap->getValue('waarde');
     }//end getCommitmentPartnerEigenschap()
-    
+
+    private function flattenEigenschappen(array $eigenschappen): array
+    {
+        $flatProperties = [];
+        foreach ($eigenschappen as $eigenschap) {
+            $flatProperties[$eigenschap->getValue('naam')] = $eigenschap->getValue('waarde');
+        }
+
+        return $flatProperties;
+    }
+
     /**
      * Adds a single Witness to the zaakEigenschappen array. Will use $number to find the correct data for this witness.
      *
@@ -486,21 +492,20 @@ class ZgwToVrijbrpService
      *
      * @return void This function doesn't return anything.
      */
-    private function getCommitmentWitness(array &$zaakEigenschappen, int $number, ObjectEntity $zaakObjectEntity)
+    private function getCommitmentWitness(array &$zaakEigenschappen, int $number, array $eigenschappen): void
     {
         // Todo: $zaakObjectEntity->getValue('eigenschappen')->get("bsn$number") Does not work like this, but you get the idea :P
         // Todo: do an if key exists check for voornamen1 etc?
-        
+
         $zaakEigenschappen['witnesses']['chosen'][] = [
-            'bsn' => $zaakObjectEntity->getValue('eigenschappen')->get("bsn$number"),
-            'firstname' => $zaakObjectEntity->getValue('eigenschappen')->get("voornamen$number"),
-            'prefix' => $zaakObjectEntity->getValue('eigenschappen')->get("voorvoegselGeslachtsnaam$number"),
-            'lastname' => $zaakObjectEntity->getValue('eigenschappen')->get("geslachtsnaam$number"),
-            'birthdate' => $zaakObjectEntity->getValue('eigenschappen')->get("geboortedatum$number"),
-            'remarks' => 'todo?'
+            'bsn' => $eigenschappen["bsn$number"],
+            'firstname' => $eigenschappen["voornamen$number"],
+            'prefix' => $eigenschappen["voorvoegselGeslachtsnaam$number"],
+            'lastname' => $eigenschappen["geslachtsnaam$number"],
+            'birthdate' => $eigenschappen["geboortedatum$number"],
         ];
     }//end getCommitmentPartnerEigenschap()
-    
+
     /**
      * Converts ZGW eigenschappen to key, value pairs for the Birth eDienst.
      *
@@ -655,7 +660,7 @@ class ZgwToVrijbrpService
     private function synchronizeTemp(Synchronization $synchronization, array $objectArray): array
     {
         $objectString = $this->syncService->getObjectString($objectArray);
-        
+
         $this->logger->debug("SynchronizeTemp with objectString: $objectString");
 
         $this->logger->info('Sending message with body '.$objectString);
