@@ -147,6 +147,9 @@ class ZdsToZgwService
 
         $zaakEntity = $this->getEntity('https://vng.opencatalogi.nl/schemas/zrc.zaak.schema.json');
         $mapping = $this->getMapping('https://zds.nl/mapping/zds.zdsZaakIdToZgwZaak.mapping.json');
+        if ($zaakEntity === null || $mapping === null) {
+            return $data;
+        }
 
         $zaakArray = $this->mappingService->mapping($mapping, $data['body']);
         $zaken = $this->cacheService->searchObjects(null, ['identificatie' => $zaakArray['identificatie']], [$zaakEntity->getId()->toString()])['results'];

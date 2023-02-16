@@ -3,6 +3,7 @@
 namespace CommonGateway\GeboorteVrijBRPBundle\Command;
 
 use CommonGateway\GeboorteVrijBRPBundle\Service\ZgwToVrijbrpService;
+use Exception;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -40,7 +41,7 @@ class ZgwToVrijbrpBirthCommand extends Command
     /**
      * Configure this command.
      *
-     * @return void Nothing.
+     * @return void This function doesn't return anything.
      */
     protected function configure(): void
     {
@@ -59,6 +60,8 @@ class ZgwToVrijbrpBirthCommand extends Command
      *
      * @param InputInterface  $input  InputInterface.
      * @param OutputInterface $output OutputInterface.
+     *
+     * @throws Exception
      *
      * @return int 0 for Success, 1 for Failure.
      */
