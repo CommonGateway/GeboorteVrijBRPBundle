@@ -2,7 +2,7 @@
   "title": "ZDSToZGWZaak",
   "$id": "https://zds.nl/mapping/zds.zdsHeeftAlsInitiatorToRol.mapping.json",
   "$schema": "https://json-schema.org/draft/2020-12/mapping",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "passTrough": false,
   "mapping": {
     "betrokkeneType": "natuurlijk_persoon",
