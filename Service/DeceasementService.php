@@ -57,12 +57,12 @@ class DeceasementService
             return null;
         }
 
-        return $this->source;
+        return $source;
     }
 
     private function getSynchronizationEntity(string $reference): ?Entity
     {
-        $synchronizationEntity = $this->entityManager->getRepository('App:Entity')->findOneBy(['reference' => $reference);
+        $synchronizationEntity = $this->entityManager->getRepository('App:Entity')->findOneBy(['reference' => $reference]);
         if ($synchronizationEntity instanceof Entity === false) {
             if (isset($this->symfonyStyle) === true) {
                 $this->symfonyStyle->error("No entity found with reference: $reference");
@@ -234,7 +234,7 @@ class DeceasementService
         // Create synchronization.
         $this->zgwToVrijbrpService->getSynchronization($object, $source, $synchronizationEntity, $mapping);
 
-        $this->logger->debug("Synchronize (Zaak) Object to: {$this->source->getLocation()}{$this->configuration['location']}");
+        $this->logger->debug("Synchronize (Zaak) Object to: {$source->getLocation()}{$this->configuration['location']}");
         $synchronization = $this->zgwToVrijbrpService->getSynchronization($object, $source, $synchronizationEntity, $mapping);
         // Todo: change synchronize function so it can also push to a source and not only pull from a source:
         // $this->syncService->synchronize($synchronization, $objectArray);
