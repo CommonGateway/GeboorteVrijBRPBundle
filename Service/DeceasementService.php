@@ -9,21 +9,71 @@ use App\Entity\ObjectEntity;
 use App\Entity\Synchronization;
 use CommonGateway\CoreBundle\Service\MappingService;
 use DateTime;
+use Doctrine\ORM\EntityManagerInterface;
 use EasyRdf\Literal\Date;
+use Psr\Log\LoggerInterface;
 
 class DeceasementService
 {
     private ZgwToVrijbrpService $zgwToVrijbrpService;
     private MappingService $mappingService;
     private Logger $logger;
+    private EntityManagerInterface $entityManager;
 
-    public function __construct(MappingService $mappingService, ZgwToVrijbrpService $zgwToVrijbrpService, Logger $actionLogger)
+    public function __construct(MappingService $mappingService, ZgwToVrijbrpService $zgwToVrijbrpService, Logger $actionLogger, EntityManagerInterface $entityManager)
     {
         $this->mappingService = $mappingService;
         $this->zgwToVrijbrpService = $zgwToVrijbrpService;
         $this->logger = $actionLogger;
+        $this->entityManager = $entityManager;
     }
-    
+
+    public function getMapping(string $reference): ?Mapping
+    {
+        $reference = $this->entityManager->getRepository('App:Mapping')->findOneBy(['reference' => $reference]);
+        if ($reference instanceof Mapping === false) {
+            if (isset($this->symfonyStyle) === true) {
+                $this->symfonyStyle->error("No mapping found with reference: $reference");
+            }
+            $this->logger->error("No mapping found with reference: $reference");
+
+            return null;
+        }
+        return $reference;
+    }
+
+    public function getSource(string $location): ?Source
+    {
+        // Todo: Add FromSchema function to Gateway Gateway.php, so that we can use .json files for sources as well.
+        // Todo: ...For this to work, we also need to change CoreBundle installationService.
+        // Todo: ...If we do this we can also add and use reference for Gateways / Sources.
+        $source = $this->entityManager->getRepository('App:Gateway')->findOneBy(['location' => $location]);
+        if ($source instanceof Source === false) {
+            if (isset($this->symfonyStyle) === true) {
+                $this->symfonyStyle->error("No source found with location: $location");
+            }
+            $this->logger->error("No source found with location: $location");
+
+            return null;
+        }
+
+        return $this->source;
+    }
+
+    private function getSynchronizationEntity(string $reference): ?Entity
+    {
+        $synchronizationEntity = $this->entityManager->getRepository('App:Entity')->findOneBy(['reference' => $reference);
+        if ($synchronizationEntity instanceof Entity === false) {
+            if (isset($this->symfonyStyle) === true) {
+                $this->symfonyStyle->error("No entity found with reference: $reference");
+            }
+            $this->logger->error("No entity found with reference: $reference");
+
+            return null;
+        }
+
+        return $synchronizationEntity;
+    }//end setSynchronizationEntity()
     
     /**
      * This function gets the zaakEigenschappen from the zgwZaak with the given properties (simXml elementen and Stuf extraElementen).
@@ -157,42 +207,40 @@ class DeceasementService
         $this->logger->info('Converting ZGW object to VrijBRP');
         $this->configuration = $configuration;
         $this->data = $data;
-        if ($this->setSource() === null || $this->setMapping() === null || $this->setSynchronizationEntity() === null) {
+
+        $source = $this->getSource($configuration['source']);
+        $mapping = $this->getMapping($configuration['mapping']);
+        $synchronizationEntity = $this->getSynchronizationEntity($configuration['synchronizationEntity']);
+        if ($source === null
+            || $mapping === null
+            || $synchronizationEntity === null
+        ) {
             return [];
         }
 
         $dataId = $data['object']['_self']['id'];
 
-        // Get (zaak) object that was created.
-        if (isset($this->symfonyStyle) === true) {
-            $this->symfonyStyle->comment("(Zaak) Object with id $dataId was created");
-        }
-        $this->logger->debug("(Zaak) Object with id $dataId was created");
 
         $object = $this->entityManager->getRepository('App:ObjectEntity')->find($dataId);
+        $this->logger->debug("(Zaak) Object with id $dataId was created");
+
         $objectArray = $object->toArray();
-        $zaakTypeId = $objectArray['zaaktype']['identificatie'];
 
         // Do mapping with Zaak ObjectEntity as array.
-        $objectArray = $this->mappingService->mapping($this->mapping, $objectArray);
+        $objectArray = $this->mappingService->mapping($mapping, $objectArray);
 
         $objectArray = $this->getDeathProperties($object, $objectArray);
 
         // Create synchronization.
-        $synchronization = $this->syncService->findSyncByObject($object, $this->source, $this->synchronizationEntity);
-        $synchronization->setMapping($this->mapping);
+        $this->zgwToVrijbrpService->getSynchronization($object, $source, $synchronizationEntity, $mapping);
 
-        // Send request to source.
-        if (isset($this->symfonyStyle) === true) {
-            $this->symfonyStyle->comment("Synchronize (Zaak) Object to: {$this->source->getLocation()}{$this->configuration['location']}");
-        }
         $this->logger->debug("Synchronize (Zaak) Object to: {$this->source->getLocation()}{$this->configuration['location']}");
-
+        $synchronization = $this->zgwToVrijbrpService->getSynchronization($object, $source, $synchronizationEntity, $mapping);
         // Todo: change synchronize function so it can also push to a source and not only pull from a source:
         // $this->syncService->synchronize($synchronization, $objectArray);
 
         // Todo: temp way of doing this without updated synchronize() function...
-        if ($this->synchronizeTemp($synchronization, $objectArray) === [] &&
+        if ($this->zgwToVrijbrpService->synchronizeTemp($synchronization, $objectArray) === [] &&
             isset($this->symfonyStyle) === true) {
             // Return empty array on error for when we got here through a command.
             return [];

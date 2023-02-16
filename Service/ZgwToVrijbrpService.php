@@ -688,7 +688,7 @@ class ZgwToVrijbrpService
      *
      * @return array The response body of the outgoing call, or an empty array on error.
      */
-    private function synchronizeTemp(Synchronization $synchronization, array $objectArray): array
+    public function synchronizeTemp(Synchronization $synchronization, array $objectArray): array
     {
         $objectString = $this->syncService->getObjectString($objectArray);
 
@@ -732,4 +732,13 @@ class ZgwToVrijbrpService
 
         return $body;
     }//end synchronizeTemp()
+
+
+    public function getSynchronization(ObjectEntity $object, Source $source, Entity $synchronizationEntity, Mapping $mapping): Synchronization
+    {
+        $synchronization = $this->syncService->findSyncByObject($object, $source, $synchronizationEntity);
+        $synchronization->setMapping($mapping);
+
+        return $synchronization;
+    }
 }
