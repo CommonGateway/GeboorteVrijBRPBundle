@@ -476,17 +476,6 @@ class ZgwToVrijbrpService
         }
         $zaakEigenschappen['partner1'][$keys[0]] = $eigenschap->getValue('waarde');
     }//end getCommitmentPartnerEigenschap()
-
-    private function flattenEigenschappen(array $eigenschappen): array
-    {
-        $flatProperties = [];
-        foreach ($eigenschappen as $eigenschap) {
-            $flatProperties[$eigenschap->getValue('naam')] = $eigenschap->getValue('waarde');
-        }
-
-        return $flatProperties;
-    }
-
     /**
      * Adds a single Witness to the zaakEigenschappen array. Will use $number to find the correct data for this witness.
      *
