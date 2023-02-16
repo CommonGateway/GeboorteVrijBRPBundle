@@ -214,26 +214,26 @@ class ZgwToVrijbrpService
         $output['partner1'] = $zaakEigenschappen['partner1'];
         $output['partner2'] = $zaakEigenschappen['partner2'];
 
-        if (isset($output['partner1']['nameAfterCommitment']['nameUseType']) === false) {
-            $output['partner1']['nameAfterCommitment']['nameUseType'] = 'N';
-        }
-        if (isset($output['partner2']['nameAfterCommitment']['nameUseType']) === false) {
-            $output['partner2']['nameAfterCommitment']['nameUseType'] = 'N';
-        }
-
-        if (isset($output['partner2']['bsn']) === false) {
-            $output['partner2']['bsn'] = $this->getZaakInitiatorValue($object, 'inpBsn');
-        }
-
-        if (isset($output['partner2']['nameAfterCommitment']['title']) === false) {
-            $output['partner2']['nameAfterCommitment']['title'] = $this->getZaakInitiatorValue($object, 'voornamen');
-        }
-        if (isset($output['partner2']['nameAfterCommitment']['lastname']) === false) {
-            $output['partner2']['nameAfterCommitment']['lastname'] = $this->getZaakInitiatorValue($object, 'geslachtsnaam');
-            if (isset($output['partner2']['nameAfterCommitment']['prefix']) === false) {
-                $output['partner2']['nameAfterCommitment']['prefix'] = $this->getZaakInitiatorValue($object, 'voorvoegselGeslachtsnaam');
-            }
-        }
+//        if (isset($output['partner1']['nameAfterCommitment']['nameUseType']) === false) {
+//            $output['partner1']['nameAfterCommitment']['nameUseType'] = 'N';
+//        }
+//        if (isset($output['partner2']['nameAfterCommitment']['nameUseType']) === false) {
+//            $output['partner2']['nameAfterCommitment']['nameUseType'] = 'N';
+//        }
+//
+//        if (isset($output['partner2']['bsn']) === false) {
+//            $output['partner2']['bsn'] = $this->getZaakInitiatorValue($object, 'inpBsn');
+//        }
+//
+//        if (isset($output['partner2']['nameAfterCommitment']['title']) === false) {
+//            $output['partner2']['nameAfterCommitment']['title'] = $this->getZaakInitiatorValue($object, 'voornamen');
+//        }
+//        if (isset($output['partner2']['nameAfterCommitment']['lastname']) === false) {
+//            $output['partner2']['nameAfterCommitment']['lastname'] = $this->getZaakInitiatorValue($object, 'geslachtsnaam');
+//            if (isset($output['partner2']['nameAfterCommitment']['prefix']) === false) {
+//                $output['partner2']['nameAfterCommitment']['prefix'] = $this->getZaakInitiatorValue($object, 'voorvoegselGeslachtsnaam');
+//            }
+//        }
 
         // Todo: maybe check if all these $properties['key'] exist?
 
@@ -452,6 +452,7 @@ class ZgwToVrijbrpService
      */
     private function getCommitmentPartnerEigenschap(array &$zaakEigenschappen, array $keys, ObjectEntity $eigenschap)
     {
+        var_dump($keys);
         if (count($keys) > 2 || count($keys) === 0) {
             return;
         }
