@@ -196,7 +196,7 @@ class ZgwToVrijbrpService
      * Maps zgw eigenschappen to vrijbrp mapping for a Commitment e-dienst.
      *
      * @param ObjectEntity $object The zgw case ObjectEntity.
-     * @param array $output The output data.
+     * @param array        $output The output data.
      *
      * @throws Exception
      *
@@ -207,7 +207,7 @@ class ZgwToVrijbrpService
         $this->mappingLogger->info('Do additional mapping with case properties');
 
         $properties = ['verbintenisDatum', 'verbintenisTijd', 'verbintenisType', 'naam',
-            'trouwboekje', 'naam1', 'naam2', 'verzorgdgem'];
+            'trouwboekje', 'naam1', 'naam2', 'verzorgdgem', ];
         $zaakEigenschappen = $this->getCommitmentZaakEigenschappen($object, $properties);
 
         // Partners Todo: make this a function?
@@ -251,27 +251,27 @@ class ZgwToVrijbrpService
         $output['location']['aliases'][0] = $zaakEigenschappen['naam'];
         if (array_key_exists('trouwboekje', $zaakEigenschappen) === true && $zaakEigenschappen['trouwboekje'] == true) {
             $output['location']['options'][0] = [
-                'name' => 'trouwboekje',
-                'value' => 'trouwboekje',
-                'type' => 'TEXT',
+                'name'    => 'trouwboekje',
+                'value'   => 'trouwboekje',
+                'type'    => 'TEXT',
                 'aliases' => [
-                    'trouwboekje'
-                ]
+                    'trouwboekje',
+                ],
             ];
         }
 
         // Officials. Todo: make this a function?
         $output['officials']['preferences'][0] = [
-            'name' => $zaakEigenschappen['naam1'],
+            'name'    => $zaakEigenschappen['naam1'],
             'aliases' => [
-                $zaakEigenschappen['naam1']
-            ]
+                $zaakEigenschappen['naam1'],
+            ],
         ];
         $output['officials']['preferences'][1] = [
-            'name' => $zaakEigenschappen['naam2'],
+            'name'    => $zaakEigenschappen['naam2'],
             'aliases' => [
-                $zaakEigenschappen['naam2']
-            ]
+                $zaakEigenschappen['naam2'],
+            ],
         ];
 
         // Witnesses.
@@ -289,7 +289,7 @@ class ZgwToVrijbrpService
      * For the role with omschrijvingGeneriek = 'initiator' and betrokkeneType = 'natuurlijk_persoon'.
      *
      * @param ObjectEntity $zaakObjectEntity The zaak ObjectEntity.
-     * @param string $key The key to get the value from.
+     * @param string       $key              The key to get the value from.
      *
      * @return string|null The value or null.
      */
@@ -359,7 +359,7 @@ class ZgwToVrijbrpService
      * This function gets the zaakEigenschappen from the zgwZaak with the given properties (simXml elementen and Stuf extraElementen).
      *
      * @param ObjectEntity $zaakObjectEntity The zaak ObjectEntity.
-     * @param array        $properties The properties / eigenschappen we want to get.
+     * @param array        $properties       The properties / eigenschappen we want to get.
      *
      * @return array zaakEigenschappen
      */
@@ -379,7 +379,7 @@ class ZgwToVrijbrpService
      * This function gets the zaakEigenschappen from the zgwZaak for a Commitment eDienst.
      *
      * @param ObjectEntity $zaakObjectEntity The zaak ObjectEntity.
-     * @param array        $properties The properties / eigenschappen we want to get.
+     * @param array        $properties       The properties / eigenschappen we want to get.
      *
      * @return array zaakEigenschappen
      */
@@ -444,9 +444,9 @@ class ZgwToVrijbrpService
     /**
      * Adds a single Eigenschap value to the zaakEigenschappen array for Partner1 or Partner2 if it already is set for Partner1.
      *
-     * @param array $zaakEigenschappen Array of key value pairs of the zaakEigenschappen of a Case.
-     * @param array $keys The keys we will check. Can be 1 or 2 strings used to check, used like this: [$key[0]][$key[1]].
-     * @param ObjectEntity $eigenschap An eigenschap ObjectEntity of a Case.
+     * @param array        $zaakEigenschappen Array of key value pairs of the zaakEigenschappen of a Case.
+     * @param array        $keys              The keys we will check. Can be 1 or 2 strings used to check, used like this: [$key[0]][$key[1]].
+     * @param ObjectEntity $eigenschap        An eigenschap ObjectEntity of a Case.
      *
      * @return void This function doesn't return anything.
      */
@@ -459,9 +459,11 @@ class ZgwToVrijbrpService
         if (count($keys) === 2) {
             if (isset($zaakEigenschappen['partner1'][$keys[0]][$keys[1]]) === true) {
                 $zaakEigenschappen['partner2'][$keys[0]][$keys[1]] = $eigenschap->getValue('waarde');
+
                 return;
             }
             $zaakEigenschappen['partner1'][$keys[0]][$keys[1]] = $eigenschap->getValue('waarde');
+
             return;
         }
 
@@ -469,6 +471,7 @@ class ZgwToVrijbrpService
         // Todo: This with only 1 key is only used for bsn, so could be removed if we don't use it for bsn anymore
         if (isset($zaakEigenschappen['partner1'][$keys[0]]) === true) {
             $zaakEigenschappen['partner2'][$keys[0]] = $eigenschap->getValue('waarde');
+
             return;
         }
         $zaakEigenschappen['partner1'][$keys[0]] = $eigenschap->getValue('waarde');
@@ -487,9 +490,9 @@ class ZgwToVrijbrpService
     /**
      * Adds a single Witness to the zaakEigenschappen array. Will use $number to find the correct data for this witness.
      *
-     * @param array $zaakEigenschappen Array of key value pairs of the zaakEigenschappen of a Case.
-     * @param int $number Number of the witness, used to get the correct keys.
-     * @param ObjectEntity $zaakObjectEntity The zaak ObjectEntity.
+     * @param array        $zaakEigenschappen Array of key value pairs of the zaakEigenschappen of a Case.
+     * @param int          $number            Number of the witness, used to get the correct keys.
+     * @param ObjectEntity $zaakObjectEntity  The zaak ObjectEntity.
      *
      * @return void This function doesn't return anything.
      */
@@ -499,10 +502,10 @@ class ZgwToVrijbrpService
         // Todo: do an if key exists check for voornamen1 etc?
 
         $zaakEigenschappen['witnesses']['chosen'][] = [
-            'bsn' => $eigenschappen["bsn$number"],
+            'bsn'       => $eigenschappen["bsn$number"],
             'firstname' => $eigenschappen["voornamen$number"],
-            'prefix' => $eigenschappen["voorvoegselGeslachtsnaam$number"],
-            'lastname' => $eigenschappen["geslachtsnaam$number"],
+            'prefix'    => $eigenschappen["voorvoegselGeslachtsnaam$number"],
+            'lastname'  => $eigenschappen["geslachtsnaam$number"],
             'birthdate' => $eigenschappen["geboortedatum$number"],
         ];
     }//end getCommitmentPartnerEigenschap()
