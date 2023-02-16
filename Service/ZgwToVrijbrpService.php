@@ -665,8 +665,6 @@ class ZgwToVrijbrpService
     {
         $objectString = $this->syncService->getObjectString($objectArray);
 
-        $this->logger->debug("SynchronizeTemp with objectString: $objectString");
-
         $this->logger->info('Sending message with body '.$objectString);
 
         try {
