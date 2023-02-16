@@ -2,11 +2,29 @@
 
 namespace CommonGateway\GeboorteVrijBRPBundle\Service;
 
+use App\Entity\Entity;
+use App\Entity\Gateway as Source;
+use App\Entity\Mapping;
 use App\Entity\ObjectEntity;
+use App\Entity\Synchronization;
+use CommonGateway\CoreBundle\Service\MappingService;
+use DateTime;
 use EasyRdf\Literal\Date;
 
 class DeceasementService
 {
+    private ZgwToVrijbrpService $zgwToVrijbrpService;
+    private MappingService $mappingService;
+    private Logger $logger;
+
+    public function __construct(MappingService $mappingService, ZgwToVrijbrpService $zgwToVrijbrpService, Logger $actionLogger)
+    {
+        $this->mappingService = $mappingService;
+        $this->zgwToVrijbrpService = $zgwToVrijbrpService;
+        $this->logger = $actionLogger;
+    }
+    
+    
     /**
      * This function gets the zaakEigenschappen from the zgwZaak with the given properties (simXml elementen and Stuf extraElementen).
      *
@@ -60,7 +78,7 @@ class DeceasementService
 
         return $deceased;
     }
-
+    
     public function getFuneralServices(array $properties): array
     {
         $funeralServices = [
@@ -76,14 +94,14 @@ class DeceasementService
         }
 
         if(isset($properties['datum']) === true) {
-            $date = new \DateTime($properties['date']);
+            $date = new DateTime($properties['date']);
             $funeralServices['date'] = $date->format('Y-m-d');
         } else if (isset($properties['datumuitvaart']) === true) {
-            $date = new \DateTime($properties['datumuitvaart']);
+            $date = new DateTime($properties['datumuitvaart']);
             $funeralServices['date'] = $date->format('Y-m-d');
         }
         if(isset($properties['tijduitvaart'])) {
-            $time = new \DateTime($properties['tijduitvaart']);
+            $time = new DateTime($properties['tijduitvaart']);
             $funeralServices['time'] = $time->format('H:i');
         }
 
@@ -113,19 +131,19 @@ class DeceasementService
         $objectArray['deathByNaturalCauses'] = $caseProperties['natdood'] === "True";
         $objectArray['municipality']['code'] = $caseProperties['gemeentecode'] ?? null;
         if(isset($caseProperties['datumoverlijden']) === true) {
-            $datum = new \DateTime($caseProperties['datumoverlijden']);
+            $datum = new DateTime($caseProperties['datumoverlijden']);
             $objectArray['dateOfDeath'] = $datum->format('Y-m-d');
         }
         if(isset($caseProperties['datumlijkvinding']) === true) {
-            $datum = new \DateTime($caseProperties['datumlijkvinding']);
+            $datum = new DateTime($caseProperties['datumlijkvinding']);
             $objectArray['dateOfFinding'] = $datum->format('Y-m-d');
         }
         if(isset($caseProperties['tijdoverlijden']) === true) {
-            $datum = new \DateTime($caseProperties['tijdoverlijden']);
+            $datum = new DateTime($caseProperties['tijdoverlijden']);
             $objectArray['timeOfDeath'] = $datum->format('H:i');
         }
         if(isset($caseProperties['tijdlijkvinding']) === true) {
-            $datum = new \DateTime($caseProperties['tijdlijkvinding']);
+            $datum = new DateTime($caseProperties['tijdlijkvinding']);
             $objectArray['timeOfFinding'] = $datum->format('H:i');
         }
         $objectArray['correspondence'] = $this->getCorrespondence($caseProperties);
@@ -133,4 +151,53 @@ class DeceasementService
 
         return $objectArray;
     }
+
+    public function zgwToVrijbrpHandler(array $data, array $configuration): array
+    {
+        $this->logger->info('Converting ZGW object to VrijBRP');
+        $this->configuration = $configuration;
+        $this->data = $data;
+        if ($this->setSource() === null || $this->setMapping() === null || $this->setSynchronizationEntity() === null) {
+            return [];
+        }
+
+        $dataId = $data['object']['_self']['id'];
+
+        // Get (zaak) object that was created.
+        if (isset($this->symfonyStyle) === true) {
+            $this->symfonyStyle->comment("(Zaak) Object with id $dataId was created");
+        }
+        $this->logger->debug("(Zaak) Object with id $dataId was created");
+
+        $object = $this->entityManager->getRepository('App:ObjectEntity')->find($dataId);
+        $objectArray = $object->toArray();
+        $zaakTypeId = $objectArray['zaaktype']['identificatie'];
+
+        // Do mapping with Zaak ObjectEntity as array.
+        $objectArray = $this->mappingService->mapping($this->mapping, $objectArray);
+
+        $objectArray = $this->getDeathProperties($object, $objectArray);
+
+        // Create synchronization.
+        $synchronization = $this->syncService->findSyncByObject($object, $this->source, $this->synchronizationEntity);
+        $synchronization->setMapping($this->mapping);
+
+        // Send request to source.
+        if (isset($this->symfonyStyle) === true) {
+            $this->symfonyStyle->comment("Synchronize (Zaak) Object to: {$this->source->getLocation()}{$this->configuration['location']}");
+        }
+        $this->logger->debug("Synchronize (Zaak) Object to: {$this->source->getLocation()}{$this->configuration['location']}");
+
+        // Todo: change synchronize function so it can also push to a source and not only pull from a source:
+        // $this->syncService->synchronize($synchronization, $objectArray);
+
+        // Todo: temp way of doing this without updated synchronize() function...
+        if ($this->synchronizeTemp($synchronization, $objectArray) === [] &&
+            isset($this->symfonyStyle) === true) {
+            // Return empty array on error for when we got here through a command.
+            return [];
+        }
+
+        return $data;
+    }//end zgwToVrijbrpHandler()
 }
