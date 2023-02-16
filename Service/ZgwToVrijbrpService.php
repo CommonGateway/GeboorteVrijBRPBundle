@@ -403,21 +403,21 @@ class ZgwToVrijbrpService
                 case 'sub.emailadres':
                     $this->getCommitmentPartnerEigenschap($zaakEigenschappen, ['contactInformation', 'email'], $eigenschap);
                     break;
-                case 'geselecteerdNaamgebruik':
-                    $this->getCommitmentPartnerEigenschap($zaakEigenschappen, ['nameAfterCommitment', 'nameUseType'], $eigenschap);
-                    break;
-                case 'voornamen':
-                    // Probably only for partner1.
-                    $this->getCommitmentPartnerEigenschap($zaakEigenschappen, ['nameAfterCommitment', 'title'], $eigenschap);
-                    break;
-                case 'voorvoegselGeslachtsnaam':
-                    // Probably only for partner1.
-                    $this->getCommitmentPartnerEigenschap($zaakEigenschappen, ['nameAfterCommitment', 'prefix'], $eigenschap);
-                    break;
-                case 'geslachtsnaam':
-                    // Probably only for partner1.
-                    $this->getCommitmentPartnerEigenschap($zaakEigenschappen, ['nameAfterCommitment', 'lastname'], $eigenschap);
-                    break;
+//                case 'geselecteerdNaamgebruik':
+//                    $this->getCommitmentPartnerEigenschap($zaakEigenschappen, ['nameAfterCommitment', 'nameUseType'], $eigenschap);
+//                    break;
+//                case 'voornamen':
+//                    // Probably only for partner1.
+//                    $this->getCommitmentPartnerEigenschap($zaakEigenschappen, ['nameAfterCommitment', 'title'], $eigenschap);
+//                    break;
+//                case 'voorvoegselGeslachtsnaam':
+//                    // Probably only for partner1.
+//                    $this->getCommitmentPartnerEigenschap($zaakEigenschappen, ['nameAfterCommitment', 'prefix'], $eigenschap);
+//                    break;
+//                case 'geslachtsnaam':
+//                    // Probably only for partner1.
+//                    $this->getCommitmentPartnerEigenschap($zaakEigenschappen, ['nameAfterCommitment', 'lastname'], $eigenschap);
+//                    break;
                 case 'bsn1':
                     $this->getCommitmentWitness($zaakEigenschappen, 1, $eigenschappen);
                     break;
