@@ -54,15 +54,16 @@ class ZgwToVrijbrpBirthCommand extends Command
             ->addOption('mapping', 'm', InputOption::VALUE_OPTIONAL, 'The reference of the mapping we will use before sending the data to the source')
             ->addOption('synchronizationEntity', 'se', InputOption::VALUE_OPTIONAL, 'The reference of the entity we need to create a synchronization object');
     }//end configure()
-    
+
     /**
      * What happens when this command is executed.
      *
-     * @param InputInterface $input InputInterface.
+     * @param InputInterface  $input  InputInterface.
      * @param OutputInterface $output OutputInterface.
      *
-     * @return int 0 for Success, 1 for Failure.
      * @throws Exception
+     *
+     * @return int 0 for Success, 1 for Failure.
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
