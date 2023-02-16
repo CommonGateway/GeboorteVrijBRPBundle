@@ -221,9 +221,9 @@ class ZgwToVrijbrpService
 //            $output['partner2']['nameAfterCommitment']['nameUseType'] = 'N';
 //        }
 //
-//        if (isset($output['partner2']['bsn']) === false) {
-//            $output['partner2']['bsn'] = $this->getZaakInitiatorValue($object, 'inpBsn');
-//        }
+        if (isset($output['partner2']['bsn']) === false) {
+            $output['partner2']['bsn'] = $this->getZaakInitiatorValue($object, 'inpBsn');
+        }
 //
 //        if (isset($output['partner2']['nameAfterCommitment']['title']) === false) {
 //            $output['partner2']['nameAfterCommitment']['title'] = $this->getZaakInitiatorValue($object, 'voornamen');
@@ -452,7 +452,6 @@ class ZgwToVrijbrpService
      */
     private function getCommitmentPartnerEigenschap(array &$zaakEigenschappen, array $keys, ObjectEntity $eigenschap)
     {
-        var_dump($keys);
         if (count($keys) > 2 || count($keys) === 0) {
             return;
         }
@@ -477,7 +476,39 @@ class ZgwToVrijbrpService
         $zaakEigenschappen['partner1'][$keys[0]] = $eigenschap->getValue('waarde');
     }//end getCommitmentPartnerEigenschap()
     /**
-     * Adds a single Witness to the zaakEigenschappen array. Will use $number to find the correct data for this witness.
+     * Adds a single Witness to the zaakEigenschappen array.{
+    "title": "ZDSToZGWZaak",
+    "$id": "https://zds.nl/mapping/zds.zdsHeeftAlsInitiatorToRol.mapping.json",
+    "$schema": "https://json-schema.org/draft/2020-12/mapping",
+    "version": "0.0.6",
+    "passTrough": false,
+    "mapping": {
+    "betrokkeneType": "natuurlijk_persoon",
+    "roltype": "{{ map('https://zds.nl/mapping/zds.zdsHeeftAlsInitiatorToRolType.mapping.json', _context) | json_encode }}",
+    "roltoelichting": "initiator",
+    "betrokkeneIdentificatie.inpBsn": "ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:inp&#46;bsn",
+    "betrokkeneIdentificatie.geslachtsnaam": "ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:geslachtsnaam",
+    "betrokkeneIdentificatie.voorvoegselGeslachtsnaam": "ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:voorvoegselgeslachtsnaam",
+    "betrokkeneIdentificatie.voorletters": "ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:voorletters",
+    "betrokkeneIdentificatie.voornamen": "ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:voornamen",
+    "betrokkeneIdentificatie.geslachtaanduiding": "ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:geslachtsaanduiding",
+    "betrokkeneIdentificatie.geboortedatum": "ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:geboortedatum",
+    "betrokkeneIdentificatie.verblijfsadres.wplWoonplaatsNaam": "ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:verblijfsadres.ns3:wpl&#46;woonplaatsnaam",
+    "betrokkeneIdentificatie.verblijfsadres.gorOpenbareRuimteNaam": "ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:verblijfsadres.ns3:gor&#46;openbareruimtenaam",
+    "betrokkeneIdentificatie.verblijfsadres.aoaPostcode": "ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:verblijfsadres.ns3:aoa&#46;postcode",
+    "betrokkeneIdentificatie.verblijfsadres.aoaHuisnummer": "ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:verblijfsadres.ns3:aoa&#46;huisnummer",
+    "betrokkeneIdentificatie.verblijfsadres.aoaHuisletter": "ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:verblijfsadres.ns3:aoa&#46;huisletter",
+    "betrokkeneIdentificatie.verblijfsadres.aoaHuisnummertoevoeging": "ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:verblijfsadres.ns3:aoa&#46;huisnummertoevoeging"
+    },
+    "cast": {
+    "roltype": "jsonToArray",
+    "betrokkeneIdentificatie.inpBsn": "keyCantBeValue",
+    "betrokkeneIdentificatie.geslachtsnaam": "keyCantBeValue",
+    "betrokkeneIdentificatie.voornamen": "keyCantBeValue",
+    "betrokkeneIdentificatie.voorvoegselGeslachtsnaam": "keyCantBeValue"
+    }
+    }
+    Will use $number to find the correct data for this witness.
      *
      * @param array        $zaakEigenschappen Array of key value pairs of the zaakEigenschappen of a Case.
      * @param int          $number            Number of the witness, used to get the correct keys.
