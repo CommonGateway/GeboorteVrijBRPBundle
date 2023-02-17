@@ -239,7 +239,7 @@ class ZdsToZgwService
 
                 $this->entityManager->persist($eigenschapObject);
                 $this->entityManager->flush();
-                $eigenschapObjects[] = $zaakArray['eigenschappen'][$key]['eigenschap'] = $eigenschapObject->getId()->toString();
+                $eigenschapObjects[] = $zaakArray['eigenschappen'][$key]['eigenschap'] = $eigenschapObject;
             }//end if
         }//end foreach
 

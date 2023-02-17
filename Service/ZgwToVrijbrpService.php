@@ -193,6 +193,97 @@ class ZgwToVrijbrpService
     }//end setSynchronizationEntity()
 
     /**
+     * Finds mapping by reference.
+     *
+     * @param string $reference The reference to look for.
+     *
+     * @return Mapping|null The resulting mapping.
+     */
+    public function getMapping(string $reference): ?Mapping
+    {
+        $reference = $this->entityManager->getRepository('App:Mapping')->findOneBy(['reference' => $reference]);
+        if ($reference instanceof Mapping === false) {
+            if (isset($this->symfonyStyle) === true) {
+                $this->symfonyStyle->error("No mapping found with reference: $reference");
+            }
+
+            $this->logger->error("No mapping found with reference: $reference");
+
+            return null;
+        }
+
+        return $reference;
+    }
+
+    /**
+     * Finds source by location.
+     *
+     * @TODO: convert to reference.
+     *
+     * @param string $location The location to look a source for.
+     *
+     * @return Source|null The resulting source.
+     */
+    public function getSource(string $location): ?Source
+    {
+        $source = $this->entityManager->getRepository('App:Gateway')->findOneBy(['location' => $location]);
+        if ($source instanceof Source === false) {
+            if (isset($this->symfonyStyle) === true) {
+                $this->symfonyStyle->error("No source found with location: $location");
+            }
+
+            $this->logger->error("No source found with location: $location");
+
+            return null;
+        }
+
+        return $source;
+    }//end getSource()
+
+    /**
+     * Finds entity by reference.
+     *
+     * @param string $reference The reference to look for.
+     *
+     * @return Entity|null The resulting entity.
+     */
+    public function getEntity(string $reference): ?Entity
+    {
+        $synchronizationEntity = $this->entityManager->getRepository('App:Entity')->findOneBy(['reference' => $reference]);
+        if ($synchronizationEntity instanceof Entity === false) {
+            if (isset($this->symfonyStyle) === true) {
+                $this->symfonyStyle->error("No entity found with reference: $reference");
+            }
+
+            $this->logger->error("No entity found with reference: $reference");
+
+            return null;
+        }
+
+        return $synchronizationEntity;
+    }//end setSynchronizationEntity()
+
+    /**
+     * This function gets the zaakEigenschappen from the zgwZaak with the given properties (simXml elementen and Stuf extraElementen).
+     *
+     * @param ObjectEntity $zaakObjectEntity The zaak ObjectEntity.
+     * @param array        $properties       The properties / eigenschappen we want to get.
+     *
+     * @return array zaakEigenschappen
+     */
+    public function getZaakEigenschappen(ObjectEntity $zaakObjectEntity, array $properties): array
+    {
+        $zaakEigenschappen = [];
+        foreach ($zaakObjectEntity->getValue('eigenschappen') as $eigenschap) {
+            if (in_array($eigenschap->getValue('naam'), $properties) || in_array('all', $properties)) {
+                $zaakEigenschappen[$eigenschap->getValue('naam')] = $eigenschap->getValue('waarde');
+            }
+        }
+
+        return $zaakEigenschappen;
+    }
+
+    /**
      * Maps zgw eigenschappen to vrijbrp mapping for a Commitment e-dienst.
      *
      * @param ObjectEntity $object The zgw case ObjectEntity.
@@ -356,26 +447,6 @@ class ZgwToVrijbrpService
     }//end getSpecificProperties()
 
     /**
-     * This function gets the zaakEigenschappen from the zgwZaak with the given properties (simXml elementen and Stuf extraElementen).
-     *
-     * @param ObjectEntity $zaakObjectEntity The zaak ObjectEntity.
-     * @param array        $properties       The properties / eigenschappen we want to get.
-     *
-     * @return array zaakEigenschappen
-     */
-    public function getZaakEigenschappen(ObjectEntity $zaakObjectEntity, array $properties): array
-    {
-        $zaakEigenschappen = [];
-        foreach ($zaakObjectEntity->getValue('eigenschappen') as $eigenschap) {
-            if (in_array($eigenschap->getValue('naam'), $properties) || in_array('all', $properties)) {
-                $zaakEigenschappen[$eigenschap->getValue('naam')] = $eigenschap->getValue('waarde');
-            }
-        }
-
-        return $zaakEigenschappen;
-    }//end getZaakEigenschappen()
-
-    /**
      * This function gets the zaakEigenschappen from the zgwZaak for a Commitment eDienst.
      *
      * @param ObjectEntity $zaakObjectEntity The zaak ObjectEntity.
@@ -474,41 +545,43 @@ class ZgwToVrijbrpService
             return;
         }
         $zaakEigenschappen['partner1'][$keys[0]] = $eigenschap->getValue('waarde');
-    }//end getCommitmentPartnerEigenschap()
+    }
+
+    //end getCommitmentPartnerEigenschap()
     /**
      * Adds a single Witness to the zaakEigenschappen array.{
-    "title": "ZDSToZGWZaak",
-    "$id": "https://zds.nl/mapping/zds.zdsHeeftAlsInitiatorToRol.mapping.json",
-    "$schema": "https://json-schema.org/draft/2020-12/mapping",
-    "version": "0.0.6",
-    "passTrough": false,
-    "mapping": {
-    "betrokkeneType": "natuurlijk_persoon",
-    "roltype": "{{ map('https://zds.nl/mapping/zds.zdsHeeftAlsInitiatorToRolType.mapping.json', _context) | json_encode }}",
-    "roltoelichting": "initiator",
-    "betrokkeneIdentificatie.inpBsn": "ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:inp&#46;bsn",
-    "betrokkeneIdentificatie.geslachtsnaam": "ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:geslachtsnaam",
-    "betrokkeneIdentificatie.voorvoegselGeslachtsnaam": "ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:voorvoegselgeslachtsnaam",
-    "betrokkeneIdentificatie.voorletters": "ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:voorletters",
-    "betrokkeneIdentificatie.voornamen": "ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:voornamen",
-    "betrokkeneIdentificatie.geslachtaanduiding": "ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:geslachtsaanduiding",
-    "betrokkeneIdentificatie.geboortedatum": "ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:geboortedatum",
-    "betrokkeneIdentificatie.verblijfsadres.wplWoonplaatsNaam": "ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:verblijfsadres.ns3:wpl&#46;woonplaatsnaam",
-    "betrokkeneIdentificatie.verblijfsadres.gorOpenbareRuimteNaam": "ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:verblijfsadres.ns3:gor&#46;openbareruimtenaam",
-    "betrokkeneIdentificatie.verblijfsadres.aoaPostcode": "ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:verblijfsadres.ns3:aoa&#46;postcode",
-    "betrokkeneIdentificatie.verblijfsadres.aoaHuisnummer": "ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:verblijfsadres.ns3:aoa&#46;huisnummer",
-    "betrokkeneIdentificatie.verblijfsadres.aoaHuisletter": "ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:verblijfsadres.ns3:aoa&#46;huisletter",
-    "betrokkeneIdentificatie.verblijfsadres.aoaHuisnummertoevoeging": "ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:verblijfsadres.ns3:aoa&#46;huisnummertoevoeging"
-    },
-    "cast": {
-    "roltype": "jsonToArray",
-    "betrokkeneIdentificatie.inpBsn": "keyCantBeValue",
-    "betrokkeneIdentificatie.geslachtsnaam": "keyCantBeValue",
-    "betrokkeneIdentificatie.voornamen": "keyCantBeValue",
-    "betrokkeneIdentificatie.voorvoegselGeslachtsnaam": "keyCantBeValue"
-    }
-    }
-    Will use $number to find the correct data for this witness.
+     * "title": "ZDSToZGWZaak",
+     * "$id": "https://zds.nl/mapping/zds.zdsHeeftAlsInitiatorToRol.mapping.json",
+     * "$schema": "https://json-schema.org/draft/2020-12/mapping",
+     * "version": "0.0.6",
+     * "passTrough": false,
+     * "mapping": {
+     * "betrokkeneType": "natuurlijk_persoon",
+     * "roltype": "{{ map('https://zds.nl/mapping/zds.zdsHeeftAlsInitiatorToRolType.mapping.json', _context) | json_encode }}",
+     * "roltoelichting": "initiator",
+     * "betrokkeneIdentificatie.inpBsn": "ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:inp&#46;bsn",
+     * "betrokkeneIdentificatie.geslachtsnaam": "ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:geslachtsnaam",
+     * "betrokkeneIdentificatie.voorvoegselGeslachtsnaam": "ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:voorvoegselgeslachtsnaam",
+     * "betrokkeneIdentificatie.voorletters": "ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:voorletters",
+     * "betrokkeneIdentificatie.voornamen": "ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:voornamen",
+     * "betrokkeneIdentificatie.geslachtaanduiding": "ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:geslachtsaanduiding",
+     * "betrokkeneIdentificatie.geboortedatum": "ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:geboortedatum",
+     * "betrokkeneIdentificatie.verblijfsadres.wplWoonplaatsNaam": "ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:verblijfsadres.ns3:wpl&#46;woonplaatsnaam",
+     * "betrokkeneIdentificatie.verblijfsadres.gorOpenbareRuimteNaam": "ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:verblijfsadres.ns3:gor&#46;openbareruimtenaam",
+     * "betrokkeneIdentificatie.verblijfsadres.aoaPostcode": "ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:verblijfsadres.ns3:aoa&#46;postcode",
+     * "betrokkeneIdentificatie.verblijfsadres.aoaHuisnummer": "ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:verblijfsadres.ns3:aoa&#46;huisnummer",
+     * "betrokkeneIdentificatie.verblijfsadres.aoaHuisletter": "ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:verblijfsadres.ns3:aoa&#46;huisletter",
+     * "betrokkeneIdentificatie.verblijfsadres.aoaHuisnummertoevoeging": "ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:verblijfsadres.ns3:aoa&#46;huisnummertoevoeging"
+     * },
+     * "cast": {
+     * "roltype": "jsonToArray",
+     * "betrokkeneIdentificatie.inpBsn": "keyCantBeValue",
+     * "betrokkeneIdentificatie.geslachtsnaam": "keyCantBeValue",
+     * "betrokkeneIdentificatie.voornamen": "keyCantBeValue",
+     * "betrokkeneIdentificatie.voorvoegselGeslachtsnaam": "keyCantBeValue"
+     * }
+     * }
+     * Will use $number to find the correct data for this witness.
      *
      * @param array        $zaakEigenschappen Array of key value pairs of the zaakEigenschappen of a Case.
      * @param int          $number            Number of the witness, used to get the correct keys.
@@ -613,7 +686,7 @@ class ZgwToVrijbrpService
         // $this->syncService->synchronize($synchronization, $objectArray);
 
         // Todo: temp way of doing this without updated synchronize() function...
-        if ($this->synchronizeTemp($synchronization, $objectArray) === [] &&
+        if ($this->synchronizeTemp($synchronization, $objectArray, $this->configuration['location']) === [] &&
             isset($this->symfonyStyle) === true) {
             // Return empty array on error for when we got here through a command.
             return [];
@@ -662,7 +735,7 @@ class ZgwToVrijbrpService
         // $this->syncService->synchronize($synchronization, $objectArray);
 
         // Todo: temp way of doing this without updated synchronize() function...
-        if ($this->synchronizeTemp($synchronization, $objectArray) === [] &&
+        if ($this->synchronizeTemp($synchronization, $objectArray, $this->configuration['location']) === [] &&
             isset($this->symfonyStyle) === true) {
             // Return empty array on error for when we got here through a command.
             return [];
@@ -681,7 +754,7 @@ class ZgwToVrijbrpService
      *
      * @return array The response body of the outgoing call, or an empty array on error.
      */
-    private function synchronizeTemp(Synchronization $synchronization, array $objectArray): array
+    public function synchronizeTemp(Synchronization $synchronization, array $objectArray, string $location): array
     {
         $objectString = $this->syncService->getObjectString($objectArray);
 
@@ -689,8 +762,8 @@ class ZgwToVrijbrpService
 
         try {
             $result = $this->callService->call(
-                $this->source,
-                $this->configuration['location'],
+                $synchronization->getSource(),
+                $location,
                 'POST',
                 [
                     'body'    => $objectString,
@@ -725,4 +798,12 @@ class ZgwToVrijbrpService
 
         return $body;
     }//end synchronizeTemp()
+
+    public function getSynchronization(ObjectEntity $object, Source $source, Entity $synchronizationEntity, Mapping $mapping): Synchronization
+    {
+        $synchronization = $this->syncService->findSyncByObject($object, $source, $synchronizationEntity);
+        $synchronization->setMapping($mapping);
+
+        return $synchronization;
+    }
 }
