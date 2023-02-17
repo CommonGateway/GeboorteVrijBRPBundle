@@ -192,6 +192,95 @@ class ZgwToVrijbrpService
         return $this->synchronizationEntity;
     }//end setSynchronizationEntity()
 
+
+    /**
+     * Finds mapping by reference.
+     *
+     * @param string $reference The reference to look for.
+     *
+     * @return Mapping|null The resulting mapping.
+     */
+    public function getMapping(string $reference): ?Mapping
+    {
+        $reference = $this->entityManager->getRepository('App:Mapping')->findOneBy(['reference' => $reference]);
+        if ($reference instanceof Mapping === false) {
+            if (isset($this->symfonyStyle) === true) {
+                $this->symfonyStyle->error("No mapping found with reference: $reference");
+            }
+
+            $this->logger->error("No mapping found with reference: $reference");
+            return null;
+        }
+
+        return $reference;
+    }
+
+    /**
+     * Finds source by location.
+     *
+     * @TODO: convert to reference.
+     *
+     * @param string $location The location to look a source for.
+     *
+     * @return Source|null The resulting source.
+     */
+    public function getSource(string $location): ?Source
+    {
+        $source = $this->entityManager->getRepository('App:Gateway')->findOneBy(['location' => $location]);
+        if ($source instanceof Source === false) {
+            if (isset($this->symfonyStyle) === true) {
+                $this->symfonyStyle->error("No source found with location: $location");
+            }
+
+            $this->logger->error("No source found with location: $location");
+            return null;
+        }
+
+        return $source;
+    }//end getSource()
+
+    /**
+     * Finds entity by reference.
+     *
+     * @param string $reference The reference to look for.
+     *
+     * @return Entity|null The resulting entity.
+     */
+    public function getEntity(string $reference): ?Entity
+    {
+        $synchronizationEntity = $this->entityManager->getRepository('App:Entity')->findOneBy(['reference' => $reference]);
+        if ($synchronizationEntity instanceof Entity === false) {
+            if (isset($this->symfonyStyle) === true) {
+                $this->symfonyStyle->error("No entity found with reference: $reference");
+            }
+
+            $this->logger->error("No entity found with reference: $reference");
+            return null;
+        }
+
+        return $synchronizationEntity;
+    }//end setSynchronizationEntity()
+
+    /**
+     * This function gets the zaakEigenschappen from the zgwZaak with the given properties (simXml elementen and Stuf extraElementen).
+     *
+     * @param ObjectEntity $zaakObjectEntity The zaak ObjectEntity.
+     * @param array        $properties       The properties / eigenschappen we want to get.
+     *
+     * @return array zaakEigenschappen
+     */
+    public function getZaakEigenschappen(ObjectEntity $zaakObjectEntity, array $properties): array
+    {
+        $zaakEigenschappen = [];
+        foreach ($zaakObjectEntity->getValue('eigenschappen') as $eigenschap) {
+            if (in_array($eigenschap->getValue('naam'), $properties) || in_array('all', $properties)) {
+                $zaakEigenschappen[$eigenschap->getValue('naam')] = $eigenschap->getValue('waarde');
+            }
+        }
+
+        return $zaakEigenschappen;
+    }
+
     /**
      * Maps zgw eigenschappen to vrijbrp mapping for a Commitment e-dienst.
      *
@@ -354,26 +443,6 @@ class ZgwToVrijbrpService
 
         return $output;
     }//end getSpecificProperties()
-
-    /**
-     * This function gets the zaakEigenschappen from the zgwZaak with the given properties (simXml elementen and Stuf extraElementen).
-     *
-     * @param ObjectEntity $zaakObjectEntity The zaak ObjectEntity.
-     * @param array        $properties       The properties / eigenschappen we want to get.
-     *
-     * @return array zaakEigenschappen
-     */
-    public function getZaakEigenschappen(ObjectEntity $zaakObjectEntity, array $properties): array
-    {
-        $zaakEigenschappen = [];
-        foreach ($zaakObjectEntity->getValue('eigenschappen') as $eigenschap) {
-            if (in_array($eigenschap->getValue('naam'), $properties) || in_array('all', $properties)) {
-                $zaakEigenschappen[$eigenschap->getValue('naam')] = $eigenschap->getValue('waarde');
-            }
-        }
-
-        return $zaakEigenschappen;
-    }//end getZaakEigenschappen()
 
     /**
      * This function gets the zaakEigenschappen from the zgwZaak for a Commitment eDienst.

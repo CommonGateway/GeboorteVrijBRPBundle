@@ -28,73 +28,6 @@ class DeceasementService
         $this->entityManager = $entityManager;
     }
 
-    public function getMapping(string $reference): ?Mapping
-    {
-        $reference = $this->entityManager->getRepository('App:Mapping')->findOneBy(['reference' => $reference]);
-        if ($reference instanceof Mapping === false) {
-            if (isset($this->symfonyStyle) === true) {
-                $this->symfonyStyle->error("No mapping found with reference: $reference");
-            }
-            $this->logger->error("No mapping found with reference: $reference");
-
-            return null;
-        }
-        return $reference;
-    }
-
-    public function getSource(string $location): ?Source
-    {
-        // Todo: Add FromSchema function to Gateway Gateway.php, so that we can use .json files for sources as well.
-        // Todo: ...For this to work, we also need to change CoreBundle installationService.
-        // Todo: ...If we do this we can also add and use reference for Gateways / Sources.
-        $source = $this->entityManager->getRepository('App:Gateway')->findOneBy(['location' => $location]);
-        if ($source instanceof Source === false) {
-            if (isset($this->symfonyStyle) === true) {
-                $this->symfonyStyle->error("No source found with location: $location");
-            }
-            $this->logger->error("No source found with location: $location");
-
-            return null;
-        }
-
-        return $source;
-    }
-
-    private function getSynchronizationEntity(string $reference): ?Entity
-    {
-        $synchronizationEntity = $this->entityManager->getRepository('App:Entity')->findOneBy(['reference' => $reference]);
-        if ($synchronizationEntity instanceof Entity === false) {
-            if (isset($this->symfonyStyle) === true) {
-                $this->symfonyStyle->error("No entity found with reference: $reference");
-            }
-            $this->logger->error("No entity found with reference: $reference");
-
-            return null;
-        }
-
-        return $synchronizationEntity;
-    }//end setSynchronizationEntity()
-
-    /**
-     * This function gets the zaakEigenschappen from the zgwZaak with the given properties (simXml elementen and Stuf extraElementen).
-     *
-     * @param ObjectEntity $zaakObjectEntity The zaak ObjectEntity.
-     * @param array        $properties       The properties / eigenschappen we want to get.
-     *
-     * @return array zaakEigenschappen
-     */
-    public function getZaakEigenschappen(ObjectEntity $zaakObjectEntity, array $properties): array
-    {
-        $zaakEigenschappen = [];
-        foreach ($zaakObjectEntity->getValue('eigenschappen') as $eigenschap) {
-            if (in_array($eigenschap->getValue('naam'), $properties) || in_array('all', $properties)) {
-                $zaakEigenschappen[$eigenschap->getValue('naam')] = $eigenschap->getValue('waarde');
-            }
-        }
-
-        return $zaakEigenschappen;
-    }
-
     public function getCorrespondence($properties): array
     {
         $correspondence = [
@@ -175,7 +108,7 @@ class DeceasementService
 
     public function getDeathProperties(ObjectEntity $object, array $objectArray, bool &$foundBody): array
     {
-        $caseProperties = $this->getZaakEigenschappen($object, ['all']);
+        $caseProperties = $this->zgwToVrijbrpService->getZaakEigenschappen($object, ['all']);
 
         $objectArray['deceased'] = $this->getDeceasedObject($caseProperties);
         $objectArray['deathByNaturalCauses'] = $caseProperties['natdood'] === "True";
@@ -198,6 +131,7 @@ class DeceasementService
         }
         $objectArray['correspondence'] = $this->getCorrespondence($caseProperties);
         $objectArray['extracts'] = $this->getExtracts($caseProperties);
+        $objectArray['funeralServices'] = $this->getFuneralServices($caseProperties);
 
         $objectArray['declarant']['bsn'] = $caseProperties['contact.inp.bsn'] ?? $objectArray['declarant']['bsn'];
 
@@ -215,9 +149,9 @@ class DeceasementService
         $this->configuration = $configuration;
         $this->data = $data;
 
-        $source = $this->getSource($configuration['source']);
-        $mapping = $this->getMapping($configuration['mapping']);
-        $synchronizationEntity = $this->getSynchronizationEntity($configuration['synchronizationEntity']);
+        $source = $this->zgwToVrijbrpService->getSource($configuration['source']);
+        $mapping = $this->zgwToVrijbrpService->getMapping($configuration['mapping']);
+        $synchronizationEntity = $this->zgwToVrijbrpService->getEntity($configuration['synchronizationEntity']);
         if ($source === null
             || $mapping === null
             || $synchronizationEntity === null
