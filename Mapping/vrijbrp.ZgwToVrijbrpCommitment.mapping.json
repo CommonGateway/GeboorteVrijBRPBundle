@@ -9,6 +9,7 @@
     "dossier.type.code": "zaaktype.identificatie",
     "dossier.startDate": "{{ startdatum|date('Y-m-d') }}",
     "dossier.entryDateTime": "{{ registratiedatum|date('Y-m-d\\\\TH:i:s') }}",
-    "dossier.status.entryDateTime": "{{ registratiedatum|date('Y-m-d\\\\TH:i:s') }}"
+    "dossier.status.entryDateTime": "{{ registratiedatum|date('Y-m-d\\\\TH:i:s') }}",
+    "declarant.bsn": "rollen.0.betrokkeneIdentificatie.inpBsn"
   }
 }
