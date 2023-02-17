@@ -74,7 +74,7 @@ class DeceasementService
 
         return $synchronizationEntity;
     }//end setSynchronizationEntity()
-    
+
     /**
      * This function gets the zaakEigenschappen from the zgwZaak with the given properties (simXml elementen and Stuf extraElementen).
      *
@@ -128,7 +128,7 @@ class DeceasementService
 
         return $deceased;
     }
-    
+
     public function getFuneralServices(array $properties): array
     {
         $funeralServices = [
@@ -199,6 +199,8 @@ class DeceasementService
         $objectArray['correspondence'] = $this->getCorrespondence($caseProperties);
         $objectArray['extracts'] = $this->getExtracts($caseProperties);
 
+        $objectArray['declarant']['bsn'] = $caseProperties['contact.inp.bsn'] ?? $objectArray['declarant']['bsn'];
+
 
         if(isset($caseProperties['aangevertype'])) {
             $foundBody = true;
@@ -238,10 +240,9 @@ class DeceasementService
         $objectArray = $this->getDeathProperties($object, $objectArray, $foundBody);
 
         // Create synchronization.
-        $this->zgwToVrijbrpService->getSynchronization($object, $source, $synchronizationEntity, $mapping);
-
-        $this->logger->debug("Synchronize (Zaak) Object to: {$source->getLocation()}{$this->configuration['location']}");
         $synchronization = $this->zgwToVrijbrpService->getSynchronization($object, $source, $synchronizationEntity, $mapping);
+
+        $this->logger->debug("Synchronize (Zaak) Object to: {$source->getLocation()}".($foundBody === true ? $this->configuration['foundBodyLocation'] : $this->configuration['inMunicipalityLocation']));
         // Todo: change synchronize function so it can also push to a source and not only pull from a source:
         // $this->syncService->synchronize($synchronization, $objectArray);
 

@@ -13,7 +13,7 @@ use Exception;
  *
  * @author Wilco Louwerse <wilco@conduction.nl>
  */
-class ZgwToVrijbrpDeathHandler implements ActionHandlerInterface
+class ZgwToVrijbrpDeceasementHandler implements ActionHandlerInterface
 {
     /**
      * @var DeceasementService The DeceasementService that will handle code for this Handler.
