@@ -89,8 +89,6 @@ class ZgwToVrijbrpService
      */
     private LoggerInterface $mappingLogger;
 
-    private DeceasementService $deceasementService;
-
     /**
      * Construct a ZgwToVrijbrpService.
      *
@@ -105,8 +103,7 @@ class ZgwToVrijbrpService
         SynchronizationService $syncService,
         MappingService $mappingService,
         LoggerInterface $actionLogger,
-        LoggerInterface $mappingLogger,
-        DeceasementService $deceasementService
+        LoggerInterface $mappingLogger
     ) {
         $this->entityManager = $entityManager;
         $this->callService = $callService;
@@ -114,7 +111,6 @@ class ZgwToVrijbrpService
         $this->mappingService = $mappingService;
         $this->logger = $actionLogger;
         $this->mappingLogger = $mappingLogger;
-        $this->deceasementService = $deceasementService;
     }//end __construct()
 
     /**
@@ -598,9 +594,6 @@ class ZgwToVrijbrpService
                 break;
             case 'B0337':
                 $objectArray = $this->getCommitmentProperties($object, $objectArray);
-                break;
-            case 'B0360':
-                $objectArray = $this->deceasementService->getDeathProperties($object, $objectArray);
                 break;
             default:
                 return [];
