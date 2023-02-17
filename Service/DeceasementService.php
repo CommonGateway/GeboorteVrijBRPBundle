@@ -3,7 +3,6 @@
 namespace CommonGateway\GeboorteVrijBRPBundle\Service;
 
 use App\Entity\Entity;
-use App\Entity\Gateway as Source;
 use App\Entity\Mapping;
 use App\Entity\ObjectEntity;
 use App\Entity\Synchronization;
@@ -181,8 +180,7 @@ class DeceasementService
         // $this->syncService->synchronize($synchronization, $objectArray);
 
         // Todo: temp way of doing this without updated synchronize() function...
-        if ($this->zgwToVrijbrpService->synchronizeTemp($synchronization, $objectArray, $foundBody === true ? $this->configuration['foundBodyLocation'] : $this->configuration['inMunicipalityLocation']) === [] &&
-            isset($this->symfonyStyle) === true) {
+        if ($this->zgwToVrijbrpService->synchronizeTemp($synchronization, $objectArray, $foundBody === true ? $this->configuration['foundBodyLocation'] : $this->configuration['inMunicipalityLocation']) === []) {
             // Return empty array on error for when we got here through a command.
             return [];
         }
