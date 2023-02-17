@@ -17,10 +17,10 @@ class DeceasementService
 {
     private ZgwToVrijbrpService $zgwToVrijbrpService;
     private MappingService $mappingService;
-    private Logger $logger;
+    private LoggerInterface $logger;
     private EntityManagerInterface $entityManager;
 
-    public function __construct(MappingService $mappingService, ZgwToVrijbrpService $zgwToVrijbrpService, Logger $actionLogger, EntityManagerInterface $entityManager)
+    public function __construct(MappingService $mappingService, ZgwToVrijbrpService $zgwToVrijbrpService, LoggerInterface $actionLogger, EntityManagerInterface $entityManager)
     {
         $this->mappingService = $mappingService;
         $this->zgwToVrijbrpService = $zgwToVrijbrpService;
