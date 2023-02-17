@@ -2,14 +2,12 @@
 
 namespace CommonGateway\GeboorteVrijBRPBundle\Service;
 
-use App\Entity\Entity;
 use App\Entity\Mapping;
 use App\Entity\ObjectEntity;
 use App\Entity\Synchronization;
 use CommonGateway\CoreBundle\Service\MappingService;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
-use EasyRdf\Literal\Date;
 use Psr\Log\LoggerInterface;
 
 class DeceasementService
@@ -30,18 +28,18 @@ class DeceasementService
     public function getCorrespondence($properties): array
     {
         $correspondence = [
-            'name' => $properties['contact.naam'] ?? null,
-            'email' => $properties['sub.emailadres'] ?? null,
+            'name'         => $properties['contact.naam'] ?? null,
+            'email'        => $properties['sub.emailadres'] ?? null,
             'organization' => $properties['handelsnaam'] ?? null,
-            'houseNumber' => isset($properties['aoa.huisnummer']) === true ? intval($properties['aoa.huisnummer']) : null,
-            'postalCode' => $properties['aoa.postcode'] ?? null,
-            'residence' => $properties['wpl.woonplaatsnaam'] ?? null,
-            'street' => $properties['gor.openbareRuimteNaam'] ?? null,
+            'houseNumber'  => isset($properties['aoa.huisnummer']) === true ? intval($properties['aoa.huisnummer']) : null,
+            'postalCode'   => $properties['aoa.postcode'] ?? null,
+            'residence'    => $properties['wpl.woonplaatsnaam'] ?? null,
+            'street'       => $properties['gor.openbareRuimteNaam'] ?? null,
         ];
         isset($properties['aoa.huisletter']) === false ?: $correspondence['houseNumberLetter'] = $properties['aoa.huisletter'];
         isset($properties['aoa.huisnummertoevoeging']) === false ?: $correspondence['houseNumberAddition'] = $properties['aoa.huisletter'];
 
-        if(isset($properties['communicatietype']) === true && in_array($properties['communicatietype'], ['EMAIL', 'POST'])) {
+        if (isset($properties['communicatietype']) === true && in_array($properties['communicatietype'], ['EMAIL', 'POST'])) {
             $correspondence['communicationType'] = $properties['communicatietype'];
         }
 
@@ -51,10 +49,10 @@ class DeceasementService
     public function getDeceasedObject(array $properties): array
     {
         $deceased = [
-            'bsn' => $properties['inp.bsn'] ?? null,
+            'bsn'       => $properties['inp.bsn'] ?? null,
             'firstname' => $properties['voornamen'] ?? null,
-            'prefix' => $properties['voorvoegselGeslachtsnaam'] ?? null,
-            'lastname' => $properties['geslachtsnaam'] ?? null,
+            'prefix'    => $properties['voorvoegselGeslachtsnaam'] ?? null,
+            'lastname'  => $properties['geslachtsnaam'] ?? null,
             'birthdate' => $properties['geboortedatum'] ?? null,
         ];
 
@@ -64,25 +62,25 @@ class DeceasementService
     public function getFuneralServices(array $properties): array
     {
         $funeralServices = [
-            'outsideBenelux' => $properties['buitenbenelux'] === 'True',
+            'outsideBenelux'       => $properties['buitenbenelux'] === 'True',
             'countryOfDestination' => isset($properties['landcode']) ? ['code' => $properties['landcode']] : null,
-            'placeOfDestination' => $properties['plaatsbest'] ?? null,
-            'via' => $properties['viabest'] ?? null,
-            'transportation' => $properties['voertuigbest'] ?? null,
+            'placeOfDestination'   => $properties['plaatsbest'] ?? null,
+            'via'                  => $properties['viabest'] ?? null,
+            'transportation'       => $properties['voertuigbest'] ?? null,
         ];
 
-        if(isset($properties['type']) === true && in_array($properties['type'], ['BURIAL_CREMATION', 'DISSECTION'])) {
+        if (isset($properties['type']) === true && in_array($properties['type'], ['BURIAL_CREMATION', 'DISSECTION'])) {
             $funeralServices['serviceType'] = $properties['type'];
         }
 
-        if(isset($properties['datum']) === true) {
+        if (isset($properties['datum']) === true) {
             $date = new DateTime($properties['datum']);
             $funeralServices['date'] = $date->format('Y-m-d');
-        } else if (isset($properties['datumuitvaart']) === true) {
+        } elseif (isset($properties['datumuitvaart']) === true) {
             $date = new DateTime($properties['datumuitvaart']);
             $funeralServices['date'] = $date->format('Y-m-d');
         }
-        if(isset($properties['tijduitvaart'])) {
+        if (isset($properties['tijduitvaart'])) {
             $time = new DateTime($properties['tijduitvaart']);
             $funeralServices['time'] = $time->format('H:i');
         }
@@ -94,9 +92,9 @@ class DeceasementService
     {
         $extracts = [];
         $index = 1;
-        while(isset($properties['code'.$index])) {
+        while (isset($properties['code'.$index])) {
             $extracts[] = [
-                'code' => $properties['code'.$index],
+                'code'   => $properties['code'.$index],
                 'amount' => (int) $properties['amount'.$index] ?? 1,
             ];
             $index++;
@@ -110,21 +108,21 @@ class DeceasementService
         $caseProperties = $this->zgwToVrijbrpService->getZaakEigenschappen($object, ['all']);
 
         $objectArray['deceased'] = $this->getDeceasedObject($caseProperties);
-        $objectArray['deathByNaturalCauses'] = $caseProperties['natdood'] === "True";
+        $objectArray['deathByNaturalCauses'] = $caseProperties['natdood'] === 'True';
         $objectArray['municipality']['code'] = $caseProperties['gemeentecode'] ?? null;
-        if(isset($caseProperties['datumoverlijden']) === true) {
+        if (isset($caseProperties['datumoverlijden']) === true) {
             $datum = new DateTime($caseProperties['datumoverlijden']);
             $objectArray['dateOfDeath'] = $datum->format('Y-m-d');
         }
-        if(isset($caseProperties['datumlijkvinding']) === true) {
+        if (isset($caseProperties['datumlijkvinding']) === true) {
             $datum = new DateTime($caseProperties['datumlijkvinding']);
             $objectArray['dateOfFinding'] = $datum->format('Y-m-d');
         }
-        if(isset($caseProperties['tijdoverlijden']) === true) {
+        if (isset($caseProperties['tijdoverlijden']) === true) {
             $datum = new DateTime($caseProperties['tijdoverlijden']);
             $objectArray['timeOfDeath'] = $datum->format('H:i');
         }
-        if(isset($caseProperties['tijdlijkvinding']) === true) {
+        if (isset($caseProperties['tijdlijkvinding']) === true) {
             $datum = new DateTime($caseProperties['tijdlijkvinding']);
             $objectArray['timeOfFinding'] = $datum->format('H:i');
         }
@@ -134,8 +132,7 @@ class DeceasementService
 
         $objectArray['declarant']['bsn'] = $caseProperties['contact.inp.bsn'] ?? $objectArray['declarant']['bsn'];
 
-
-        if(isset($caseProperties['aangevertype'])) {
+        if (isset($caseProperties['aangevertype'])) {
             $foundBody = true;
         }
 
@@ -159,7 +156,6 @@ class DeceasementService
         }
 
         $dataId = $data['object']['_self']['id'];
-
 
         $object = $this->entityManager->getRepository('App:ObjectEntity')->find($dataId);
         $this->logger->debug("(Zaak) Object with id $dataId was created");

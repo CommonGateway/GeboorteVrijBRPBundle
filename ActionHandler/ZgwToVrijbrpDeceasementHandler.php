@@ -4,7 +4,6 @@ namespace CommonGateway\GeboorteVrijBRPBundle\ActionHandler;
 
 use CommonGateway\CoreBundle\ActionHandler\ActionHandlerInterface;
 use CommonGateway\GeboorteVrijBRPBundle\Service\DeceasementService;
-use CommonGateway\GeboorteVrijBRPBundle\Service\ZgwToVrijbrpService;
 use Exception;
 
 /**
