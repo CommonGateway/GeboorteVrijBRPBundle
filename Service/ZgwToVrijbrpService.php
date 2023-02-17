@@ -688,7 +688,7 @@ class ZgwToVrijbrpService
      *
      * @return array The response body of the outgoing call, or an empty array on error.
      */
-    public function synchronizeTemp(Synchronization $synchronization, array $objectArray): array
+    public function synchronizeTemp(Synchronization $synchronization, array $objectArray, string $location): array
     {
         $objectString = $this->syncService->getObjectString($objectArray);
 
@@ -696,8 +696,8 @@ class ZgwToVrijbrpService
 
         try {
             $result = $this->callService->call(
-                $this->source,
-                $this->configuration['location'],
+                $synchronization->getSource(),
+                $location,
                 'POST',
                 [
                     'body'    => $objectString,

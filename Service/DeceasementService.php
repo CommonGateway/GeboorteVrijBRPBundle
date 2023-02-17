@@ -173,7 +173,7 @@ class DeceasementService
         return $extracts;
     }
 
-    public function getDeathProperties(ObjectEntity $object, array $objectArray): array
+    public function getDeathProperties(ObjectEntity $object, array $objectArray, bool &$foundBody): array
     {
         $caseProperties = $this->getZaakEigenschappen($object, ['all']);
 
@@ -198,6 +198,11 @@ class DeceasementService
         }
         $objectArray['correspondence'] = $this->getCorrespondence($caseProperties);
         $objectArray['extracts'] = $this->getExtracts($caseProperties);
+
+
+        if(isset($caseProperties['aangevertype'])) {
+            $foundBody = true;
+        }
 
         return $objectArray;
     }
@@ -229,7 +234,8 @@ class DeceasementService
         // Do mapping with Zaak ObjectEntity as array.
         $objectArray = $this->mappingService->mapping($mapping, $objectArray);
 
-        $objectArray = $this->getDeathProperties($object, $objectArray);
+        $foundBody = false;
+        $objectArray = $this->getDeathProperties($object, $objectArray, $foundBody);
 
         // Create synchronization.
         $this->zgwToVrijbrpService->getSynchronization($object, $source, $synchronizationEntity, $mapping);
@@ -240,7 +246,7 @@ class DeceasementService
         // $this->syncService->synchronize($synchronization, $objectArray);
 
         // Todo: temp way of doing this without updated synchronize() function...
-        if ($this->zgwToVrijbrpService->synchronizeTemp($synchronization, $objectArray) === [] &&
+        if ($this->zgwToVrijbrpService->synchronizeTemp($synchronization, $objectArray, $foundBody === true ? $this->configuration['foundBodyLocation'] : $this->configuration['inMunicipalityLocation']) === [] &&
             isset($this->symfonyStyle) === true) {
             // Return empty array on error for when we got here through a command.
             return [];

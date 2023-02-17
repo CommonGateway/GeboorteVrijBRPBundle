@@ -13,10 +13,11 @@
       "B0360"
     ]
   },
-  "class": "CommonGateway\\GeboorteVrijBRPBundle\\ActionHandler\\ZgwToVrijbrpHandler",
+  "class": "CommonGateway\\GeboorteVrijBRPBundle\\ActionHandler\\ZgwToVrijbrpDeceasementHandler",
   "configuration": {
     "source": "https://vrijbrp.nl/dossiers",
-    "location": "/api/v1/deaths/in-municipality",
+    "inMunicipalityLocation": "/api/v1/deaths/in-municipality",
+    "foundBodyLocation": "/api/v1/deaths/discovered-body",
     "mapping": "https://vrijbrp.nl/mapping/vrijbrp.ZgwToVrijbrpCommitment.mapping.json",
     "synchronizationEntity": "https://vng.opencatalogi.nl/schemas/zrc.zaak.schema.json"
   },
