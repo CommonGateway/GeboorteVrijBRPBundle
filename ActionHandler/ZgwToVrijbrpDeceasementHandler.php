@@ -42,7 +42,7 @@ class ZgwToVrijbrpDeceasementHandler implements ActionHandlerInterface
             '$schema'     => 'https://json-schema.org/draft/2020-12/schema',
             'title'       => 'ZgwToVrijbrpHandler',
             'description' => 'This handler posts zaak eigenschappen from ZGW to VrijBrp',
-            'required'    => ['source', 'location', 'mapping', 'zaakEntity'],
+            'required'    => ['source', 'inMunicipalityLocation', 'foundBodyLocation', 'mapping', 'zaakEntity'],
             'properties'  => [
                 'source' => [
                     'type'        => 'string',
@@ -51,7 +51,13 @@ class ZgwToVrijbrpDeceasementHandler implements ActionHandlerInterface
                     'required'    => true,
                     '$ref'        => 'https://commongroundgateway.nl/commongroundgateway.gateway.entity.json',
                 ],
-                'location' => [
+                'foundBodyLocation' => [
+                    'type'        => 'string',
+                    'description' => 'The endpoint we will use on the Source to send a request, just a string',
+                    'example'     => '/api/births',
+                    'required'    => true,
+                ],
+                'inMunicipalityLocation' => [
                     'type'        => 'string',
                     'description' => 'The endpoint we will use on the Source to send a request, just a string',
                     'example'     => '/api/births',
