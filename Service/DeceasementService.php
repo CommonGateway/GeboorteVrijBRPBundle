@@ -77,7 +77,7 @@ class DeceasementService
         }
 
         if(isset($properties['datum']) === true) {
-            $date = new DateTime($properties['date']);
+            $date = new DateTime($properties['datum']);
             $funeralServices['date'] = $date->format('Y-m-d');
         } else if (isset($properties['datumuitvaart']) === true) {
             $date = new DateTime($properties['datumuitvaart']);
