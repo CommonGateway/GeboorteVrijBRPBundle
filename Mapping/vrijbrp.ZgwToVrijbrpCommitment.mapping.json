@@ -2,14 +2,13 @@
   "title": "ZgwToVrijbrpCommitment",
   "$id": "https://vrijbrp.nl/mapping/vrijbrp.ZgwToVrijbrpCommitment.mapping.json",
   "$schema": "https://json-schema.org/draft/2020-12/mapping",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "passTrough": false,
   "mapping": {
     "dossier.dossierId": "identificatie",
     "dossier.type.code": "zaaktype.identificatie",
     "dossier.startDate": "{{ startdatum|date('Y-m-d') }}",
     "dossier.entryDateTime": "{{ registratiedatum|date('Y-m-d\\\\TH:i:s') }}",
-    "dossier.status.entryDateTime": "{{ registratiedatum|date('Y-m-d\\\\TH:i:s') }}",
-    "declarant.bsn": "rollen.0.betrokkeneIdentificatie.inpBsn"
+    "dossier.status.entryDateTime": "{{ registratiedatum|date('Y-m-d\\\\TH:i:s') }}"
   }
 }
