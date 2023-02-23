@@ -69,7 +69,7 @@ class RelocationService
         return $relocators;
     } //end getMeeEmigranten()
 
-    public function getRelocationProperties(ObjectEntity $object, array $objectArray, string &$interOrIntra): array
+    public function getRelocationProperties(ObjectEntity $object, array $objectArray, string $gemeenteCode, string &$interOrIntra): array
     {
         $caseProperties = $this->zgwToVrijbrpService->getZaakEigenschappen($object, ['all']);
 
@@ -94,9 +94,9 @@ class RelocationService
         $relocators = $this->getRelocators($caseProperties);
         $objectArray['relocators'] = $relocators;
 
-        // if GEMEENTECODE isset this is a inter relocation
-        if (isset($caseProperties['GEMEENTECODE'])) {
-            $objectArray['newAddress']['municipality'] = [
+        // if GEMEENTECODE is not the configured gemeentecode this is a inter relocation
+        if (isset($caseProperties['GEMEENTECODE']) && $caseProperties['GEMEENTECODE'] !== $gemeenteCode) {
+            $objectArray['previousMunicipality'] = [
                 'code' => $caseProperties['GEMEENTECODE']
             ];
             $interOrIntra = 'inter';
@@ -110,6 +110,12 @@ class RelocationService
         $this->logger->info('Converting ZGW object to VrijBRP');
         $this->configuration = $configuration;
         $this->data = $data;
+
+        if (!isset($configuration['gemeenteCode'])) {
+            $this->logger->error("gemeenteCode not set in ZgwToVrijbrpRelocationAction configuration.");
+
+            return [];
+        }
 
         $source = $this->zgwToVrijbrpService->getSource($configuration['source']);
         $mapping = $this->zgwToVrijbrpService->getMapping($configuration['mapping']);
@@ -125,7 +131,6 @@ class RelocationService
         $dataId = $data['object']['_self']['id'];
 
         $object = $this->entityManager->getRepository('App:ObjectEntity')->find($dataId);
-        var_dump(json_encode($object->toArray()));
         $this->logger->debug("(Zaak) Object with id $dataId was created");
 
         $objectArray = $object->toArray();
@@ -134,13 +139,13 @@ class RelocationService
         $objectArray = $this->mappingService->mapping($mapping, $objectArray);
 
         $interOrIntra = 'intra';
-        $objectArray = $this->getRelocationProperties($object, $objectArray, $interOrIntra);
+        $objectArray = $this->getRelocationProperties($object, $objectArray, $configuration['gemeenteCode'], $interOrIntra);
 
         // Create synchronization.
         $synchronization = $this->zgwToVrijbrpService->getSynchronization($object, $source, $synchronizationEntity, $mapping);
 
         // @TODO different endpoints for inter or intra relocation
-        // $this->logger->debug("Synchronize (Zaak) Object to: {$source->getLocation()}" . ($interOrIntra == 'inter' ? $this->configuration['interLocation'] : $this->configuration['intraLocation']));
+        $this->logger->debug("Synchronize (Zaak) Object to: {$source->getLocation()}" . ($interOrIntra == 'inter' ? $this->configuration['interLocation'] : $this->configuration['intraLocation']));
         // Todo: change synchronize function so it can also push to a source and not only pull from a source:
         // $this->syncService->synchronize($synchronization, $objectArray);
 

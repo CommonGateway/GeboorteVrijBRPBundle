@@ -760,7 +760,6 @@ class ZgwToVrijbrpService
 
         $this->logger->info('Sending message with body '.$objectString);
 
-        var_dump($objectString);die;
         try {
             $result = $this->callService->call(
                 $synchronization->getSource(),

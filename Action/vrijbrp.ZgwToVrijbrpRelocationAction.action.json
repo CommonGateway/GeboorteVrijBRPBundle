@@ -20,7 +20,8 @@
     "mapping": "https://vrijbrp.nl/mapping/vrijbrp.ZgwToVrijbrpRelocation.mapping.json",
     "synchronizationEntity": "https://vng.opencatalogi.nl/schemas/zrc.zaak.schema.json",
     "interLocation": "/relocations/inter",
-    "intraLocation": "/relocations/intra"
+    "intraLocation": "/relocations/intra",
+    "gemeenteCode": "0935"
   },
   "isLockable": false,
   "isEnabled": true
