@@ -312,8 +312,8 @@ class ZgwToVrijbrpService
 //            $output['partner2']['nameAfterCommitment']['nameUseType'] = 'N';
 //        }
 //
-        if (isset($output['partner2']['bsn']) === false) {
-            $output['partner2']['bsn'] = $this->getZaakInitiatorValue($object, 'inpBsn');
+        if (isset($output['partner1']['bsn']) === false) {
+            $output['partner1']['bsn'] = $this->getZaakInitiatorValue($object, 'inpBsn');
         }
 //
 //        if (isset($output['partner2']['nameAfterCommitment']['title']) === false) {
@@ -463,9 +463,7 @@ class ZgwToVrijbrpService
             switch ($eigenschap->getValue('naam')) {
                 case 'inp.bsn':
                     // Todo: fix this bsn shizzle:
-                    if ($tempCountForBsn === 2) {
-                        $this->getCommitmentPartnerEigenschap($zaakEigenschappen, ['bsn'], $eigenschap);
-                    }
+                    $this->getCommitmentPartnerEigenschap($zaakEigenschappen, ['bsn'], $eigenschap);
                     $tempCountForBsn++;
                     break;
                 case 'sub.telefoonnummer':
@@ -527,24 +525,24 @@ class ZgwToVrijbrpService
             return;
         }
         if (count($keys) === 2) {
-            if (isset($zaakEigenschappen['partner1'][$keys[0]][$keys[1]]) === true) {
-                $zaakEigenschappen['partner2'][$keys[0]][$keys[1]] = $eigenschap->getValue('waarde');
+            if (isset($zaakEigenschappen['partner2'][$keys[0]][$keys[1]]) === true) {
+                $zaakEigenschappen['partner1'][$keys[0]][$keys[1]] = $eigenschap->getValue('waarde');
 
                 return;
             }
-            $zaakEigenschappen['partner1'][$keys[0]][$keys[1]] = $eigenschap->getValue('waarde');
+            $zaakEigenschappen['partner2'][$keys[0]][$keys[1]] = $eigenschap->getValue('waarde');
 
             return;
         }
 
         // If count($keys) == 1
         // Todo: This with only 1 key is only used for bsn, so could be removed if we don't use it for bsn anymore
-        if (isset($zaakEigenschappen['partner1'][$keys[0]]) === true) {
-            $zaakEigenschappen['partner2'][$keys[0]] = $eigenschap->getValue('waarde');
+        if (isset($zaakEigenschappen['partner2'][$keys[0]]) === true) {
+            $zaakEigenschappen['partner1'][$keys[0]] = $eigenschap->getValue('waarde');
 
             return;
         }
-        $zaakEigenschappen['partner1'][$keys[0]] = $eigenschap->getValue('waarde');
+        $zaakEigenschappen['partner2'][$keys[0]] = $eigenschap->getValue('waarde');
     }
 
     //end getCommitmentPartnerEigenschap()
