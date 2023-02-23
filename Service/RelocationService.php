@@ -6,7 +6,6 @@ use App\Entity\Mapping;
 use App\Entity\ObjectEntity;
 use App\Entity\Synchronization;
 use CommonGateway\CoreBundle\Service\MappingService;
-use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 
@@ -28,7 +27,6 @@ class RelocationService
         $this->entityManager = $entityManager;
     }
 
-
     /**
      * This function gets the relocators from the zgwZaak with the given properties (simXml elementen and Stuf extraElementen).
      *
@@ -40,17 +38,18 @@ class RelocationService
     {
         $relocators = [];
         $relocators[] = [
-            'bsn' => $zaakEigenschappen['BSN'],
-            'declarationType' => 'AUTHORITY_HOLDER'
+            'bsn'             => $zaakEigenschappen['BSN'],
+            'declarationType' => 'AUTHORITY_HOLDER',
         ];
-        if (isset($zaakEigenschappen["MEEVERHUIZENDE_GEZINSLEDEN.MEEVERHUIZEND_GEZINSLID.BSN"])) {
-            $relocator = ['bsn' => $zaakEigenschappen["MEEVERHUIZENDE_GEZINSLEDEN.MEEVERHUIZEND_GEZINSLID.BSN"]];
-            if (isset($zaakEigenschappen["MEEVERHUIZENDE_GEZINSLEDEN.MEEVERHUIZEND_GEZINSLID.ROL"]) && $zaakEigenschappen["MEEVERHUIZENDE_GEZINSLEDEN.MEEVERHUIZEND_GEZINSLID.ROL"] == 'P') {
+        if (isset($zaakEigenschappen['MEEVERHUIZENDE_GEZINSLEDEN.MEEVERHUIZEND_GEZINSLID.BSN'])) {
+            $relocator = ['bsn' => $zaakEigenschappen['MEEVERHUIZENDE_GEZINSLEDEN.MEEVERHUIZEND_GEZINSLID.BSN']];
+            if (isset($zaakEigenschappen['MEEVERHUIZENDE_GEZINSLEDEN.MEEVERHUIZEND_GEZINSLID.ROL']) && $zaakEigenschappen['MEEVERHUIZENDE_GEZINSLEDEN.MEEVERHUIZEND_GEZINSLID.ROL'] == 'P') {
                 $relocator['declarationType'] = 'ADULT_AUTHORIZED_REPRESENTATIVE';
             } else {
                 $relocator['declarationType'] = 'ADULT_CHILD_LIVING_WITH_PARENTS';
             }
             $relocators[] = $relocator;
+
             return $relocators;
         } // end if
 
@@ -84,11 +83,11 @@ class RelocationService
         $objectArray['newAddress']['destinationCurrentResidents'] = 'Unknown';
         $objectArray['newAddress']['liveIn'] = ['liveInApplicable' => false]; // @TODO for other than Maastricht this could be something else
         $objectArray['newAddress']['mainOccupant'] = [
-            'bsn' => $caseProperties['BSN'],
+            'bsn'                => $caseProperties['BSN'],
             'contactInformation' => [
-                'email' => $caseProperties['EMAILADRES'],
-                'telephoneNumber' => $caseProperties['TELEFOONNUMMER']
-            ]
+                'email'           => $caseProperties['EMAILADRES'],
+                'telephoneNumber' => $caseProperties['TELEFOONNUMMER'],
+            ],
         ];
 
         $relocators = $this->getRelocators($caseProperties);
@@ -97,7 +96,7 @@ class RelocationService
         // if GEMEENTECODE is not the configured gemeentecode this is a inter relocation
         if (isset($caseProperties['GEMEENTECODE']) && $caseProperties['GEMEENTECODE'] !== $gemeenteCode) {
             $objectArray['previousMunicipality'] = [
-                'code' => $caseProperties['GEMEENTECODE']
+                'code' => $caseProperties['GEMEENTECODE'],
             ];
             $interOrIntra = 'inter';
         }// end if
@@ -112,7 +111,7 @@ class RelocationService
         $this->data = $data;
 
         if (!isset($configuration['gemeenteCode'])) {
-            $this->logger->error("gemeenteCode not set in ZgwToVrijbrpRelocationAction configuration.");
+            $this->logger->error('gemeenteCode not set in ZgwToVrijbrpRelocationAction configuration.');
 
             return [];
         }
@@ -145,12 +144,12 @@ class RelocationService
         $synchronization = $this->zgwToVrijbrpService->getSynchronization($object, $source, $synchronizationEntity, $mapping);
 
         // @TODO different endpoints for inter or intra relocation
-        $this->logger->debug("Synchronize (Zaak) Object to: {$source->getLocation()}" . ($interOrIntra == 'inter' ? $this->configuration['interLocation'] : $this->configuration['intraLocation']));
+        $this->logger->debug("Synchronize (Zaak) Object to: {$source->getLocation()}".($interOrIntra == 'inter' ? $this->configuration['interLocation'] : $this->configuration['intraLocation']));
         // Todo: change synchronize function so it can also push to a source and not only pull from a source:
         // $this->syncService->synchronize($synchronization, $objectArray);
 
         // Todo: temp way of doing this without updated synchronize() function...
-        if ($this->zgwToVrijbrpService->synchronizeTemp($synchronization, $objectArray, $interOrIntra == 'inter' ?  $this->configuration['interLocation'] : $this->configuration['intraLocation']) === []) {
+        if ($this->zgwToVrijbrpService->synchronizeTemp($synchronization, $objectArray, $interOrIntra == 'inter' ? $this->configuration['interLocation'] : $this->configuration['intraLocation']) === []) {
             // Return empty array on error for when we got here through a command.
             return [];
         }
