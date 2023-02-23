@@ -1,0 +1,15 @@
+{
+  "title": "ZgwToVrijbrpRelocation",
+  "$id": "https://vrijbrp.nl/mapping/vrijbrp.ZgwToVrijbrpRelocation.mapping.json",
+  "$schema": "https://json-schema.org/draft/2020-12/mapping",
+  "version": "0.0.1",
+  "passTrough": false,
+  "mapping": {
+    "dossier.dossierId": "identificatie",
+    "dossier.type.code": "zaaktype.identificatie",
+    "dossier.startDate": "{{ startdatum|date('Y-m-d') }}",
+    "dossier.entryDateTime": "{{ registratiedatum|date('Y-m-d\\\\TH:i:s') }}",
+    "dossier.status.entryDateTime": "{{ registratiedatum|date('Y-m-d\\\\TH:i:s') }}",
+    "declarant.bsn": "rollen.0.betrokkeneIdentificatie.inpBsn"
+  }
+}
