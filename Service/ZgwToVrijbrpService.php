@@ -785,7 +785,7 @@ class ZgwToVrijbrpService
             return [];
         }//end try
 
-        $body = $this->callService->decodeResponse($this->source, $result);
+        $body = $this->callService->decodeResponse($synchronization->getSource(), $result);
 
         $bodyDot = new Dot($body);
         $now = new DateTime();
