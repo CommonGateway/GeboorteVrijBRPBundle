@@ -797,10 +797,10 @@ class ZgwToVrijbrpService
         return $body;
     }//end synchronizeTemp()
 
-    public function getSynchronization(ObjectEntity $object, Source $source, Entity $synchronizationEntity, Mapping $mapping): Synchronization
+    public function getSynchronization(ObjectEntity $object, Source $source, Entity $synchronizationEntity, ?Mapping $mapping = null): Synchronization
     {
         $synchronization = $this->syncService->findSyncByObject($object, $source, $synchronizationEntity);
-        $synchronization->setMapping($mapping);
+        isset($mapping) && $synchronization->setMapping($mapping);
 
         return $synchronization;
     }
