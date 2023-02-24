@@ -708,7 +708,7 @@ class ZgwToVrijbrpService
         if ($this->setSource() === null || $this->setMapping() === null || $this->setSynchronizationEntity() === null) {
             return [];
         }
-        
+
         if(!isset($data['documents'])) {
             return $data;
         }
@@ -724,7 +724,7 @@ class ZgwToVrijbrpService
             $objectArray = $this->mappingService->mapping($this->mapping, $object->toArray());
 
             // todo: make this a switch (in a function?) or something when merging all Vrijbrp Bundles:
-            $this->configuration['location'] = $this->configuration['location'].'/'.$objectArray['dossierId'].'/documents';
+            $configuration['location'] = $this->configuration['location'].'/'.$objectArray['dossierId'].'/documents';
             unset($objectArray['dossierId']);
 
             // Create synchronization.
@@ -732,7 +732,7 @@ class ZgwToVrijbrpService
             $synchronization->setMapping($this->mapping);
 
             // Send request to source.
-            $this->logger->debug("Synchronize (Document) Object to: {$this->source->getLocation()}{$this->configuration['location']}");
+            $this->logger->debug("Synchronize (Document) Object to: {$this->source->getLocation()}{$configuration['location']}");
 
             // Todo: change synchronize function so it can also push to a source and not only pull from a source:
             // $this->syncService->synchronize($synchronization, $objectArray);
