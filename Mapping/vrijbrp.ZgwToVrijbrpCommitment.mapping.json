@@ -2,7 +2,7 @@
   "title": "ZgwToVrijbrpCommitment",
   "$id": "https://vrijbrp.nl/mapping/vrijbrp.ZgwToVrijbrpCommitment.mapping.json",
   "$schema": "https://json-schema.org/draft/2020-12/mapping",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "passTrough": false,
   "mapping": {
     "dossier.dossierId": "identificatie",
