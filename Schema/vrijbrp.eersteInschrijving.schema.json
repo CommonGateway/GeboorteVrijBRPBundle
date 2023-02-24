@@ -1,0 +1,82 @@
+{
+    "$id": "https://vrijbrp.nl/schemas/vrijbrp.eersteInschrijving.schema.json",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "version": "0.1",
+    "title": "EersteInschrijving",
+    "type": "object",
+    "properties": {
+        "sex": {
+            "type": "string",
+            "description": "Geslacht",
+            "enum": [
+                "female",
+                "male"
+            ]
+        },
+        "firstnames": {
+            "type": "string",
+            "description": "Voornamen"
+        },
+        "infix": {
+            "type": "string",
+            "description": "Voorvoegsel/tussenvoegsel"
+        },
+        "surname": {
+            "type": "string",
+            "description": "Achternaam"
+        },
+        "dateOfBirth": {
+            "type": "string",
+            "description": "Geboortedatum"
+        },
+        "birthplace": {
+            "type": "string",
+            "description": "Geboorteplaats"
+        },
+        "countryOfBirth": {
+            "type": "string",
+            "description": "Geboorteland"
+        },
+        "email": {
+            "type": "string",
+            "description": "E-mail adres"
+        },
+        "phoneNumber": {
+            "type": "string",
+            "description": "Telefoonnummer"
+        },
+        "postalCode": {
+            "type": "string",
+            "description": "Postcode (nieuw adres)"
+        },
+        "houseNumber": {
+            "type": "string",
+            "description": "Huisnummer (nieuw adres)"
+        },
+        "houseNumberAddition": {
+            "type": "string",
+            "description": "Huisletter/huisnummertoevoeging (nieuw adres)"
+        },
+        "street": {
+            "type": "string",
+            "description": "Straatnaam (nieuw adres)"
+        },
+        "city": {
+            "type": "string",
+            "description": "Woonplaats (nieuw adres)"
+        },
+        "required": [
+            "sex",
+            "firstnames",
+            "surname",
+            "dateOfBirth",
+            "birthplace",
+            "countryOfBirth",
+            "email",
+            "postalCode",
+            "houseNumber",
+            "street",
+            "city"
+        ]
+    }
+}
