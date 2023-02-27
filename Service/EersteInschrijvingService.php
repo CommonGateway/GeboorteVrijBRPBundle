@@ -35,15 +35,13 @@ class EersteInschrijvingService
             return [];
         }
 
-        $dataId = $data['object']['_self']['id'];
+        $dataId = $data['response']->_id;
 
         $object = $this->entityManager->getRepository('App:ObjectEntity')->find($dataId);
         $this->logger->debug("EersteInschrijving Object with id $dataId was created");
 
         $objectArray = $object->toArray();
         unset($objectArray['_self']);
-
-        var_dump($objectArray);die;
 
         //@TODO $objectArray unset _self etc..
 
