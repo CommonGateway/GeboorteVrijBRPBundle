@@ -709,11 +709,11 @@ class ZgwToVrijbrpService
             return [];
         }
 
-        if(!isset($data['documents'])) {
+        if (!isset($data['documents'])) {
             return $data;
         }
 
-        foreach($data['documents'] as $document) {
+        foreach ($data['documents'] as $document) {
             $dataId = $document['_self']['id'];
 
             $this->logger->debug("(Document) Object with id $dataId was created");
@@ -803,10 +803,10 @@ class ZgwToVrijbrpService
         return $body;
     }//end synchronizeTemp()
 
-    public function getSynchronization(ObjectEntity $object, Source $source, Entity $synchronizationEntity, Mapping $mapping): Synchronization
+    public function getSynchronization(ObjectEntity $object, Source $source, Entity $synchronizationEntity, ?Mapping $mapping = null): Synchronization
     {
         $synchronization = $this->syncService->findSyncByObject($object, $source, $synchronizationEntity);
-        $synchronization->setMapping($mapping);
+        isset($mapping) && $synchronization->setMapping($mapping);
 
         return $synchronization;
     }

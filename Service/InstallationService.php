@@ -6,6 +6,7 @@ use App\Entity\Action;
 use App\Entity\Cronjob;
 use App\Entity\DashboardCard;
 use App\Entity\Endpoint;
+use App\Entity\Entity;
 use App\Entity\Gateway as Source;
 use CommonGateway\CoreBundle\Installer\InstallerInterface;
 use Doctrine\ORM\EntityManagerInterface;
@@ -51,6 +52,10 @@ class InstallationService implements InstallerInterface
         'CommonGateway\GeboorteVrijBRPBundle\ActionHandler\DocumentIdentificatieActionHandler',
         'CommonGateway\GeboorteVrijBRPBundle\ActionHandler\ZdsZaakActionHandler',
         'CommonGateway\GeboorteVrijBRPBundle\ActionHandler\ZdsDocumentActionHandler',
+    ];
+
+    public const SCHEMAS_THAT_SHOULD_HAVE_ENDPOINTS = [
+        ['reference' => 'https://vrijbrp.nl/schemas/vrijbrp.eersteInschrijving.schema.json', 'path' => 'eerste_inschrijving', 'methods' => []],
     ];
 
     /**
@@ -228,6 +233,16 @@ class InstallationService implements InstallerInterface
     {
         $endpointRepository = $this->entityManager->getRepository('App:Endpoint');
         $createdEndpoints = [];
+        foreach ($this::SCHEMAS_THAT_SHOULD_HAVE_ENDPOINTS as $objectThatShouldHaveEndpoint) {
+            $entity = $this->entityManager->getRepository('App:Entity')->findOneBy(['reference' => $objectThatShouldHaveEndpoint['reference']]);
+            if ($entity instanceof Entity && !$endpointRepository->findOneBy(['name' => $entity->getName()])) {
+                $endpoint = new Endpoint($entity, null, $objectThatShouldHaveEndpoint);
+
+                $this->entityManager->persist($endpoint);
+                $this->entityManager->flush();
+                $createdEndpoints[] = $endpoint;
+            }
+        }
         foreach ($endpoints as $endpoint) {
             $explodedPath = explode('/', $endpoint['path']);
             if ($explodedPath[0] === '') {
