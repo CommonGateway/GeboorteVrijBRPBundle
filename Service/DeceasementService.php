@@ -135,6 +135,7 @@ class DeceasementService
         if (isset($caseProperties['aangevertype'])) {
             $foundBody = true;
             unset($objectArray['declarant']);
+            $objectArray['writtenDeclarantType'] = $caseProperties['aangevertype'];
         }
 
         return $objectArray;

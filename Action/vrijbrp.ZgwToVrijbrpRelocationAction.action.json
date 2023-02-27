@@ -1,0 +1,28 @@
+{
+  "title": "ZgwToVrijbrpRelocationAction",
+  "$id": "https://vrijbrp.nl/action/vrijbrp.ZgwToVrijbrpRelocationAction.action.json",
+  "$schema": "https://json-schema.org/draft/2020-12/action",
+  "version": "0.0.1",
+  "listens": [
+    "vrijbrp.zaak.created"
+  ],
+  "throws": [],
+  "conditions": {
+    "==": [
+      {"var": "object.zaaktype.identificatie"},
+      "B0366"
+    ]
+  },
+  "class": "CommonGateway\\GeboorteVrijBRPBundle\\ActionHandler\\ZgwToVrijbrpRelocationHandler",
+  "configuration": {
+    "source": "https://vrijbrp.nl/dossiers",
+    "location": "/api/v1/relocations",
+    "mapping": "https://vrijbrp.nl/mapping/vrijbrp.ZgwToVrijbrpRelocation.mapping.json",
+    "synchronizationEntity": "https://vng.opencatalogi.nl/schemas/zrc.zaak.schema.json",
+    "interLocation": "/api/v1/relocations/inter",
+    "intraLocation": "/api/v1/relocations/intra",
+    "gemeenteCode": "0935"
+  },
+  "isLockable": false,
+  "isEnabled": true
+}

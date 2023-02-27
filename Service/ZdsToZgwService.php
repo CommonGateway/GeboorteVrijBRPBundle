@@ -419,7 +419,7 @@ class ZdsToZgwService
             $this->entityManager->flush();
 
             $this->logger->info('Populated document with identification'.$zaakDocumentArray['informatieobject']['identificatie']);
-            $data['object'] = $zaakInformatieObject->toArray();
+            $data['documents'][] = $zaakInformatieObject->toArray();
             $mappingOut = $this->getMapping('https://zds.nl/mapping/zds.zgwDocumentToBv03.mapping.json');
             $data['response'] = $this->createResponse($this->mappingService->mapping($mappingOut, $zaakInformatieObject->toArray()), 200);
         } elseif (count($documenten) > 1 && count($zaken) > 1) {

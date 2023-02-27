@@ -709,34 +709,40 @@ class ZgwToVrijbrpService
             return [];
         }
 
-        $dataId = $data['object']['_self']['id'];
+        if(!isset($data['documents'])) {
+            return $data;
+        }
 
-        $this->logger->debug("(Document) Object with id $dataId was created");
+        foreach($data['documents'] as $document) {
+            $dataId = $document['_self']['id'];
 
-        $object = $this->entityManager->getRepository('App:ObjectEntity')->find($dataId);
+            $this->logger->debug("(Document) Object with id $dataId was created");
 
-        // Do mapping with Document ObjectEntity as array.
-        $objectArray = $this->mappingService->mapping($this->mapping, $object->toArray());
+            $object = $this->entityManager->getRepository('App:ObjectEntity')->find($dataId);
 
-        // todo: make this a switch (in a function?) or something when merging all Vrijbrp Bundles:
-        $this->configuration['location'] = $this->configuration['location'].'/'.$objectArray['dossierId'].'/documents';
-        unset($objectArray['dossierId']);
+            // Do mapping with Document ObjectEntity as array.
+            $objectArray = $this->mappingService->mapping($this->mapping, $object->toArray());
 
-        // Create synchronization.
-        $synchronization = $this->syncService->findSyncByObject($object, $this->source, $this->synchronizationEntity);
-        $synchronization->setMapping($this->mapping);
+            // todo: make this a switch (in a function?) or something when merging all Vrijbrp Bundles:
+            $configuration['location'] = $this->configuration['location'].'/'.$objectArray['dossierId'].'/documents';
+            unset($objectArray['dossierId']);
 
-        // Send request to source.
-        $this->logger->debug("Synchronize (Document) Object to: {$this->source->getLocation()}{$this->configuration['location']}");
+            // Create synchronization.
+            $synchronization = $this->syncService->findSyncByObject($object, $this->source, $this->synchronizationEntity);
+            $synchronization->setMapping($this->mapping);
 
-        // Todo: change synchronize function so it can also push to a source and not only pull from a source:
-        // $this->syncService->synchronize($synchronization, $objectArray);
+            // Send request to source.
+            $this->logger->debug("Synchronize (Document) Object to: {$this->source->getLocation()}{$configuration['location']}");
 
-        // Todo: temp way of doing this without updated synchronize() function...
-        if ($this->synchronizeTemp($synchronization, $objectArray, $this->configuration['location']) === [] &&
-            isset($this->symfonyStyle) === true) {
-            // Return empty array on error for when we got here through a command.
-            return [];
+            // Todo: change synchronize function so it can also push to a source and not only pull from a source:
+            // $this->syncService->synchronize($synchronization, $objectArray);
+
+            // Todo: temp way of doing this without updated synchronize() function...
+            if ($this->synchronizeTemp($synchronization, $objectArray, $configuration['location']) === [] &&
+                isset($this->symfonyStyle) === true) {
+                // Return empty array on error for when we got here through a command.
+                return [];
+            }
         }
 
         return $data;
@@ -785,7 +791,7 @@ class ZgwToVrijbrpService
             return [];
         }//end try
 
-        $body = $this->callService->decodeResponse($this->source, $result);
+        $body = $this->callService->decodeResponse($synchronization->getSource(), $result);
 
         $bodyDot = new Dot($body);
         $now = new DateTime();
