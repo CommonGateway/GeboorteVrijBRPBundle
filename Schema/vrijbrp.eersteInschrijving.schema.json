@@ -64,19 +64,19 @@
         "city": {
             "type": "string",
             "description": "Woonplaats (nieuw adres)"
-        },
-        "required": [
-            "sex",
-            "firstnames",
-            "surname",
-            "dateOfBirth",
-            "birthplace",
-            "countryOfBirth",
-            "email",
-            "postalCode",
-            "houseNumber",
-            "street",
-            "city"
-        ]
-    }
+        }
+    },
+    "required": [
+        "sex",
+        "firstnames",
+        "surname",
+        "dateOfBirth",
+        "birthplace",
+        "countryOfBirth",
+        "email",
+        "postalCode",
+        "houseNumber",
+        "street",
+        "city"
+    ]
 }
