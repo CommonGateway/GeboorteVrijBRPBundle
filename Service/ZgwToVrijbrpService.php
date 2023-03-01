@@ -351,19 +351,22 @@ class ZgwToVrijbrpService
             ];
         }
 
-        // Officials. Todo: make this a function?
-        $output['officials']['preferences'][0] = [
-            'name'    => $zaakEigenschappen['naam1'],
-            'aliases' => [
-                $zaakEigenschappen['naam1'],
-            ],
-        ];
-        $output['officials']['preferences'][1] = [
-            'name'    => $zaakEigenschappen['naam2'],
-            'aliases' => [
-                $zaakEigenschappen['naam2'],
-            ],
-        ];
+        if(isset($zaakEigenschappen['naam1'])) {
+            $output['officials']['preferences'][0] = [
+                'name'    => $zaakEigenschappen['naam1'],
+                'aliases' => [
+                    $zaakEigenschappen['naam1'],
+                ],
+            ];
+        }
+        if (isset($zaakEigenschappen['naam2'])) {
+            $output['officials']['preferences'][1] = [
+                'name'    => $zaakEigenschappen['naam2'],
+                'aliases' => [
+                    $zaakEigenschappen['naam2'],
+                ],
+            ];
+        }
 
         // Witnesses.
         // Todo: See todo comments in the getCommitmentZaakEigenschappen() function !!!
