@@ -75,14 +75,14 @@ class RelocationService
         $objectArray['newAddress']['street'] = $caseProperties['STRAATNAAM_NIEUW'];
         $objectArray['newAddress']['houseNumber'] = $caseProperties['HUISNUMMER_NIEUW'];
         $objectArray['newAddress']['houseLetter'] = $caseProperties['HUISLETTER_NIEUW'];
-        $objectArray['newAddress']['houseNumberAddition'] = $caseProperties['HUISNUMMERTOEVOEGING_NIEUW'];
+        $objectArray['newAddress']['houseNumberAddition'] = $caseProperties['TOEVOEGINGHUISNUMMER_NIEUW'];
         $objectArray['newAddress']['postalCode'] = $caseProperties['POSTCODE_NIEUW'];
         $objectArray['newAddress']['residence'] = $caseProperties['WOONPLAATS_NIEUW'];
         $objectArray['newAddress']['addressFunction'] = 'LIVING_ADDRESS'; // @TODO cant make a difference yet between LIVING or MAILING ADDRESS
         $objectArray['newAddress']['numberOfResidents'] = $caseProperties['AANTAL_PERS_NIEUW_ADRES'];
         $objectArray['newAddress']['destinationCurrentResidents'] = 'Unknown';
         $objectArray['newAddress']['liveIn'] = ['liveInApplicable' => false]; // @TODO for other than Maastricht this could be something else
-        $objectArray['newAddress']['mainOccupant'] = [
+        $objectArray['declarant'] = $objectArray['newAddress']['mainOccupant'] = [
             'bsn'                => $caseProperties['BSN'],
             'contactInformation' => [
                 'email'           => $caseProperties['EMAILADRES'],
