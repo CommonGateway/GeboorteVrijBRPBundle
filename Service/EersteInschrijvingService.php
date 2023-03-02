@@ -21,6 +21,26 @@ class EersteInschrijvingService
         $this->entityManager = $entityManager;
     }
 
+    /**
+     * Recursively removes self parameters from object.
+     *
+     * @param array $object The object to remove self parameters from.
+     *
+     * @return array The cleaned object.
+     */
+    public function removeSelf(array $object): array
+    {
+        if(isset($object['_self']) === true) {
+            unset($object['_self']);
+        }
+        foreach($object as $key => $value) {
+            if(is_array($value)) {
+                $object[$key] = $this->removeSelf($value);
+            }
+        }
+        return $object;
+    }//end removeSelf()
+
     public function vrijbrpHandler(array $data, array $configuration): array
     {
         $this->logger->info('Syncing EersteInschrijving object to VrijBRP');
@@ -41,7 +61,7 @@ class EersteInschrijvingService
         $this->logger->debug("EersteInschrijving Object with id $dataId was created");
 
         $objectArray = $object->toArray();
-        unset($objectArray['_self']);
+        $objectArray = $this->removeSelf($objectArray);
 
         //@TODO $objectArray unset _self etc..
 
