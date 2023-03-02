@@ -2,7 +2,7 @@
     "$id": "https://vrijbrp.nl/schemas/vrijbrp.dataImport.schema.json",
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "version": "0.1",
-    "title": "EersteInschrijving",
+    "title": "DataImport",
     "type": "object",
     "properties": {
         "name": {
