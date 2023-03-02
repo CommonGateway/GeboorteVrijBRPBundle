@@ -55,7 +55,7 @@ class InstallationService implements InstallerInterface
     ];
 
     public const SCHEMAS_THAT_SHOULD_HAVE_ENDPOINTS = [
-        ['reference' => 'https://vrijbrp.nl/schemas/vrijbrp.eersteInschrijving.schema.json', 'path' => 'eerste_inschrijving', 'methods' => []],
+        ['reference' => 'https://vrijbrp.nl/schemas/vrijbrp.dataImport.schema.json', 'path' => 'eerste_inschrijving', 'methods' => []],
     ];
 
     /**

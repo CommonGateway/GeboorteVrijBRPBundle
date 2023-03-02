@@ -8,13 +8,13 @@
   ],
   "throws": [],
   "conditions": {
-    "==": [{"var": "entity"}, "https://vrijbrp.nl/schemas/vrijbrp.eersteInschrijving.schema.json"]
+    "==": [{"var": "entity"}, "https://vrijbrp.nl/schemas/vrijbrp.dataImport.schema.json"]
   },
   "class": "CommonGateway\\GeboorteVrijBRPBundle\\ActionHandler\\ZgwVrijbrpEersteInschrijvingHandler",
   "configuration": {
     "source": "https://vrijbrp.nl/dossiers",
-    "location": "/api/v1/eerste_inschrijving",
-    "synchronizationEntity": "https://vrijbrp.nl/schemas/vrijbrp.eersteInschrijving.schema.json"
+    "location": "/api/v1/dataimport/add",
+    "synchronizationEntity": "https://vrijbrp.nl/schemas/vrijbrp.dataImport.schema.json"
   },
   "isLockable": false,
   "isEnabled": true
