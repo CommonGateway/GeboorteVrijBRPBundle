@@ -9,6 +9,7 @@ use App\Entity\Mapping;
 use App\Entity\ObjectEntity;
 use App\Entity\Synchronization;
 use App\Service\SynchronizationService;
+use Cassandra\Date;
 use CommonGateway\CoreBundle\Service\CallService;
 use CommonGateway\CoreBundle\Service\MappingService;
 use DateTime;
@@ -327,12 +328,24 @@ class ZgwToVrijbrpService
 //        }
 
         // Todo: maybe check if all these $properties['key'] exist?
+        $now = new DateTime();
+        $output['planning']['intentionDate'] = $now->format('Y-m-d');
 
         // Planning. Todo: make this a function?
-        $date = new DateTime($zaakEigenschappen['verbintenisDatum']);
-        $time = new DateTime($zaakEigenschappen['verbintenisTijd']);
-        $dateTime = new DateTime($date->format('Y-m-d\T').$time->format('H:i:s'));
-        $output['planning']['commitmentDateTime'] = $dateTime->format('Y-m-d\TH:i:s');
+        if(isset($zaakEigenschappen['verbintenisDatum']) === true
+            && $zaakEigenschappen['verbintenisDatum'] !== true
+            && isset($zaakEigenschappen['verbintenisTijd']) === true
+            && $zaakEigenschappen['verbintenisTijd'] !== null
+        ) {
+            $date = new DateTime($zaakEigenschappen['verbintenisDatum']);
+            $time = new DateTime($zaakEigenschappen['verbintenisTijd']);
+            $dateTime = new DateTime($date->format('Y-m-d\T').$time->format('H:i:s'));
+            $output['planning']['commitmentDateTime'] = $dateTime->format('Y-m-d\TH:i:s');
+        } else {
+
+            $output['planning']['commitmentDateTime'] = $now->format('Y-m-d\TH:i:s');
+        }
+
         if (in_array($zaakEigenschappen['verbintenisType'], ['MARRIAGE', 'GPS'])) {
             $output['planning']['commitmentType'] = $zaakEigenschappen['verbintenisType'];
         }
@@ -343,8 +356,8 @@ class ZgwToVrijbrpService
         if (array_key_exists('trouwboekje', $zaakEigenschappen) === true && $zaakEigenschappen['trouwboekje'] == true) {
             $output['location']['options'][0] = [
                 'name'    => 'trouwboekje',
-                'value'   => 'trouwboekje',
-                'type'    => 'TEXT',
+                'value'   => 'true',
+                'type'    => 'BOOLEAN',
                 'aliases' => [
                     'trouwboekje',
                 ],
