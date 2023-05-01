@@ -1,82 +1,102 @@
 {
     "$id": "https://vrijbrp.nl/schemas/vrijbrp.eersteInschrijving.schema.json",
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "version": "0.1",
+    "version": "0.2",
     "title": "EersteInschrijving",
     "type": "object",
     "properties": {
-        "sex": {
+        "referentienummer": {
+            "type": "string",
+            "description": "Referentienummer"
+        },
+        "geslacht": {
             "type": "string",
             "description": "Geslacht",
             "enum": [
-                "female",
-                "male"
+                "V",
+                "M"
             ]
         },
-        "firstnames": {
+        "voornamen": {
             "type": "string",
             "description": "Voornamen"
         },
-        "infix": {
+        "voorvoegsel": {
             "type": "string",
             "description": "Voorvoegsel/tussenvoegsel"
         },
-        "surname": {
+        "achternaam": {
             "type": "string",
             "description": "Achternaam"
         },
-        "dateOfBirth": {
+        "geboortedatum": {
             "type": "string",
             "description": "Geboortedatum"
         },
-        "birthplace": {
+        "geboorteplaats": {
             "type": "string",
             "description": "Geboorteplaats"
         },
-        "countryOfBirth": {
+        "geboorteland": {
             "type": "string",
             "description": "Geboorteland"
         },
-        "email": {
+        "land van vorig adres": {
+            "type": "string",
+            "description": "Land van vorig adres"
+        },
+        "e-mail": {
             "type": "string",
             "description": "E-mail adres"
         },
-        "phoneNumber": {
+        "telefoon": {
             "type": "string",
             "description": "Telefoonnummer"
         },
-        "postalCode": {
+        "postcode": {
             "type": "string",
             "description": "Postcode (nieuw adres)"
         },
-        "houseNumber": {
+        "huisnummer": {
             "type": "string",
             "description": "Huisnummer (nieuw adres)"
         },
-        "houseNumberAddition": {
+        "huisletter": {
             "type": "string",
-            "description": "Huisletter/huisnummertoevoeging (nieuw adres)"
+            "description": "Huisletter (nieuw adres)"
         },
-        "street": {
+        "toevoeging": {
+            "type": "string",
+            "description": "Huisnummertoevoeging (nieuw adres)"
+        },
+        "straatnaam": {
             "type": "string",
             "description": "Straatnaam (nieuw adres)"
         },
-        "city": {
+        "woonplaats": {
             "type": "string",
             "description": "Woonplaats (nieuw adres)"
+        },
+        "datum ingang bewoning": {
+            "type": "string",
+            "description": "Datum ingang bewoning"
+        },
+        "opmerkingen": {
+            "type": "string",
+            "description": "Opmerkingen bij nieuw adres)"
         }
     },
     "required": [
-        "sex",
-        "firstnames",
-        "surname",
-        "dateOfBirth",
-        "birthplace",
-        "countryOfBirth",
-        "email",
-        "postalCode",
-        "houseNumber",
-        "street",
-        "city"
+        "geslacht",
+        "voornamen",
+        "achternaam",
+        "geboortedatum",
+        "geboorteplaats",
+        "geboorteland",
+        "e-mail",
+        "postcode",
+        "huisnummer",
+        "straatnaam",
+        "woonplaats"
     ]
 }

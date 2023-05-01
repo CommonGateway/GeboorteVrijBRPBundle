@@ -40,7 +40,7 @@ class ZgwVrijbrpEersteInschrijvingHandler implements ActionHandlerInterface
             '$schema'     => 'https://json-schema.org/draft/2020-12/schema',
             'title'       => 'VrijbrpEersteInschrijvingHandler',
             'description' => 'This handler syncs EersteInschrijving to VrijBrp',
-            'required'    => ['source', 'location', 'mapping', 'zaakEntity'],
+            'required'    => ['source', 'location', 'zaakEntity'],
             'properties'  => [
                 'source' => [
                     'type'        => 'string',
@@ -59,7 +59,7 @@ class ZgwVrijbrpEersteInschrijvingHandler implements ActionHandlerInterface
                     'type'        => 'string',
                     'description' => 'The reference of the mapping we will use before sending the data to the source',
                     'example'     => 'https://vrijbrp.nl/mapping/vrijbrp.Vrijbrp.mapping.json',
-                    'required'    => true,
+                    'required'    => false,
                     '$ref'        => 'https://commongroundgateway.nl/commongroundgateway.mapping.entity.json',
                 ],
                 'synchronizationEntity' => [

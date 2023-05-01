@@ -73,9 +73,9 @@ class EersteInschrijvingService
         // $this->syncService->synchronize($synchronization, $objectArray);
 
         // Todo: temp way of doing this without updated synchronize() function...
-        if ($this->zgwToVrijbrpService->synchronizeTemp($synchronization, $objectArray, $this->configuration['location'])) {
+        if ($data = $this->zgwToVrijbrpService->synchronizeTemp($synchronization, $objectArray, $this->configuration['location'])) {
             // Return empty array on error for when we got here through a command.
-            return [];
+            return ['response' => $data];
         }
 
         return $data;

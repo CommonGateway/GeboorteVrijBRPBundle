@@ -788,7 +788,7 @@ class ZgwToVrijbrpService
                 [
                     'body'    => $objectString,
                     //'query'   => [],
-                    //'headers' => [],
+                    'headers' => ['Content-Type' => 'application/json'],
                 ]
             );
         } catch (Exception|GuzzleException $exception) {

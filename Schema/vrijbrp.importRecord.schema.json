@@ -1,12 +1,18 @@
 {
     "$id": "https://vrijbrp.nl/schemas/vrijbrp.importRecord.schema.json",
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "version": "0.1",
+    "version": "0.2",
     "title": "ImportRecord",
     "type": "object",
     "properties": {
         "values": {
             "$ref": "https://vrijbrp.nl/schemas/vrijbrp.eersteInschrijving.schema.json"
+        },
+        "documents": {
+            "type": "array",
+            "items": {
+                "$ref": "https://vrijbrp.nl/schemas/vrijbrp.document.schema.json"
+            }
         }
     },
     "required": [
