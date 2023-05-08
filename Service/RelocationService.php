@@ -39,7 +39,7 @@ class RelocationService
         $relocators = [];
         $relocators[] = [
             'bsn'             => $zaakEigenschappen['BSN'],
-            'declarationType' => 'AUTHORITY_HOLDER',
+            'declarationType' => 'REGISTERED',
         ];
 
         if (isset($zaakEigenschappen['MEEVERHUIZENDE_GEZINSLEDEN.MEEVERHUIZEND_GEZINSLID.BSN'])) {
