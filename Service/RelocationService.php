@@ -41,13 +41,36 @@ class RelocationService
             'bsn'             => $zaakEigenschappen['BSN'],
             'declarationType' => 'AUTHORITY_HOLDER',
         ];
+
         if (isset($zaakEigenschappen['MEEVERHUIZENDE_GEZINSLEDEN.MEEVERHUIZEND_GEZINSLID.BSN'])) {
             $relocator = ['bsn' => $zaakEigenschappen['MEEVERHUIZENDE_GEZINSLEDEN.MEEVERHUIZEND_GEZINSLID.BSN']];
-            if (isset($zaakEigenschappen['MEEVERHUIZENDE_GEZINSLEDEN.MEEVERHUIZEND_GEZINSLID.ROL']) && $zaakEigenschappen['MEEVERHUIZENDE_GEZINSLEDEN.MEEVERHUIZEND_GEZINSLID.ROL'] == 'P') {
-                $relocator['declarationType'] = 'ADULT_AUTHORIZED_REPRESENTATIVE';
-            } else {
-                $relocator['declarationType'] = 'ADULT_CHILD_LIVING_WITH_PARENTS';
+            if (isset($zaakEigenschappen['MEEVERHUIZENDE_GEZINSLEDEN.MEEVERHUIZEND_GEZINSLID.ROL'])) {
+                switch($zaakEigenschappen['MEEVERHUIZENDE_GEZINSLEDEN.MEEVERHUIZEND_GEZINSLID.ROL']) {
+                    case 'I':
+                        $relocator['declarationType'] = 'REGISTERED';
+                        break;
+                    case 'G':
+                        $relocator['declarationType'] = 'AUTHORITY_HOLDER';
+                        break;
+                    case 'K':
+                        $relocator['declarationType'] = 'ADULT_CHILD_LIVING_WITH_PARENTS';
+                        break;
+                    case 'M':
+                        $relocator['declarationType'] = 'ADULT_AUTHORIZED_REPRESENTATIVE';
+                        break;
+                    case 'P':
+                        $relocator['declarationType'] = 'PARTNER';
+                        break;
+                    case 'O':
+                        $relocator['declarationType'] = 'PARENT_LIVING_WITH_ADULT_CHILD';
+                        break;
+                    default:
+                        $relocator['declarationType'] = 'REGISTERED';
+                        break;
+
+                }
             }
+
             $relocators[] = $relocator;
 
             return $relocators;
@@ -56,10 +79,31 @@ class RelocationService
         $index = 0;
         while (isset($zaakEigenschappen["MEEVERHUIZENDE_GEZINSLEDEN.MEEVERHUIZEND_GEZINSLID.$index.BSN"])) {
             $relocator = ['bsn' => $zaakEigenschappen["MEEVERHUIZENDE_GEZINSLEDEN.MEEVERHUIZEND_GEZINSLID.$index.BSN"]];
-            if (isset($zaakEigenschappen["MEEVERHUIZENDE_GEZINSLEDEN.MEEVERHUIZEND_GEZINSLID.$index.ROL"]) && $zaakEigenschappen["MEEVERHUIZENDE_GEZINSLEDEN.MEEVERHUIZEND_GEZINSLID.$index.ROL"] == 'P') {
-                $relocator['declarationType'] = 'ADULT_AUTHORIZED_REPRESENTATIVE';
-            } else {
-                $relocator['declarationType'] = 'ADULT_CHILD_LIVING_WITH_PARENTS';
+            if (isset($zaakEigenschappen["MEEVERHUIZENDE_GEZINSLEDEN.MEEVERHUIZEND_GEZINSLID.$index.ROL"])) {
+                switch ($zaakEigenschappen["MEEVERHUIZENDE_GEZINSLEDEN.MEEVERHUIZEND_GEZINSLID.$index.ROL"]) {
+                    case 'I':
+                        $relocator['declarationType'] = 'REGISTERED';
+                        break;
+                    case 'G':
+                        $relocator['declarationType'] = 'AUTHORITY_HOLDER';
+                        break;
+                    case 'K':
+                        $relocator['declarationType'] = 'ADULT_CHILD_LIVING_WITH_PARENTS';
+                        break;
+                    case 'M':
+                        $relocator['declarationType'] = 'ADULT_AUTHORIZED_REPRESENTATIVE';
+                        break;
+                    case 'P':
+                        $relocator['declarationType'] = 'PARTNER';
+                        break;
+                    case 'O':
+                        $relocator['declarationType'] = 'PARENT_LIVING_WITH_ADULT_CHILD';
+                        break;
+                    default:
+                        $relocator['declarationType'] = 'REGISTERED';
+                        break;
+
+                }
             }
             $relocators[] = $relocator;
             $index++;
