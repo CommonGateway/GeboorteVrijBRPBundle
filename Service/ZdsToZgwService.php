@@ -247,9 +247,6 @@ class ZdsToZgwService
 
         $this->logger->info('Connected case properties to case type properties');
 
-        $this->entityManager->persist($zaakType);
-        $this->entityManager->flush();
-
         return $zaakArray;
     }//end connectEigenschappen()
 
