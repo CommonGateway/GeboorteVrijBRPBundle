@@ -287,9 +287,6 @@ class ZdsToZgwService
 
         $this->logger->info('Connected roles to role types');
 
-        $this->entityManager->persist($zaakType);
-        $this->entityManager->flush();
-
         return $zaakArray;
     }//end connectRolTypes()
 
