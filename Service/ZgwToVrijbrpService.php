@@ -788,7 +788,7 @@ class ZgwToVrijbrpService
                 [
                     'body'    => $objectString,
                     //'query'   => [],
-                    //'headers' => [],
+                    'headers' => $synchronization->getSource()->getHeaders(),
                 ]
             );
         } catch (Exception|GuzzleException $exception) {

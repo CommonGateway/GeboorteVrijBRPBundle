@@ -44,7 +44,7 @@ class InstallationService implements InstallerInterface
     public const SOURCES = [
         ['name'             => 'vrijbrp-dossiers', 'location' => 'https://vrijbrp.nl/dossiers', 'auth' => 'vrijbrp-jwt',
             'username'      => 'sim-!ChangeMe!', 'password' => '!secret-ChangeMe!', 'accept' => 'application/json',
-            'configuration' => ['verify' => false], ],
+            'configuration' => ['verify' => false], 'reference' => 'https://vrijbrp.nl/source/vrijbrp.dossiers.source.json'],
     ];
 
     public const ACTION_HANDLERS = [
@@ -52,10 +52,6 @@ class InstallationService implements InstallerInterface
         'CommonGateway\GeboorteVrijBRPBundle\ActionHandler\DocumentIdentificatieActionHandler',
         'CommonGateway\GeboorteVrijBRPBundle\ActionHandler\ZdsZaakActionHandler',
         'CommonGateway\GeboorteVrijBRPBundle\ActionHandler\ZdsDocumentActionHandler',
-    ];
-
-    public const SCHEMAS_THAT_SHOULD_HAVE_ENDPOINTS = [
-        ['reference' => 'https://vrijbrp.nl/schemas/vrijbrp.dataImport.schema.json', 'path' => 'eerste_inschrijving', 'methods' => []],
     ];
 
     /**
@@ -233,16 +229,6 @@ class InstallationService implements InstallerInterface
     {
         $endpointRepository = $this->entityManager->getRepository('App:Endpoint');
         $createdEndpoints = [];
-        foreach ($this::SCHEMAS_THAT_SHOULD_HAVE_ENDPOINTS as $objectThatShouldHaveEndpoint) {
-            $entity = $this->entityManager->getRepository('App:Entity')->findOneBy(['reference' => $objectThatShouldHaveEndpoint['reference']]);
-            if ($entity instanceof Entity && !$endpointRepository->findOneBy(['name' => $entity->getName()])) {
-                $endpoint = new Endpoint($entity, null, $objectThatShouldHaveEndpoint);
-
-                $this->entityManager->persist($endpoint);
-                $this->entityManager->flush();
-                $createdEndpoints[] = $endpoint;
-            }
-        }
         foreach ($endpoints as $endpoint) {
             $explodedPath = explode('/', $endpoint['path']);
             if ($explodedPath[0] === '') {
@@ -349,11 +335,15 @@ class InstallationService implements InstallerInterface
         $sources = [];
 
         foreach ($createSources as $createSource) {
-            if ($sourceRepository->findOneBy(['name' => $createSource['name']]) instanceof Source === false) {
+            if ($sourceRepository->findOneBy(['reference' => $createSource['reference']]) instanceof Source === false) {
                 $source = new Source($createSource);
+                $source->setName($createSource['name']);
+                $source->setReference($createSource['reference']);
                 if (array_key_exists('password', $createSource) === true) {
                     $source->setPassword($createSource['password']);
                 }
+                
+                $source->setHeaders(['Content-Type' => $createSource['accept']]);
 
                 $this->entityManager->persist($source);
                 $this->entityManager->flush();
