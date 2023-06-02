@@ -15,7 +15,7 @@
   },
   "class": "CommonGateway\\GeboorteVrijBRPBundle\\ActionHandler\\ZgwToVrijbrpHandler",
   "configuration": {
-    "source": "https://vrijbrp.nl/dossiers",
+    "source": "https://vrijbrp.nl/source/vrijbrp.dossiers.source.json",
     "location": "/api/v1/commitments",
     "mapping": "https://vrijbrp.nl/mapping/vrijbrp.ZgwToVrijbrpCommitment.mapping.json",
     "synchronizationEntity": "https://vng.opencatalogi.nl/schemas/zrc.zaak.schema.json"
