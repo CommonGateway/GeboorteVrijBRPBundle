@@ -129,7 +129,7 @@ class ZgwToVrijbrpService
 
         return $this;
     }//end setStyle()
-
+    
     /**
      * Gets and sets Source object using the required configuration['source'] to find the correct Source.
      *
@@ -137,21 +137,18 @@ class ZgwToVrijbrpService
      */
     private function setSource(): ?Source
     {
-        // Todo: Add FromSchema function to Gateway Gateway.php, so that we can use .json files for sources as well.
-        // Todo: ...For this to work, we also need to change CoreBundle installationService.
-        // Todo: ...If we do this we can also add and use reference for Gateways / Sources.
-        $this->source = $this->entityManager->getRepository('App:Gateway')->findOneBy(['location' => $this->configuration['source']]);
+        $this->source = $this->entityManager->getRepository('App:Gateway')->findOneBy(['reference' => $this->configuration['source']]);
         if ($this->source instanceof Source === false) {
             if (isset($this->symfonyStyle) === true) {
-                $this->symfonyStyle->error("No source found with location: {$this->configuration['source']}");
+                $this->symfonyStyle->error("No source found with reference: {$this->configuration['source']}");
             }
-            $this->logger->error("No source found with location: {$this->configuration['source']}");
-
+            $this->logger->error("No source found with reference: {$this->configuration['source']}");
+            
             return null;
         }
-
+        
         return $this->source;
-    }//end setSource()
+    } //end setSource()
 
     /**
      * Gets and sets a Mapping object using the required configuration['mapping'] to find the correct Mapping.
@@ -215,29 +212,26 @@ class ZgwToVrijbrpService
 
         return $reference;
     }
-
+    
     /**
-     * Finds source by location.
+     * Finds source by reference.
      *
-     * @TODO: convert to reference.
-     *
-     * @param string $location The location to look a source for.
+     * @param string $reference The reference to look a source for.
      *
      * @return Source|null The resulting source.
      */
-    public function getSource(string $location): ?Source
+    public function getSource(string $reference): ?Source
     {
-        $source = $this->entityManager->getRepository('App:Gateway')->findOneBy(['location' => $location]);
+        $source = $this->entityManager->getRepository('App:Gateway')->findOneBy(['reference' => $reference]);
         if ($source instanceof Source === false) {
             if (isset($this->symfonyStyle) === true) {
-                $this->symfonyStyle->error("No source found with location: $location");
+                $this->symfonyStyle->error("No source found with reference: $reference");
             }
-
-            $this->logger->error("No source found with location: $location");
-
+            
+            $this->logger->error("No source found with reference: $reference");
             return null;
         }
-
+        
         return $source;
     }//end getSource()
 
