@@ -429,9 +429,12 @@ class ZgwToVrijbrpService
             $output['declarant']['contactInformation']['email'] = $properties['sub.emailadres'];
         }
 
-        if (isset($properties['inp.bsn'])) {
+        if (isset($properties['inp.bsn']) === true && $properties['relatie'] !== 'MOTHER') {
             $output['mother']['bsn'] = $properties['inp.bsn'];
             $output['fatherDuoMother']['bsn'] = $output['declarant']['bsn'];
+        } elseif (isset($properties['inp.bsn']) === true) {
+            $output['mother']['bsn'] = $output['declarant']['bsn'];
+            $output['fatherDuoMother']['bsn'] = $properties['inp.bsn'];
         } else {
             $output['mother']['bsn'] = $output['declarant']['bsn'];
             !isset($output['declarant']['contactInformation']) ?: $output['mother']['contactInformation'] = $output['declarant']['contactInformation'];
