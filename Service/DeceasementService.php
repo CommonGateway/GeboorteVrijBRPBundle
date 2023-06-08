@@ -33,7 +33,7 @@ class DeceasementService
             'organization' => $properties['handelsnaam'] ?? null,
             'houseNumber'  => isset($properties['aoa.huisnummer']) === true ? intval($properties['aoa.huisnummer']) : null,
             'postalCode'   => $properties['aoa.postcode'] ?? null,
-            'residence'    => $properties['wpl.woonplaatsnaam'] ?? null,
+            'residence'    => $properties['wpl.woonplaatsNaam'] ?? null,
             'street'       => $properties['gor.openbareRuimteNaam'] ?? null,
         ];
         isset($properties['aoa.huisletter']) === false ?: $correspondence['houseNumberLetter'] = $properties['aoa.huisletter'];
