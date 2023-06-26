@@ -89,6 +89,7 @@ class ZgwToVrijbrpService
      * @var LoggerInterface
      */
     private LoggerInterface $mappingLogger;
+    private ObjectEntityService $objectEntityService;
 
     /**
      * Construct a ZgwToVrijbrpService.
@@ -104,7 +105,8 @@ class ZgwToVrijbrpService
         SynchronizationService $syncService,
         MappingService $mappingService,
         LoggerInterface $actionLogger,
-        LoggerInterface $mappingLogger
+        LoggerInterface $mappingLogger,
+        ObjectEntityService $objectEntityService
     ) {
         $this->entityManager = $entityManager;
         $this->callService = $callService;
@@ -112,6 +114,7 @@ class ZgwToVrijbrpService
         $this->mappingService = $mappingService;
         $this->logger = $actionLogger;
         $this->mappingLogger = $mappingLogger;
+        $this->objectEntityService = $objectEntityService;
     }//end __construct()
 
     /**
@@ -398,7 +401,7 @@ class ZgwToVrijbrpService
     {
         foreach ($zaakObjectEntity->getValue('rollen') as $rol) {
             if ($rol->getValue('roltoelichting') == 'initiator' && $rol->getValue('betrokkeneType') == 'natuurlijk_persoon') {
-                return $rol->getValue('betrokkeneIdentificatie')->toArray()[$key];
+                return $this->objectEntityService->toArray($rol->getValue('betrokkeneIdentificatie'))[$key];
             }
         }
 
@@ -665,7 +668,7 @@ class ZgwToVrijbrpService
         $this->logger->debug("(Zaak) Object with id $dataId was created");
 
         $object = $this->entityManager->getRepository('App:ObjectEntity')->find($dataId);
-        $objectArray = $object->toArray();
+        $objectArray = $this->objectEntityService->toArray($object);
         $zaakTypeId = $objectArray['zaaktype']['identificatie'];
 
         // Do mapping with Zaak ObjectEntity as array.
@@ -674,7 +677,7 @@ class ZgwToVrijbrpService
         // todo: make this a function? when merging all Vrijbrp Bundles:
         switch ($zaakTypeId) {
             case 'B0237':
-                $objectArray = $this->getBirthProperties($object->toArray(), $objectArray);
+                $objectArray = $this->getBirthProperties($this->objectEntityService->toArray($object), $objectArray);
                 break;
             case 'B0337':
                 $objectArray = $this->getCommitmentProperties($object, $objectArray);
@@ -734,7 +737,7 @@ class ZgwToVrijbrpService
             $object = $this->entityManager->getRepository('App:ObjectEntity')->find($dataId);
 
             // Do mapping with Document ObjectEntity as array.
-            $objectArray = $this->mappingService->mapping($this->mapping, $object->toArray());
+            $objectArray = $this->mappingService->mapping($this->mapping, $this->objectEntityService->toArray($object));
 
             // todo: make this a switch (in a function?) or something when merging all Vrijbrp Bundles:
             $configuration['location'] = $this->configuration['location'].'/'.$objectArray['dossierId'].'/documents';

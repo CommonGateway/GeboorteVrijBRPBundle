@@ -15,16 +15,23 @@ class RelocationService
     private MappingService $mappingService;
     private LoggerInterface $logger;
     private EntityManagerInterface $entityManager;
+    private ObjectEntityService $objectEntityService;
 
     private array $data;
     private array $configuration;
 
-    public function __construct(MappingService $mappingService, ZgwToVrijbrpService $zgwToVrijbrpService, LoggerInterface $actionLogger, EntityManagerInterface $entityManager)
-    {
+    public function __construct(
+        MappingService $mappingService,
+        ZgwToVrijbrpService $zgwToVrijbrpService,
+        LoggerInterface $actionLogger,
+        EntityManagerInterface $entityManager,
+        ObjectEntityService $objectEntityService
+    ) {
         $this->mappingService = $mappingService;
         $this->zgwToVrijbrpService = $zgwToVrijbrpService;
         $this->logger = $actionLogger;
         $this->entityManager = $entityManager;
+        $this->objectEntityService = $objectEntityService;
     }
 
     /**
@@ -176,7 +183,7 @@ class RelocationService
         $object = $this->entityManager->getRepository('App:ObjectEntity')->find($dataId);
         $this->logger->debug("(Zaak) Object with id $dataId was created");
 
-        $objectArray = $object->toArray();
+        $objectArray = $this->objectEntityService->toArray($object);
 
         // Do mapping with Zaak ObjectEntity as array.
         $objectArray = $this->mappingService->mapping($mapping, $objectArray);
