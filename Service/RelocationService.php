@@ -5,6 +5,7 @@ namespace CommonGateway\GeboorteVrijBRPBundle\Service;
 use App\Entity\Mapping;
 use App\Entity\ObjectEntity;
 use App\Entity\Synchronization;
+use App\Service\ObjectEntityService;
 use CommonGateway\CoreBundle\Service\MappingService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;

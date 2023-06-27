@@ -8,6 +8,7 @@ use App\Entity\Gateway as Source;
 use App\Entity\Mapping;
 use App\Entity\ObjectEntity;
 use App\Entity\Synchronization;
+use App\Service\ObjectEntityService;
 use App\Service\SynchronizationService;
 use Cassandra\Date;
 use CommonGateway\CoreBundle\Service\CallService;
