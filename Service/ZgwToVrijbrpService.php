@@ -714,11 +714,11 @@ class ZgwToVrijbrpService
             return [];
         }
 
-        if(!isset($data['documents'])) {
+        if (!isset($data['documents'])) {
             return $data;
         }
 
-        foreach($data['documents'] as $document) {
+        foreach ($data['documents'] as $document) {
             $dataId = $document['_self']['id'];
 
             $this->logger->debug("(Document) Object with id $dataId was created");

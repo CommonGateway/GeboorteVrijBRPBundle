@@ -54,9 +54,8 @@ class InstallationService implements InstallerInterface
         'CommonGateway\GeboorteVrijBRPBundle\ActionHandler\ZdsDocumentActionHandler',
     ];
 
-
     public const SCHEMAS_THAT_SHOULD_HAVE_ENDPOINTS = [
-        ['reference' => 'https://vrijbrp.nl/schemas/vrijbrp.eersteInschrijving.schema.json', 'path' => 'eerste_inschrijving', 'methods' => []]
+        ['reference' => 'https://vrijbrp.nl/schemas/vrijbrp.eersteInschrijving.schema.json', 'path' => 'eerste_inschrijving', 'methods' => []],
     ];
 
     /**
@@ -234,7 +233,7 @@ class InstallationService implements InstallerInterface
     {
         $endpointRepository = $this->entityManager->getRepository('App:Endpoint');
         $createdEndpoints = [];
-        foreach($this::SCHEMAS_THAT_SHOULD_HAVE_ENDPOINTS as $objectThatShouldHaveEndpoint) {
+        foreach ($this::SCHEMAS_THAT_SHOULD_HAVE_ENDPOINTS as $objectThatShouldHaveEndpoint) {
             $entity = $this->entityManager->getRepository('App:Entity')->findOneBy(['reference' => $objectThatShouldHaveEndpoint['reference']]);
             if ($entity instanceof Entity && !$endpointRepository->findOneBy(['name' => $entity->getName()])) {
                 $endpoint = new Endpoint($entity, null, $objectThatShouldHaveEndpoint);
