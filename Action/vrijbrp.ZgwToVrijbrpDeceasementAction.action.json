@@ -15,7 +15,7 @@
   },
   "class": "CommonGateway\\GeboorteVrijBRPBundle\\ActionHandler\\ZgwToVrijbrpDeceasementHandler",
   "configuration": {
-    "source": "https://vrijbrp.nl/dossiers",
+    "source": "https://vrijbrp.nl/source/vrijbrp.dossiers.source.json",
     "inMunicipalityLocation": "/api/v1/deaths/in-municipality",
     "foundBodyLocation": "/api/v1/deaths/discovered-body",
     "mapping": "https://vrijbrp.nl/mapping/vrijbrp.ZgwToVrijbrpCommitment.mapping.json",

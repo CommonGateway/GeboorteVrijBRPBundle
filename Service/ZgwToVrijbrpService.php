@@ -9,6 +9,7 @@ use App\Entity\Mapping;
 use App\Entity\ObjectEntity;
 use App\Entity\Synchronization;
 use App\Service\SynchronizationService;
+use Cassandra\Date;
 use CommonGateway\CoreBundle\Service\CallService;
 use CommonGateway\CoreBundle\Service\MappingService;
 use DateTime;
@@ -128,7 +129,7 @@ class ZgwToVrijbrpService
 
         return $this;
     }//end setStyle()
-
+    
     /**
      * Gets and sets Source object using the required configuration['source'] to find the correct Source.
      *
@@ -136,21 +137,18 @@ class ZgwToVrijbrpService
      */
     private function setSource(): ?Source
     {
-        // Todo: Add FromSchema function to Gateway Gateway.php, so that we can use .json files for sources as well.
-        // Todo: ...For this to work, we also need to change CoreBundle installationService.
-        // Todo: ...If we do this we can also add and use reference for Gateways / Sources.
-        $this->source = $this->entityManager->getRepository('App:Gateway')->findOneBy(['location' => $this->configuration['source']]);
+        $this->source = $this->entityManager->getRepository('App:Gateway')->findOneBy(['reference' => $this->configuration['source']]);
         if ($this->source instanceof Source === false) {
             if (isset($this->symfonyStyle) === true) {
-                $this->symfonyStyle->error("No source found with location: {$this->configuration['source']}");
+                $this->symfonyStyle->error("No source found with reference: {$this->configuration['source']}");
             }
-            $this->logger->error("No source found with location: {$this->configuration['source']}");
-
+            $this->logger->error("No source found with reference: {$this->configuration['source']}");
+            
             return null;
         }
-
+        
         return $this->source;
-    }//end setSource()
+    } //end setSource()
 
     /**
      * Gets and sets a Mapping object using the required configuration['mapping'] to find the correct Mapping.
@@ -214,29 +212,26 @@ class ZgwToVrijbrpService
 
         return $reference;
     }
-
+    
     /**
-     * Finds source by location.
+     * Finds source by reference.
      *
-     * @TODO: convert to reference.
-     *
-     * @param string $location The location to look a source for.
+     * @param string $reference The reference to look a source for.
      *
      * @return Source|null The resulting source.
      */
-    public function getSource(string $location): ?Source
+    public function getSource(string $reference): ?Source
     {
-        $source = $this->entityManager->getRepository('App:Gateway')->findOneBy(['location' => $location]);
+        $source = $this->entityManager->getRepository('App:Gateway')->findOneBy(['reference' => $reference]);
         if ($source instanceof Source === false) {
             if (isset($this->symfonyStyle) === true) {
-                $this->symfonyStyle->error("No source found with location: $location");
+                $this->symfonyStyle->error("No source found with reference: $reference");
             }
-
-            $this->logger->error("No source found with location: $location");
-
+            
+            $this->logger->error("No source found with reference: $reference");
             return null;
         }
-
+        
         return $source;
     }//end getSource()
 
@@ -327,12 +322,24 @@ class ZgwToVrijbrpService
 //        }
 
         // Todo: maybe check if all these $properties['key'] exist?
+        $now = new DateTime();
+        $output['planning']['intentionDate'] = $now->format('Y-m-d');
 
         // Planning. Todo: make this a function?
-        $date = new DateTime($zaakEigenschappen['verbintenisDatum']);
-        $time = new DateTime($zaakEigenschappen['verbintenisTijd']);
-        $dateTime = new DateTime($date->format('Y-m-d\T').$time->format('H:i:s'));
-        $output['planning']['commitmentDateTime'] = $dateTime->format('Y-m-d\TH:i:s');
+        if(isset($zaakEigenschappen['verbintenisDatum']) === true
+            && $zaakEigenschappen['verbintenisDatum'] !== true
+            && isset($zaakEigenschappen['verbintenisTijd']) === true
+            && $zaakEigenschappen['verbintenisTijd'] !== null
+        ) {
+            $date = new DateTime($zaakEigenschappen['verbintenisDatum']);
+            $time = new DateTime($zaakEigenschappen['verbintenisTijd']);
+            $dateTime = new DateTime($date->format('Y-m-d\T').$time->format('H:i:s'));
+            $output['planning']['commitmentDateTime'] = $dateTime->format('Y-m-d\TH:i:s');
+        } else {
+
+            $output['planning']['commitmentDateTime'] = $now->format('Y-m-d\TH:i:s');
+        }
+
         if (in_array($zaakEigenschappen['verbintenisType'], ['MARRIAGE', 'GPS'])) {
             $output['planning']['commitmentType'] = $zaakEigenschappen['verbintenisType'];
         }
@@ -343,27 +350,30 @@ class ZgwToVrijbrpService
         if (array_key_exists('trouwboekje', $zaakEigenschappen) === true && $zaakEigenschappen['trouwboekje'] == true) {
             $output['location']['options'][0] = [
                 'name'    => 'trouwboekje',
-                'value'   => 'trouwboekje',
-                'type'    => 'TEXT',
+                'value'   => 'true',
+                'type'    => 'BOOLEAN',
                 'aliases' => [
                     'trouwboekje',
                 ],
             ];
         }
 
-        // Officials. Todo: make this a function?
-        $output['officials']['preferences'][0] = [
-            'name'    => $zaakEigenschappen['naam1'],
-            'aliases' => [
-                $zaakEigenschappen['naam1'],
-            ],
-        ];
-        $output['officials']['preferences'][1] = [
-            'name'    => $zaakEigenschappen['naam2'],
-            'aliases' => [
-                $zaakEigenschappen['naam2'],
-            ],
-        ];
+        if(isset($zaakEigenschappen['naam1'])) {
+            $output['officials']['preferences'][0] = [
+                'name'    => $zaakEigenschappen['naam1'],
+                'aliases' => [
+                    $zaakEigenschappen['naam1'],
+                ],
+            ];
+        }
+        if (isset($zaakEigenschappen['naam2'])) {
+            $output['officials']['preferences'][1] = [
+                'name'    => $zaakEigenschappen['naam2'],
+                'aliases' => [
+                    $zaakEigenschappen['naam2'],
+                ],
+            ];
+        }
 
         // Witnesses.
         // Todo: See todo comments in the getCommitmentZaakEigenschappen() function !!!
@@ -419,9 +429,12 @@ class ZgwToVrijbrpService
             $output['declarant']['contactInformation']['email'] = $properties['sub.emailadres'];
         }
 
-        if (isset($properties['inp.bsn'])) {
+        if (isset($properties['inp.bsn']) === true && $properties['relatie'] !== 'MOTHER') {
             $output['mother']['bsn'] = $properties['inp.bsn'];
             $output['fatherDuoMother']['bsn'] = $output['declarant']['bsn'];
+        } elseif (isset($properties['inp.bsn']) === true) {
+            $output['mother']['bsn'] = $output['declarant']['bsn'];
+            $output['fatherDuoMother']['bsn'] = $properties['inp.bsn'];
         } else {
             $output['mother']['bsn'] = $output['declarant']['bsn'];
             !isset($output['declarant']['contactInformation']) ?: $output['mother']['contactInformation'] = $output['declarant']['contactInformation'];
@@ -777,7 +790,7 @@ class ZgwToVrijbrpService
                 [
                     'body'    => $objectString,
                     //'query'   => [],
-                    //'headers' => [],
+                    'headers' => $synchronization->getSource()->getHeaders(),
                 ]
             );
         } catch (Exception|GuzzleException $exception) {

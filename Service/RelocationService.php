@@ -39,15 +39,38 @@ class RelocationService
         $relocators = [];
         $relocators[] = [
             'bsn'             => $zaakEigenschappen['BSN'],
-            'declarationType' => 'AUTHORITY_HOLDER',
+            'declarationType' => 'REGISTERED',
         ];
+
         if (isset($zaakEigenschappen['MEEVERHUIZENDE_GEZINSLEDEN.MEEVERHUIZEND_GEZINSLID.BSN'])) {
             $relocator = ['bsn' => $zaakEigenschappen['MEEVERHUIZENDE_GEZINSLEDEN.MEEVERHUIZEND_GEZINSLID.BSN']];
-            if (isset($zaakEigenschappen['MEEVERHUIZENDE_GEZINSLEDEN.MEEVERHUIZEND_GEZINSLID.ROL']) && $zaakEigenschappen['MEEVERHUIZENDE_GEZINSLEDEN.MEEVERHUIZEND_GEZINSLID.ROL'] == 'P') {
-                $relocator['declarationType'] = 'ADULT_AUTHORIZED_REPRESENTATIVE';
-            } else {
-                $relocator['declarationType'] = 'ADULT_CHILD_LIVING_WITH_PARENTS';
+            if (isset($zaakEigenschappen['MEEVERHUIZENDE_GEZINSLEDEN.MEEVERHUIZEND_GEZINSLID.ROL'])) {
+                switch($zaakEigenschappen['MEEVERHUIZENDE_GEZINSLEDEN.MEEVERHUIZEND_GEZINSLID.ROL']) {
+                    case 'I':
+                        $relocator['declarationType'] = 'REGISTERED';
+                        break;
+                    case 'G':
+                        $relocator['declarationType'] = 'AUTHORITY_HOLDER';
+                        break;
+                    case 'K':
+                        $relocator['declarationType'] = 'ADULT_CHILD_LIVING_WITH_PARENTS';
+                        break;
+                    case 'M':
+                        $relocator['declarationType'] = 'ADULT_AUTHORIZED_REPRESENTATIVE';
+                        break;
+                    case 'P':
+                        $relocator['declarationType'] = 'PARTNER';
+                        break;
+                    case 'O':
+                        $relocator['declarationType'] = 'PARENT_LIVING_WITH_ADULT_CHILD';
+                        break;
+                    default:
+                        $relocator['declarationType'] = 'REGISTERED';
+                        break;
+
+                }
             }
+
             $relocators[] = $relocator;
 
             return $relocators;
@@ -56,10 +79,31 @@ class RelocationService
         $index = 0;
         while (isset($zaakEigenschappen["MEEVERHUIZENDE_GEZINSLEDEN.MEEVERHUIZEND_GEZINSLID.$index.BSN"])) {
             $relocator = ['bsn' => $zaakEigenschappen["MEEVERHUIZENDE_GEZINSLEDEN.MEEVERHUIZEND_GEZINSLID.$index.BSN"]];
-            if (isset($zaakEigenschappen["MEEVERHUIZENDE_GEZINSLEDEN.MEEVERHUIZEND_GEZINSLID.$index.ROL"]) && $zaakEigenschappen["MEEVERHUIZENDE_GEZINSLEDEN.MEEVERHUIZEND_GEZINSLID.$index.ROL"] == 'P') {
-                $relocator['declarationType'] = 'ADULT_AUTHORIZED_REPRESENTATIVE';
-            } else {
-                $relocator['declarationType'] = 'ADULT_CHILD_LIVING_WITH_PARENTS';
+            if (isset($zaakEigenschappen["MEEVERHUIZENDE_GEZINSLEDEN.MEEVERHUIZEND_GEZINSLID.$index.ROL"])) {
+                switch ($zaakEigenschappen["MEEVERHUIZENDE_GEZINSLEDEN.MEEVERHUIZEND_GEZINSLID.$index.ROL"]) {
+                    case 'I':
+                        $relocator['declarationType'] = 'REGISTERED';
+                        break;
+                    case 'G':
+                        $relocator['declarationType'] = 'AUTHORITY_HOLDER';
+                        break;
+                    case 'K':
+                        $relocator['declarationType'] = 'ADULT_CHILD_LIVING_WITH_PARENTS';
+                        break;
+                    case 'M':
+                        $relocator['declarationType'] = 'ADULT_AUTHORIZED_REPRESENTATIVE';
+                        break;
+                    case 'P':
+                        $relocator['declarationType'] = 'PARTNER';
+                        break;
+                    case 'O':
+                        $relocator['declarationType'] = 'PARENT_LIVING_WITH_ADULT_CHILD';
+                        break;
+                    default:
+                        $relocator['declarationType'] = 'REGISTERED';
+                        break;
+
+                }
             }
             $relocators[] = $relocator;
             $index++;
@@ -75,14 +119,14 @@ class RelocationService
         $objectArray['newAddress']['street'] = $caseProperties['STRAATNAAM_NIEUW'];
         $objectArray['newAddress']['houseNumber'] = $caseProperties['HUISNUMMER_NIEUW'];
         $objectArray['newAddress']['houseLetter'] = $caseProperties['HUISLETTER_NIEUW'];
-        $objectArray['newAddress']['houseNumberAddition'] = $caseProperties['HUISNUMMERTOEVOEGING_NIEUW'];
+        $objectArray['newAddress']['houseNumberAddition'] = $caseProperties['TOEVOEGINGHUISNUMMER_NIEUW'];
         $objectArray['newAddress']['postalCode'] = $caseProperties['POSTCODE_NIEUW'];
         $objectArray['newAddress']['residence'] = $caseProperties['WOONPLAATS_NIEUW'];
         $objectArray['newAddress']['addressFunction'] = 'LIVING_ADDRESS'; // @TODO cant make a difference yet between LIVING or MAILING ADDRESS
         $objectArray['newAddress']['numberOfResidents'] = $caseProperties['AANTAL_PERS_NIEUW_ADRES'];
         $objectArray['newAddress']['destinationCurrentResidents'] = 'Unknown';
         $objectArray['newAddress']['liveIn'] = ['liveInApplicable' => false]; // @TODO for other than Maastricht this could be something else
-        $objectArray['newAddress']['mainOccupant'] = [
+        $objectArray['declarant'] = $objectArray['newAddress']['mainOccupant'] = [
             'bsn'                => $caseProperties['BSN'],
             'contactInformation' => [
                 'email'           => $caseProperties['EMAILADRES'],

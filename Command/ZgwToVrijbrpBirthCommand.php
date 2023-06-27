@@ -49,7 +49,7 @@ class ZgwToVrijbrpBirthCommand extends Command
             ->setDescription('This command triggers ZgwToVrijbrpService->zgwToVrijbrpHandler() for a birth e-dienst')
             ->setHelp('This command allows you to test mapping and sending a ZGW zaak to the Vrijbrp api /dossiers')
             ->addOption('zaak', 'z', InputOption::VALUE_REQUIRED, 'The zaak uuid we should test with')
-            ->addOption('source', 's', InputOption::VALUE_OPTIONAL, 'The location of the Source we will send a request to, location of an existing Source object')
+            ->addOption('source', 's', InputOption::VALUE_OPTIONAL, 'The location of the Source we will send a request to, reference of an existing Source object')
             ->addOption('location', 'l', InputOption::VALUE_OPTIONAL, 'The endpoint we will use on the Source to send a request, just a string')
             ->addOption('mapping', 'm', InputOption::VALUE_OPTIONAL, 'The reference of the mapping we will use before sending the data to the source')
             ->addOption('synchronizationEntity', 'se', InputOption::VALUE_OPTIONAL, 'The reference of the entity we need to create a synchronization object');
@@ -81,7 +81,7 @@ class ZgwToVrijbrpBirthCommand extends Command
         $data = ['object' => ['_self' => ['id' => $zaakId]]];
 
         $configuration = [
-            'source'                => ($input->getOption('source', false) ?? 'https://vrijbrp.nl/dossiers'),
+            'source'                => ($input->getOption('source', false) ?? 'https://vrijbrp.nl/source/vrijbrp.dossiers.source.json'),
             'location'              => ($input->getOption('location', false) ?? '/api/v1/births'),
             'mapping'               => ($input->getOption('mapping', false) ?? 'https://vrijbrp.nl/mapping/vrijbrp.ZgwToVrijbrpGeboorte.mapping.json'),
             'synchronizationEntity' => ($input->getOption('synchronizationEntity', false) ?? 'https://vng.opencatalogi.nl/schemas/zrc.zaak.schema.json'),

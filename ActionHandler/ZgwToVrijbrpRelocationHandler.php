@@ -45,8 +45,8 @@ class ZgwToVrijbrpRelocationHandler implements ActionHandlerInterface
             'properties'  => [
                 'source' => [
                     'type'        => 'string',
-                    'description' => 'The location of the Source we will send a request to, location of an existing Source object',
-                    'example'     => 'https://vrijbrp.nl/dossiers',
+                    'description' => 'The reference of the Source we will send a request to, reference of an existing Source object',
+                    'example'     => 'https://vrijbrp.nl/source/vrijbrp.dossiers.source.json',
                     'required'    => true,
                     '$ref'        => 'https://commongroundgateway.nl/commongroundgateway.gateway.entity.json',
                 ],
