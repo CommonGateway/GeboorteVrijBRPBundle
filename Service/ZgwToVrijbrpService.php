@@ -472,6 +472,9 @@ class ZgwToVrijbrpService
                 case 'sub.emailadres':
                     $this->getCommitmentPartnerEigenschap($zaakEigenschappen, ['contactInformation', 'email'], $eigenschap);
                     break;
+                case 'geselecteerdNaamgebruik':
+                    $this->getCommitmentPartnerEigenschap($zaakEigenschappen, ['nameAfterCommitment', 'nameUseType'], $eigenschap);
+                    break;
 //                case 'geselecteerdNaamgebruik':
 //                    $this->getCommitmentPartnerEigenschap($zaakEigenschappen, ['nameAfterCommitment', 'nameUseType'], $eigenschap);
 //                    break;
@@ -669,6 +672,8 @@ class ZgwToVrijbrpService
             default:
                 return [];
         }
+
+        var_dump($objectArray);die;
 
         // Create synchronization.
         $synchronization = $this->syncService->findSyncByObject($object, $this->source, $this->synchronizationEntity);
