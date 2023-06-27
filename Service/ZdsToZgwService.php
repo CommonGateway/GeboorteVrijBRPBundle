@@ -7,7 +7,7 @@ use App\Entity\Mapping;
 use App\Entity\ObjectEntity;
 use CommonGateway\CoreBundle\Service\CacheService;
 use CommonGateway\CoreBundle\Service\MappingService;
-use CommonGateway\CoreBundle\Service\ObjectEntityService;
+use App\Service\ObjectEntityService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;

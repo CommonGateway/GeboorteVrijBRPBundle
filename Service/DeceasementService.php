@@ -6,7 +6,7 @@ use App\Entity\Mapping;
 use App\Entity\ObjectEntity;
 use App\Entity\Synchronization;
 use CommonGateway\CoreBundle\Service\MappingService;
-use CommonGateway\CoreBundle\Service\ObjectEntityService;
+use App\Service\ObjectEntityService;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
