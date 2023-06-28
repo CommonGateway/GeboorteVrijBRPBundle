@@ -688,8 +688,6 @@ class ZgwToVrijbrpService
                 return [];
         }
 
-        var_dump($objectArray);die;
-
         // Create synchronization.
         $synchronization = $this->syncService->findSyncByObject($object, $this->source, $this->synchronizationEntity);
         $synchronization->setMapping($this->mapping);
