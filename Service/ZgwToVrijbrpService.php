@@ -485,9 +485,14 @@ class ZgwToVrijbrpService
                 case 'sub.emailadres':
                     $this->getCommitmentPartnerEigenschap($zaakEigenschappen, ['contactInformation', 'email'], $eigenschap);
                     break;
-//                case 'geselecteerdNaamgebruik':
-//                    $this->getCommitmentPartnerEigenschap($zaakEigenschappen, ['nameAfterCommitment', 'nameUseType'], $eigenschap);
-//                    break;
+                case 'geselecteerdNaamgebruik':
+                    if (isset($zaakEigenschappen['partner1']['nameAfterCommitment']['nameUseType']) === true) {
+                        $zaakEigenschappen['partner2']['nameAfterCommitment']['nameUseType'] = $eigenschap->getValue('waarde');
+        
+                        break;
+                    }
+                    $zaakEigenschappen['partner1']['nameAfterCommitment']['nameUseType'] = $eigenschap->getValue('waarde');
+                    break;
 //                case 'voornamen':
 //                    // Probably only for partner1.
 //                    $this->getCommitmentPartnerEigenschap($zaakEigenschappen, ['nameAfterCommitment', 'title'], $eigenschap);
