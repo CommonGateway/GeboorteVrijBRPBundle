@@ -561,17 +561,18 @@ class ZgwToVrijbrpService
             return;
         }
         $zaakEigenschappen['partner2'][$keys[0]] = $eigenschap->getValue('waarde');
-    }
-
-    //end getCommitmentPartnerEigenschap()
+    }//end getCommitmentPartnerEigenschap()
+    
     /**
-     * Adds a single Witness to the zaakEigenschappen array.{
+     * Adds a single Witness to the zaakEigenschappen array.
+     * {
      * "title": "ZDSToZGWZaak",
      * "$id": "https://zds.nl/mapping/zds.zdsHeeftAlsInitiatorToRol.mapping.json",
      * "$schema": "https://json-schema.org/draft/2020-12/mapping",
      * "version": "0.0.6",
      * "passTrough": false,
-     * "mapping": {
+     * "mapping":
+     * {
      * "betrokkeneType": "natuurlijk_persoon",
      * "roltype": "{{ map('https://zds.nl/mapping/zds.zdsHeeftAlsInitiatorToRolType.mapping.json', _context) | json_encode }}",
      * "roltoelichting": "initiator",
@@ -589,7 +590,8 @@ class ZgwToVrijbrpService
      * "betrokkeneIdentificatie.verblijfsadres.aoaHuisletter": "ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:verblijfsadres.ns3:aoa&#46;huisletter",
      * "betrokkeneIdentificatie.verblijfsadres.aoaHuisnummertoevoeging": "ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:verblijfsadres.ns3:aoa&#46;huisnummertoevoeging"
      * },
-     * "cast": {
+     * "cast":
+     * {
      * "roltype": "jsonToArray",
      * "betrokkeneIdentificatie.inpBsn": "keyCantBeValue",
      * "betrokkeneIdentificatie.geslachtsnaam": "keyCantBeValue",
