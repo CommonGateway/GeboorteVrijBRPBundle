@@ -25,16 +25,6 @@ class InstallationService implements InstallerInterface
      */
     private EntityManagerInterface $entityManager;
 
-    /**
-     * @var ContainerInterface ContainerInterface.
-     */
-    private ContainerInterface $container;
-
-    /**
-     * @var SymfonyStyle SymfonyStyle for writing user feedback to console.
-     */
-    private SymfonyStyle $symfonyStyle;
-
     public const SOURCES = [
         ['name'             => 'vrijbrp-dossiers', 'location' => 'https://vrijbrp.nl/dossiers', 'auth' => 'vrijbrp-jwt',
             'username'      => 'sim-!ChangeMe!', 'password' => '!secret-ChangeMe!', 'accept' => 'application/json',
@@ -45,12 +35,10 @@ class InstallationService implements InstallerInterface
      * Construct an InstallationService.
      *
      * @param EntityManagerInterface $entityManager EntityManagerInterface.
-     * @param ContainerInterface     $container     ContainerInterface.
      */
-    public function __construct(EntityManagerInterface $entityManager, ContainerInterface $container)
+    public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
-        $this->container = $container;
     }//end __construct()
 
     /**
@@ -82,35 +70,6 @@ class InstallationService implements InstallerInterface
     {
         // Do some cleanup.
     }//end uninstall()
-
-    /**
-     * Create cronjobs for this bundle.
-     *
-     * @return void This function doesn't return anything.
-     */
-    public function createCronjobs()
-    {
-        if (isset($this->symfonyStyle) === true) {
-            $this->symfonyStyle->writeln(['', '<info>Looking for cronjobs</info>']);
-        }
-        // We only need 1 cronjob so lets set that.
-        $cronjob = $this->entityManager->getRepository('App:Cronjob')->findOneBy(['name' => 'VrijBRP']);
-        if ($cronjob instanceof Cronjob === false) {
-            $cronjob = new Cronjob();
-            $cronjob->setName('VrijBRP');
-            $cronjob->setDescription('This cronjob fires all the VrijBRP actions ever 5 minutes');
-            $cronjob->setThrows(['vrijbrp.default.listens']);
-            $cronjob->setIsEnabled(true);
-
-            $this->entityManager->persist($cronjob);
-
-            if (isset($this->symfonyStyle) === true) {
-                $this->symfonyStyle->writeln(['', 'Created a cronjob for '.$cronjob->getName()]);
-            }
-        } elseif (isset($this->symfonyStyle) === true) {
-            $this->symfonyStyle->writeln(['', 'There is already a cronjob for '.$cronjob->getName()]);
-        }
-    }//end createCronjobs()
 
     /**
      * Creates the Sources we need.
@@ -155,9 +114,6 @@ class InstallationService implements InstallerInterface
      */
     public function checkDataConsistency()
     {
-        // Create cronjobs.
-        $this->createCronjobs();
-
         // Create sources.
         $this->createSources($this::SOURCES);
 
