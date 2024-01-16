@@ -452,7 +452,7 @@ class ZgwToVrijbrpService
         $output['children'] = array_values($output['children']);
 
         $output['nameSelection']['lastname'] = $properties['geslachtsnaam'];
-        !isset($properties['voorvoegselGeslachtsnaam']) ?: $output['nameSelection']['prefix'] = $properties['voorvoegselGeslachtsnaam'];
+        !isset($properties['prefix']) ?: $output['nameSelection']['prefix'] = $properties['prefix'];
 
         $this->mappingLogger->info('Done with additional mapping');
 
