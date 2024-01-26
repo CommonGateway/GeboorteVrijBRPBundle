@@ -1,15 +1,30 @@
 {
-  "title": "ZgwToVrijbrpBirthAction",
+  "title": "ZgwToVrijbrpDocumentAction",
   "$id": "https://vrijbrp.nl/action/vrijbrp.ZgwToVrijbrpDocumentAction.action.json",
   "$schema": "https://json-schema.org/draft/2020-12/action",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "listens": [
     "vrijbrp.zaak.document.created"
   ],
   "throws": [],
   "conditions": {
-    "==": [
-      1,1
+    "and": [
+      {
+        "!=": [
+          {
+            "var": "documents.0.zaak.zaaktype.identificatie"
+          },
+          "B333"
+        ]
+      },
+      {
+        "!=": [
+          {
+            "var": "documents.0.zaak.zaaktype.identificatie"
+          },
+          "B334"
+        ]
+      }
     ]
   },
   "class": "CommonGateway\\GeboorteVrijBRPBundle\\ActionHandler\\ZgwToVrijbrpDocumentHandler",
