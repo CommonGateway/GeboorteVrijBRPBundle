@@ -429,7 +429,7 @@ class ZgwToVrijbrpService
             $output['declarant']['contactInformation']['email'] = $properties['sub.emailadres'];
         }
 
-        if (isset($properties['inp.bsn']) === true && $properties['relatie'] !== 'MOTHER') {
+        if (isset($properties['inp.bsn']) === true) {
             $output['mother']['bsn'] = $properties['inp.bsn'];
         } else {
             $output['mother']['bsn'] = $output['declarant']['bsn'];
