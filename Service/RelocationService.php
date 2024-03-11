@@ -125,7 +125,7 @@ class RelocationService
         $objectArray['newAddress']['addressFunction'] = 'LIVING_ADDRESS'; // @TODO cant make a difference yet between LIVING or MAILING ADDRESS
         $objectArray['newAddress']['numberOfResidents'] = $caseProperties['AANTAL_PERS_NIEUW_ADRES'];
         $objectArray['newAddress']['destinationCurrentResidents'] = 'Unknown';
-        $objectArray['newAddress']['liveIn'] = ['liveInApplicable' => false]; // @TODO for other than Maastricht this could be something else
+        $objectArray['newAddress']['liveIn'] = ['liveInApplicable' => false];
         $objectArray['declarant'] = $objectArray['newAddress']['mainOccupant'] = [
             'bsn'                => $caseProperties['BSN'],
             'contactInformation' => [
@@ -133,6 +133,13 @@ class RelocationService
                 'telephoneNumber' => $caseProperties['TELEFOONNUMMER'],
             ],
         ];
+
+        if(isset($caseProperties['BSN_HOOFDBEWONER']) === true) {
+            $objectArray['newAddress']['mainOccupant'] = [
+                'bsn' => $caseProperties['BSN_HOOFDBEWONER'],
+            ];
+            $objectArray['newAddress']['liveIn'] = ['liveInApplicable' => true];
+        }
 
         $relocators = $this->getRelocators($caseProperties);
         $objectArray['relocators'] = $relocators;
