@@ -19,7 +19,7 @@
     "minimum-stability": "dev",
     "require": {
         "php": ">=7.4",
-        "commongateway/corebundle": "^1.1.110",
+        "commongateway/corebundle": "^1.1.110 | dev-feature/GW-1596/Symfony54 | dev-feature/GW-1595/Symfony64",
         "common-gateway/zds-to-zgw-bundle": "^0.1",
         "common-gateway/sim-xml-to-zgw-bundle": "^0.0.15"
     },
