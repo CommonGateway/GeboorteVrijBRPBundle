@@ -50,13 +50,13 @@ class ZgwToVrijbrpRelocationHandler implements ActionHandlerInterface
                     'required'    => true,
                     '$ref'        => 'https://commongroundgateway.nl/commongroundgateway.gateway.entity.json',
                 ],
-                'foundBodyLocation' => [
+                'interLocation' => [
                     'type'        => 'string',
                     'description' => 'The endpoint we will use on the Source to send a request, just a string',
                     'example'     => '/api/births',
                     'required'    => true,
                 ],
-                'inMunicipalityLocation' => [
+                'intraLocation' => [
                     'type'        => 'string',
                     'description' => 'The endpoint we will use on the Source to send a request, just a string',
                     'example'     => '/api/births',
