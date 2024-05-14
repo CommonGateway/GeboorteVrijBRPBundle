@@ -740,8 +740,19 @@ class ZgwToVrijbrpService
 
             $object = $this->entityManager->getRepository('App:ObjectEntity')->find($dataId);
 
+            $objectArray = $object->toArray();
+
+            $informatieObject = $object->getValue('informatieobject');
+
             // Do mapping with Document ObjectEntity as array.
-            $objectArray = $this->mappingService->mapping($this->mapping, $object->toArray());
+            $objectArray = $this->mappingService->mapping($this->mapping, $objectArray);
+
+            if($informatieObject->getValueObject('inhoud') !== false && $informatieObject->getValueObject('inhoud')->getFiles()->count() > 0) {
+
+                $file = $informatieObject->getValueObject('inhoud')->getFiles()->first();
+                $objectArray['content'] = $file->getBase64();
+
+            }
 
             // todo: make this a switch (in a function?) or something when merging all Vrijbrp Bundles:
             $configuration['location'] = $this->configuration['location'].'/'.$objectArray['dossierId'].'/documents';

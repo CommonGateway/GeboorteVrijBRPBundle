@@ -20,7 +20,7 @@
     "require": {
         "php": ">=7.4",
         "commongateway/corebundle": "^1.1.110 | <2.0",
-        "common-gateway/zds-to-zgw-bundle": "^0.1 | ^0.2",
+        "common-gateway/zds-to-zgw-bundle": "^0.1.4 | ^0.2",
         "common-gateway/sim-xml-to-zgw-bundle": "^0.0.15 | ^0.1"
     },
     "require-dev": {
