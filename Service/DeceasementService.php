@@ -126,6 +126,10 @@ class DeceasementService
             $datum = new DateTime($caseProperties['tijdlijkvinding']);
             $objectArray['timeOfFinding'] = $datum->format('H:i');
         }
+
+        if (isset($caseProperties['omschrijvinglijkvinding']) === true) {
+            $objectArray['explanation'] = $caseProperties['omschrijvinglijkvinding'];
+        }
         $objectArray['correspondence'] = $this->getCorrespondence($caseProperties);
         $objectArray['extracts'] = $this->getExtracts($caseProperties);
         $objectArray['funeralServices'] = $this->getFuneralServices($caseProperties);
