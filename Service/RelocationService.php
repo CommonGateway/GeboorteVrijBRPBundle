@@ -116,6 +116,9 @@ class RelocationService
     {
         $caseProperties = $this->zgwToVrijbrpService->getZaakEigenschappen($object, ['all']);
 
+
+        $objectArray['dossier']['startDate'] = $caseProperties['VERHUISDATUM'];
+
         $objectArray['newAddress']['street'] = $caseProperties['STRAATNAAM_NIEUW'];
         $objectArray['newAddress']['houseNumber'] = $caseProperties['HUISNUMMER_NIEUW'];
         $objectArray['newAddress']['houseLetter'] = $caseProperties['HUISLETTER_NIEUW'];
