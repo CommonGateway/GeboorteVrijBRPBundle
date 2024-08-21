@@ -543,12 +543,12 @@ class ZgwToVrijbrpService
             return;
         }
         if (count($keys) === 2) {
-            if (isset($zaakEigenschappen['partner2'][$keys[0]][$keys[1]]) === true) {
-                $zaakEigenschappen['partner1'][$keys[0]][$keys[1]] = $eigenschap->getValue('waarde');
+            if (isset($zaakEigenschappen['partner1'][$keys[0]][$keys[1]]) === true) {
+                $zaakEigenschappen['partner2'][$keys[0]][$keys[1]] = $eigenschap->getValue('waarde');
 
                 return;
             }
-            $zaakEigenschappen['partner2'][$keys[0]][$keys[1]] = $eigenschap->getValue('waarde');
+            $zaakEigenschappen['partner1'][$keys[0]][$keys[1]] = $eigenschap->getValue('waarde');
 
             return;
         }
