@@ -165,7 +165,7 @@ class RelocationService
         $this->data = $data;
 
         if (!isset($configuration['gemeenteCode'])) {
-            $this->logger->error('gemeenteCode not set in ZgwToVrijbrpRelocationAction configuration.');
+            $this->logger->error('gemeenteCode not set in ZgwToVrijbrpRelocationAction configuration.', ['plugin' => 'common-gateway/geboorte-vrijbrp-bundle']);
 
             return [];
         }

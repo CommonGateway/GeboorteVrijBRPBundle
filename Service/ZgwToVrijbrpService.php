@@ -142,7 +142,7 @@ class ZgwToVrijbrpService
             if (isset($this->symfonyStyle) === true) {
                 $this->symfonyStyle->error("No source found with reference: {$this->configuration['source']}");
             }
-            $this->logger->error("No source found with reference: {$this->configuration['source']}");
+            $this->logger->error("No source found with reference: {$this->configuration['source']}", ['plugin' => 'common-gateway/geboorte-vrijbrp-bundle']);
             
             return null;
         }
@@ -162,7 +162,7 @@ class ZgwToVrijbrpService
             if (isset($this->symfonyStyle) === true) {
                 $this->symfonyStyle->error("No mapping found with reference: {$this->configuration['mapping']}");
             }
-            $this->logger->error("No mapping found with reference: {$this->configuration['mapping']}");
+            $this->logger->error("No mapping found with reference: {$this->configuration['mapping']}", ['plugin' => 'common-gateway/geboorte-vrijbrp-bundle']);
 
             return null;
         }
@@ -182,7 +182,7 @@ class ZgwToVrijbrpService
             if (isset($this->symfonyStyle) === true) {
                 $this->symfonyStyle->error("No entity found with reference: {$this->configuration['synchronizationEntity']}");
             }
-            $this->logger->error("No entity found with reference: {$this->configuration['synchronizationEntity']}");
+            $this->logger->error("No entity found with reference: {$this->configuration['synchronizationEntity']}", ['plugin' => 'common-gateway/geboorte-vrijbrp-bundle']);
 
             return null;
         }
@@ -205,7 +205,7 @@ class ZgwToVrijbrpService
                 $this->symfonyStyle->error("No mapping found with reference: $reference");
             }
 
-            $this->logger->error("No mapping found with reference: $reference");
+            $this->logger->error("No mapping found with reference: $reference", ['plugin' => 'common-gateway/geboorte-vrijbrp-bundle']);
 
             return null;
         }
@@ -228,7 +228,7 @@ class ZgwToVrijbrpService
                 $this->symfonyStyle->error("No source found with reference: $reference");
             }
             
-            $this->logger->error("No source found with reference: $reference");
+            $this->logger->error("No source found with reference: $reference", ['plugin' => 'common-gateway/geboorte-vrijbrp-bundle']);
             return null;
         }
         
@@ -250,7 +250,7 @@ class ZgwToVrijbrpService
                 $this->symfonyStyle->error("No entity found with reference: $reference");
             }
 
-            $this->logger->error("No entity found with reference: $reference");
+            $this->logger->error("No entity found with reference: $reference", ['plugin' => 'common-gateway/geboorte-vrijbrp-bundle']);
 
             return null;
         }
@@ -820,7 +820,7 @@ class ZgwToVrijbrpService
             if (method_exists(get_class($exception), 'getResponse') === true && $exception->getResponse() !== null) {
                 $responseBody = $exception->getResponse()->getBody();
             }
-            $this->logger->error('Could not synchronize object. Error message: '.$exception->getMessage().'\nFull Response: '.($responseBody ?? ''));
+            $this->logger->error('Could not synchronize object. Error message: '.$exception->getMessage().'\nFull Response: '.($responseBody ?? ''), ['plugin' => 'common-gateway/geboorte-vrijbrp-bundle']);
 
             return [];
         }//end try
