@@ -10,6 +10,7 @@ use App\Entity\ObjectEntity;
 use App\Entity\Synchronization;
 use App\Service\SynchronizationService;
 use Cassandra\Date;
+use CommonGateway\CoreBundle\Service\CacheService;
 use CommonGateway\CoreBundle\Service\CallService;
 use CommonGateway\CoreBundle\Service\MappingService;
 use DateTime;
@@ -89,14 +90,22 @@ class ZgwToVrijbrpService
      * @var LoggerInterface
      */
     private LoggerInterface $mappingLogger;
-
+    
+    /**
+     * @var CacheService
+     */
+    private CacheService $cacheService;
+    
     /**
      * Construct a ZgwToVrijbrpService.
      *
-     * @param EntityManagerInterface $entityManager  EntityManagerInterface.
-     * @param CallService            $callService    CallService.
-     * @param SynchronizationService $syncService    SynchronizationService.
-     * @param MappingService         $mappingService MappingService.
+     * @param EntityManagerInterface $entityManager EntityManagerInterface.
+     * @param CallService $callService              CallService.
+     * @param SynchronizationService $syncService   SynchronizationService.
+     * @param MappingService $mappingService        MappingService.
+     * @param LoggerInterface $actionLogger         ActionLogger.
+     * @param LoggerInterface $mappingLogger        MappingLogger.
+     * @param CacheService $cacheService            CacheService.
      */
     public function __construct(
         EntityManagerInterface $entityManager,
@@ -104,7 +113,8 @@ class ZgwToVrijbrpService
         SynchronizationService $syncService,
         MappingService $mappingService,
         LoggerInterface $actionLogger,
-        LoggerInterface $mappingLogger
+        LoggerInterface $mappingLogger,
+        CacheService $cacheService
     ) {
         $this->entityManager = $entityManager;
         $this->callService = $callService;
@@ -112,6 +122,7 @@ class ZgwToVrijbrpService
         $this->mappingService = $mappingService;
         $this->logger = $actionLogger;
         $this->mappingLogger = $mappingLogger;
+        $this->cacheService = $cacheService;
     }//end __construct()
 
     /**
@@ -833,6 +844,10 @@ class ZgwToVrijbrpService
         $synchronization->setSourceLastChanged($now);
         $synchronization->setLastChecked($now);
         $synchronization->setHash(hash('sha384', serialize($bodyDot->jsonSerialize())));
+        
+        $this->entityManager->persist($synchronization);
+        $this->entityManager->flush();
+        $this->cacheService->cacheObject($synchronization->getObject());
 
         return $body;
     }//end synchronizeTemp()
