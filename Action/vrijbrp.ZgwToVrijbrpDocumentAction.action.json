@@ -2,9 +2,9 @@
   "title": "ZgwToVrijbrpDocumentAction",
   "$id": "https://vrijbrp.nl/action/vrijbrp.ZgwToVrijbrpDocumentAction.action.json",
   "$schema": "https://json-schema.org/draft/2020-12/action",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "listens": [
-    "vrijbrp.zaak.document.created"
+    "vrijbrp.document.created"
   ],
   "throws": [],
   "conditions": {
