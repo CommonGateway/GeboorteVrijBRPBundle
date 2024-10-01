@@ -704,6 +704,7 @@ class ZgwToVrijbrpService
         // Create synchronization.
         $synchronization = $this->syncService->findSyncByObject($object, $this->source, $this->synchronizationEntity);
         $synchronization->setMapping($this->mapping);
+        $synchronization->setSourceId($objectArray['dossier']['dossierId']);
 
         // Send request to source.
         if (isset($this->symfonyStyle) === true) {
