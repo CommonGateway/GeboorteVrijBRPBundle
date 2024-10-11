@@ -65,7 +65,7 @@ class RelocationService
                         $relocator['declarationType'] = 'PARENT_LIVING_WITH_ADULT_CHILD';
                         break;
                     default:
-                        $relocator['declarationType'] = 'REGISTERED';
+                        $relocator['declarationType'] = $zaakEigenschappen['MEEVERHUIZENDE_GEZINSLEDEN.MEEVERHUIZEND_GEZINSLID.ROL'];
                         break;
 
                 }
@@ -100,7 +100,7 @@ class RelocationService
                         $relocator['declarationType'] = 'PARENT_LIVING_WITH_ADULT_CHILD';
                         break;
                     default:
-                        $relocator['declarationType'] = 'REGISTERED';
+                        $relocator['declarationType'] = $zaakEigenschappen["MEEVERHUIZENDE_GEZINSLEDEN.MEEVERHUIZEND_GEZINSLID.$index.ROL"];
                         break;
 
                 }
