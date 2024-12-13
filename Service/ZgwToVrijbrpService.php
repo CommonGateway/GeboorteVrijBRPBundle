@@ -304,7 +304,7 @@ class ZgwToVrijbrpService
         $this->mappingLogger->info('Do additional mapping with case properties');
 
         $properties = ['verbintenisDatum', 'verbintenisTijd', 'verbintenisType', 'naam',
-            'trouwboekje', 'naam1', 'naam2', 'verzorgdgem', ];
+            'trouwboekje', 'naam1', 'naam2', 'verzorgdgem', 'uittreksel_bs'];
         $zaakEigenschappen = $this->getCommitmentZaakEigenschappen($object, $properties);
 
         // Partners Todo: make this a function?
@@ -358,13 +358,23 @@ class ZgwToVrijbrpService
         // Location. Todo: make this a function?
         $output['location']['name'] = $zaakEigenschappen['naam'];
         $output['location']['aliases'][0] = $zaakEigenschappen['naam'];
-        if (array_key_exists('trouwboekje', $zaakEigenschappen) === true && $zaakEigenschappen['trouwboekje'] == true) {
-            $output['location']['options'][0] = [
+        if (array_key_exists('trouwboekje', $zaakEigenschappen) === true && $zaakEigenschappen['trouwboekje'] === 'Ja') {
+            $output['location']['options'][] = [
                 'name'    => 'trouwboekje',
                 'value'   => 'true',
                 'type'    => 'BOOLEAN',
                 'aliases' => [
                     'trouwboekje',
+                ],
+            ];
+        }
+        if (array_key_exists('uittreksel_bs', $zaakEigenschappen) === true && $zaakEigenschappen['uittreksel_bs'] === 'Ja') {
+            $output['location']['options'][] = [
+                'name'    => 'uittreksel_bs',
+                'value'   => 'true',
+                'type'    => 'BOOLEAN',
+                'aliases' => [
+                    'uittreksel_bs',
                 ],
             ];
         }
