@@ -1,11 +1,7 @@
 {
   "title": "ZDS VrijeBerichten Proxy",
-  "description": "",
+  "name": "ZDS VrijeBerichten Proxy",
   "pathRegex": "^stuf/dossiers/?[^.*]*?$",
-  "method": null,
-  "tag": "",
-  "proxyOverrulesAuthentication": false,
-  "enablePagination": true,
   "path": [
     "stuf",
     "dossiers",
@@ -16,27 +12,15 @@
       "authorization"
     ]
   },
-  "applications": [],
-  "collections": [],
-  "operationType": null,
-  "tags": [],
-  "pathArray": [],
   "methods": [
     "POST"
   ],
   "throws": [
     "zds.xmlEncode"
   ],
-  "status": null,
-  "properties": [],
-  "handlers": [],
-  "dateCreated": "2025-10-09T08:38:41+00:00",
-  "dateModified": "2025-10-09T12:35:56+00:00",
-  "defaultContentType": "application/json",
-  "entities": [],
+  "defaultContentType": "text/xml",
   "proxy": "https://vrijbrp.nl/source/vrijbrp.dossiers.source.json",
   "$id": "https://vrijbrp.nl/endpoints/zds-dossiers",
   "$schema": "https://docs.commongateway.nl/schemas/Endpoint.schema.json",
-  "version": "0.0.0",
-  "federationProxies": []
+  "version": "0.0.1"
 }
