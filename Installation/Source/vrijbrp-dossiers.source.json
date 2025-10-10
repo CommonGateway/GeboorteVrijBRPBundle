@@ -1,0 +1,72 @@
+{
+  "title": "vrijbrp-dossiers",
+  "description": "VrijBRP Dossiers API",
+  "$id": "https://vrijbrp.nl/source/vrijbrp.dossiers.source.json",
+  "$schema": "https://docs.commongateway.nl/schemas/Gateway.schema.json",
+  "version": "0.0.1",
+  "location": "https://vrijbrp.nl/dossiers",
+  "isEnabled": true,
+  "type": "json",
+  "authorizationHeader": "Authorization",
+  "auth": "vrijbrp-jwt",
+  "authenticationConfig": [],
+  "authorizationPassthroughMethod": "header",
+  "locale": null,
+  "accept": "application/json",
+  "jwt": null,
+  "jwtId": null,
+  "secret": null,
+  "username": "sim",
+  "password": "!ChangeMe!",
+  "apikey": null,
+  "documentation": null,
+  "loggingConfig": {
+    "callMethod": true,
+    "callUrl": true,
+    "callQuery": true,
+    "callContentType": true,
+    "callBody": true,
+    "responseStatusCode": true,
+    "responseContentType": true,
+    "responseBody": true,
+    "maxCharCountBody": 500,
+    "maxCharCountErrorBody": 2000
+  },
+  "oas": [],
+  "paths": [],
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "translationConfig": [],
+  "collections": [],
+  "configuration": {
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "query": [],
+    "debug": false,
+    "https_errors": false,
+    "connect_timeout": null,
+    "force_ip_resolve": "",
+    "version": "1.1",
+    "read_timeout": null,
+    "delay": null,
+    "verify": false,
+    "decode_content": "",
+    "proxy": ""
+  },
+  "endpointsConfig": {
+    "/api/v1/dossiers/search": {
+      "out": {
+        "body": {
+          "mapping": "http://vrijbrp.nl/mappings/zds-lv01-dossiers-search.mapping.json"
+        }
+      },
+      "in": {
+        "body": {
+          "mapping": "https://vrijbrp.nl/mappings/dossiers-to-zds-la01.mapping.json"
+        }
+      }
+    }
+  }
+}

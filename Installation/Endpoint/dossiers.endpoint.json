@@ -1,0 +1,26 @@
+{
+  "title": "ZDS VrijeBerichten Proxy",
+  "name": "ZDS VrijeBerichten Proxy",
+  "pathRegex": "^stuf/dossiers/?[^.*]*?$",
+  "path": [
+    "stuf",
+    "dossiers",
+    "{route}"
+  ],
+  "loggingConfig": {
+    "headers": [
+      "authorization"
+    ]
+  },
+  "methods": [
+    "POST"
+  ],
+  "throws": [
+    "zds.xmlEncode"
+  ],
+  "defaultContentType": "text/xml",
+  "proxy": "https://vrijbrp.nl/source/vrijbrp.dossiers.source.json",
+  "$id": "https://vrijbrp.nl/endpoints/zds-dossiers",
+  "$schema": "https://docs.commongateway.nl/schemas/Endpoint.schema.json",
+  "version": "0.0.1"
+}

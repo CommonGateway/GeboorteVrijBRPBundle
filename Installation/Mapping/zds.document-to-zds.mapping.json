@@ -1,0 +1,22 @@
+{
+  "$id": "https://vrijbrp.nl/mappings/document-to-zds.mapping.json",
+  "$schema": "https://docs.commongateway.nl/schemas/Mapping.schema.json",
+  "version": "0.0.1",
+  "title": "Dossier-Document to ZDS La01",
+  "name": "Dossier-Document to ZDS La01",
+  "description": "",
+  "mapping": {
+    "@StUF:entiteittype": "ZAKEDC",
+    "gerelateerde.@StUF:entiteittype": "EDC",
+    "gerelateerde.identificatie": "id",
+    "gerelateerde.formaat": "{{ filename|split('.')|last}}",
+    "gerelateerde.auteur": "SIM",
+    "gerelateerde.titel": "filename",
+    "titel": "filename",
+    "beschrijving": "title",
+    "registratiedatum": "{{ entryDateTime|date('Ymd') }}"
+  },
+  "unset": [],
+  "cast": [],
+  "passTrough": false
+}

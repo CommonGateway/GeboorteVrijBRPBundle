@@ -1,0 +1,26 @@
+{
+  "$id": "http://vrijbrp.nl/mappings/zds-lv01-dossiers-search.mapping.json",
+  "$schema": "https://docs.commongateway.nl/schemas/Mapping.schema.json",
+  "version": "0.0.1",
+  "title": "ZDS Lv01 to Dossier Search",
+  "name": "ZDS Lv01 to Dossier Search",
+  "description": "The translation from ZDS Lv01 to Dossiers Search",
+  "mapping": {
+    "bsns": "[{% if attribute(_context, 'SOAP-ENV:Body')['ns2:zakLv01']['ns2:gelijk']['ns2:heeftAlsInitiator']['ns2:gerelateerde']['ns2:identificatie'] | default %}\"{{ attribute(_context, 'SOAP-ENV:Body')['ns2:zakLv01']['ns2:gelijk']['ns2:heeftAlsInitiator']['ns2:gerelateerde']['ns2:identificatie'] }}\"{%endif%}]",
+    "dossierIds": "[{%if attribute(_context, 'SOAP-ENV:Body')['ns2:zakLv01']['ns2:gelijk']['ns2:identificatie'] | default %}\"{{ attribute(_context, 'SOAP-ENV:Body')['ns2:zakLv01']['ns2:gelijk']['ns2:identificatie'] }}\"{%endif%}]"
+  },
+  "unset": [],
+  "cast": {
+    "dossierIds": [
+      "unsetIfValue==[]",
+      "jsonToArray"
+    ],
+    "bsns": [
+      "unsetIfValue==[]",
+      "jsonToArray"
+    ]
+  },
+  "passTrough": false,
+  "dateCreated": "2025-10-09T08:31:58+00:00",
+  "dateModified": "2025-10-09T08:31:58+00:00"
+}
