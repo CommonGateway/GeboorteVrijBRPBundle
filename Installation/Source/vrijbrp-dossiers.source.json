@@ -59,7 +59,7 @@
     "/api/v1/dossiers/search": {
       "out": {
         "body": {
-          "mapping": "http://vrijbrp.nl/mappings/zds-lv01-dossiers-search"
+          "mapping": "http://vrijbrp.nl/mappings/zds-lv01-dossiers-search.mapping.json"
         }
       },
       "in": {
