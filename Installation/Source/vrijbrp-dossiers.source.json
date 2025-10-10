@@ -1,10 +1,10 @@
 {
   "title": "vrijbrp-dossiers",
-  "description": "\"[{\\\"id\\\":\\\"dXBsb2FkLWVtaWdyYXRpZS02OTY4ODY4MzI1ODg4NDk1MDg2LnBkZg==\\\",\\\"title\\\":\\\"emigratie.pdf\\\",\\\"filename\\\":\\\"upload-emigratie-6968868325888495086.pdf\\\",\\\"entryDateTime\\\":\\\"2025-10-06T09:39:06\\\"},{\\\"id\\\":\\\"dXBsb2FkLWVtaWdyYXRpZS01MzQ0MTA2NTEwMzY2Njg2MDQ3LnBkZg==\\\",\\\"title\\\":\\\"emigratie.pdf\\\",\\\"filename\\\":\\\"upload-emigratie-5344106510366686047.pdf\\\",\\\"entryDateTime\\\":\\\"2025-10-06T09:39:05\\\"}]\"",
+  "description": "VrijBRP Dossiers API",
   "$id": "https://vrijbrp.nl/source/vrijbrp.dossiers.source.json",
   "$schema": "https://docs.commongateway.nl/schemas/Gateway.schema.json",
   "version": "0.0.1",
-  "location": "https://vrijbrp-demo.procura.nl/dossiers",
+  "location": "https://vrijbrp.nl/dossiers",
   "isEnabled": true,
   "type": "json",
   "authorizationHeader": "Authorization",
