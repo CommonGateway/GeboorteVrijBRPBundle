@@ -1,0 +1,36 @@
+{
+  "$id": "https://vrijbrp.nl/mappings/dossiers-to-zds-la01-item.mapping.json",
+  "$schema": "https://docs.commongateway.nl/schemas/Mapping.schema.json",
+  "version": "0.0.3",
+  "title": "Dossiers to ZDS La01 Item",
+  "name": "Dossiers to ZDS La01 Item",
+  "description": null,
+  "mapping": {
+    "ZKN:identificatie": "dossierId",
+    "ZKN:omschrijving": "description",
+    "ZKN:startdatum": "{{ startDate|date('Ymd') }}",
+    "ZKN:registratiedatum": "{{ entryDateTime|date('Ymd') }}",
+    "ZKN:einddatum": "{% if status.endStatus == true %}{{ status.entryDateTime|date('Ymd') }}{% endif %}",
+    "ZKN:isVan.ZKN:gerelateerde.ZKN:omschijving": "type.description",
+    "ZKN:isVan.ZKN:gerelateerde.ZKN:code": "type.code",
+    "ZKN:heeft.ZKN:gerelateerde.ZKN:omschrijving": "status.code",
+    "ZKN:heeft.ZKN:gerelateerde.ZKN:omschrijvingGeneriek": "status.code",
+    "ZKN:heeft.ZKN:toelichting": "status.description",
+    "ZKN:heeft.ZKN:datumStatusGezet": "{{ status.entryDateTime|date('Ymdhisv') }}",
+    "ZKN:heeftRelevant": "{% if _giveDetails == true%}{% set _documents = call('https://vrijbrp.nl/source/vrijbrp.dossiers.source.json', '/api/v1/dossiers/'~dossierId~'/documents', 'GET') %}{{ map('https://vrijbrp.nl/mapping/document-to-zds.mapping.json', _documents, true)|json_encode }}{% endif %}",
+    "ZKN:leidtTot.@xsi:nil": "true",
+    "ZKN:heeft.@StUF:entiteittype": "ZAKSTT",
+    "ZKN:isVan.@StUF:entiteittype": "ZAKZKT",
+    "ZKN:isVan.ZKN:gerelateerde.@StUF:entiteittype": "ZKT",
+    "ZKN:heeft.ZKN:gerelateerde.@StUF:entiteittype": "STT",
+    "@StUF:entiteittype": "ZAK",
+    "@StUF:sleutelVerzendend": "dossierId"
+  },
+  "unset": [],
+  "cast": {
+    "ZKN:heeftRelevant": "jsonToArray"
+  },
+  "passTrough": false,
+  "dateCreated": "2025-10-09T08:27:46+00:00",
+  "dateModified": "2025-10-09T11:14:54+00:00"
+}

@@ -21,6 +21,8 @@ use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Exception\ServerException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Serializer\Encoder\XmlEncoder;
 
 /**
  * This Service handles the mapping and sending of ZGW zaak data to the Vrijbrp api.
@@ -869,4 +871,26 @@ class ZgwToVrijbrpService
 
         return $synchronization;
     }
+
+    /**
+     * Does an xmlEncode on the response data. (temporary solution)
+     *
+     * @param array $data          The data array.
+     * @param array $configuration The configuration array.
+     *
+     * @return array The updated data array.
+     */
+    public function zgwToZdsXmlEncodeHandler(array $data, array $configuration): array
+    {
+        $response     = $data['response'];
+        $responseBody = json_decode($response->getContent(), true);
+
+        $encoder      = new XmlEncoder(['xml_root_node_name' => 'SOAP-ENV:Envelope']);
+        $responseBody = $encoder->encode($responseBody, 'xml');
+
+        $data['response'] = new Response($responseBody, $response->getStatusCode(), ['content-type' => 'text/xml']);
+
+        return $data;
+
+    }//end zgwToZdsXmlEncodeHandler()
 }

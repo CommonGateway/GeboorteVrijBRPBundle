@@ -1,0 +1,39 @@
+{
+  "$id": "https://vrijbrp.nl/mappings/dossiers-to-zds-la01.mapping.json",
+  "$schema": "https://docs.commongateway.nl/schemas/Mapping.schema.json",
+  "version": "0.0.1",
+  "title": "Dossiers to ZDS La01",
+  "name": "Dossiers to ZDS La01",
+  "description": null,
+  "mapping": {
+    "SOAP-ENV:Body.ZKN:zakLa01.ZKN:stuurgegevens.StUF:berichtcode": "La01",
+    "SOAP-ENV:Body.ZKN:zakLa01.ZKN:stuurgegevens.StUF:zender.StUF:organisatie": "SIM",
+    "SOAP-ENV:Body.ZKN:zakLa01.ZKN:stuurgegevens.StUF:zender.StUF:applicatie": "SIMsite",
+    "SOAP-ENV:Body.ZKN:zakLa01.ZKN:stuurgegevens.StUF:zender.StUF:administratie": "",
+    "SOAP-ENV:Body.ZKN:zakLa01.ZKN:stuurgegevens.StUF:zender.StUF:gebruiker": "",
+    "SOAP-ENV:Body.ZKN:zakLa01.ZKN:stuurgegevens.StUF:ontvanger.StUF:organisatie": "1892",
+    "SOAP-ENV:Body.ZKN:zakLa01.ZKN:stuurgegevens.StUF:ontvanger.StUF:applicatie": "Liber",
+    "SOAP-ENV:Body.ZKN:zakLa01.ZKN:stuurgegevens.StUF:ontvanger.StUF:administratie": "",
+    "SOAP-ENV:Body.ZKN:zakLa01.ZKN:stuurgegevens.StUF:ontvanger.StUF:gebruiker": "",
+    "SOAP-ENV:Body.ZKN:zakLa01.ZKN:stuurgegevens.StUF:referentienummer": "identificatie",
+    "SOAP-ENV:Body.ZKN:zakLa01.ZKN:stuurgegevens.StUF:tijdstipBericht": "{{ 'now'|date('YmdHisv') }}",
+    "SOAP-ENV:Body.ZKN:zakLa01.ZKN:stuurgegevens.StUF:entiteittype": "ZAK",
+    "SOAP-ENV:Body.ZKN:zakLa01.ZKN:parameters.StUF:mutatiesoort": "T",
+    "SOAP-ENV:Body.ZKN:zakLa01.ZKN:parameters.StUF:indicatorOvername": "V",
+    "SOAP-ENV:Body.ZKN:zakLa01.ZKN:antwoord.ZKN:object": "{% if result.content|length == 1 %}{% set content= result.content|map(item => item|merge({'_giveDetails': true})) %}{% else %}{% set content = result.content|map(item => item|merge({'_giveDetails': false})) %}{% endif %}{{ map(\"https://vrijbrp.nl/mappings/dossiers-to-zds-la01-item.mapping.json\", content, true)|json_encode }}",
+    "@xmlns:SOAP-ENV": "http://schemas.xmlsoap.org/soap/envelope/",
+    "@xmlns:StUF": "http://www.egem.nl/StUF/StUF0301",
+    "@xmlns:ZKN": "http://www.egem.nl/StUF/sector/zkn/0310",
+    "@xmlns:ns3": "http://www.egem.nl/StUF/sector/bg/0310",
+    "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance"
+  },
+  "unset": [],
+  "cast": {
+    "SOAP-ENV:Body.ZKN:zakLa01.ZKN:antwoord.ZKN:object": [
+      "jsonToArray"
+    ]
+  },
+  "passTrough": false,
+  "dateCreated": "2025-10-09T08:25:10+00:00",
+  "dateModified": "2025-10-09T08:55:32+00:00"
+}

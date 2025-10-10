@@ -1,0 +1,72 @@
+{
+  "title": "vrijbrp-dossiers",
+  "description": "\"[{\\\"id\\\":\\\"dXBsb2FkLWVtaWdyYXRpZS02OTY4ODY4MzI1ODg4NDk1MDg2LnBkZg==\\\",\\\"title\\\":\\\"emigratie.pdf\\\",\\\"filename\\\":\\\"upload-emigratie-6968868325888495086.pdf\\\",\\\"entryDateTime\\\":\\\"2025-10-06T09:39:06\\\"},{\\\"id\\\":\\\"dXBsb2FkLWVtaWdyYXRpZS01MzQ0MTA2NTEwMzY2Njg2MDQ3LnBkZg==\\\",\\\"title\\\":\\\"emigratie.pdf\\\",\\\"filename\\\":\\\"upload-emigratie-5344106510366686047.pdf\\\",\\\"entryDateTime\\\":\\\"2025-10-06T09:39:05\\\"}]\"",
+  "$id": "https://vrijbrp.nl/source/vrijbrp.dossiers.source.json",
+  "$schema": "https://docs.commongateway.nl/schemas/Gateway.schema.json",
+  "version": "0.0.1",
+  "location": "https://vrijbrp-demo.procura.nl/dossiers",
+  "isEnabled": true,
+  "type": "json",
+  "authorizationHeader": "Authorization",
+  "auth": "vrijbrp-jwt",
+  "authenticationConfig": [],
+  "authorizationPassthroughMethod": "header",
+  "locale": null,
+  "accept": "application/json",
+  "jwt": null,
+  "jwtId": null,
+  "secret": null,
+  "username": "sim",
+  "password": "!ChangeMe!",
+  "apikey": null,
+  "documentation": null,
+  "loggingConfig": {
+    "callMethod": true,
+    "callUrl": true,
+    "callQuery": true,
+    "callContentType": true,
+    "callBody": true,
+    "responseStatusCode": true,
+    "responseContentType": true,
+    "responseBody": true,
+    "maxCharCountBody": 500,
+    "maxCharCountErrorBody": 2000
+  },
+  "oas": [],
+  "paths": [],
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "translationConfig": [],
+  "collections": [],
+  "configuration": {
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "query": [],
+    "debug": false,
+    "https_errors": false,
+    "connect_timeout": null,
+    "force_ip_resolve": "",
+    "version": "1.1",
+    "read_timeout": null,
+    "delay": null,
+    "verify": false,
+    "decode_content": "",
+    "proxy": ""
+  },
+  "endpointsConfig": {
+    "/api/v1/dossiers/search": {
+      "out": {
+        "body": {
+          "mapping": "http://vrijbrp.nl/mappings/zds-lv01-dossiers-search"
+        }
+      },
+      "in": {
+        "body": {
+          "mapping": "https://vrijbrp.nl/mappings/dossiers-to-zds-la01.mapping.json"
+        }
+      }
+    }
+  }
+}
